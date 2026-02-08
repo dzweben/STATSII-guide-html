@@ -1,0 +1,1066 @@
+Study Guide Exam 3
+    
+    
+      
+        
+      
+      Josh Klugman
+    
+    
+    Exam 3 Study Guide
+    Exam 3 covers course material from between-subjects factorial ANOVA to splot-plot ANOVA. You will be allowed to bring a double-sided sheet of hand-written notes. You should be able to do the following:
+    Interpret all figures and tables in the Simmons Nelson, and Simonsohn article.
+    List the different ways researcher discretion (aka “research degrees of freedom”) can increase the chances of getting a false positive
+    Calculate the “effects” for the general linear model for a two-way between-subjects ANOVA, a single-factor within-subjects ANOVA, a multi-factor within-subjects, and a split-plot ANOVA ( , , , eijk). Do not worry about random effects, like subject effects or subject interactions.
+    You will not have to calculate sums of squares, but you should be able to understand what are the sources of error for specific effects in ANOVA (especially pertinent for multi-factor repeated measures ANOVA and split-plot ANOVA)
+    Relatedly, explain, in a conceptual, intuitive way, the error components in a one-way and two-way within-subject design.
+    Explain the difference between between-subject ANOVAs and a within-subject ANOVAs in terms of design, ANOVA tables, sums of squares, and F ratios.
+    Interpret R output for two-way ANOVA, within-subject ANOVA, multi-factor repeated measures ANOVA, and split-plot ANOVA
+    In a two-way ANOVA context, conceptually describe main effects and interaction effects. Know what a “consistent main effect” is.
+    In a between-subject context, calculate mean differences between groups according to the Type I and Type III methods of calculating sums of squares and explain what a difference between a Type I effect and a Type III effect means
+    Look at data for a two-way ANOVAs (either between-subjects, within-subjects, or split-plot) and calculate and describe main effect contrasts, simple effect contrasts, and interaction contrasts
+    Apply the post-hoc adjustments to a variety of situations (main effects contrasts, simple effects contrasts, interaction contrasts)
+    
+    
+    
+    Equations on the Test
+    t=ψMSWΣcj2nj
+    t=ψMSWΣck2nk
+    t=ψMSWΣcj2knjk
+    Effects:
+    αj=Yj−Y
+    βk=Yk−Y
+    αβjk=Yjk−Yj−Yk+Y
+    Adjusted t-critical values for post-hoc contrasts
+    header1effect
+tukey
+scheffe
+body1Main Effect of A
+    
+      
+        
+          
+            q
+          
+        
+        
+          
+            a,denom,α=
+          
+          
+            
+              
+            
+            .
+          
+          
+            05
+          
+        
+      
+      
+        
+          
+        
+        /
+      
+      
+        
+          
+        
+        
+        
+          
+            2
+          
+        
+      
+    
+    
+    
+      
+        
+          
+        
+        
+        
+          
+            (a−1)
+          
+          
+            
+              
+                F
+              
+            
+            
+              
+                a−1,denom,α=
+              
+              
+                
+                  
+                
+                .
+              
+              
+                05
+              
+            
+          
+        
+      
+    
+    
+body2Main Effect of B
+    
+      
+        
+          
+            q
+          
+        
+        
+          
+            b,denom,α=
+          
+          
+            
+              
+            
+            .
+          
+          
+            05
+          
+        
+      
+      
+        
+          
+        
+        /
+      
+      
+        
+          
+        
+        
+        
+          
+            2
+          
+        
+      
+    
+    
+    
+      
+        
+          
+        
+        
+        
+          
+            (b−1)
+          
+          
+            
+              
+                F
+              
+            
+            
+              
+                b−1,denom,α=
+              
+              
+                
+                  
+                
+                .
+              
+              
+                05
+              
+            
+          
+        
+      
+    
+    
+body3Simple Effects A By B
+    
+      
+        
+          
+            q
+          
+        
+        
+          
+            a,denom,α=
+          
+          
+            
+              
+            
+            .
+          
+          
+            05
+          
+          
+            
+              
+            
+            /
+          
+          
+            b
+          
+        
+      
+      
+        
+          
+        
+        /
+      
+      
+        
+          
+        
+        
+        
+          
+            2
+          
+        
+      
+    
+    
+    
+      
+        
+          
+        
+        
+        
+          
+            (a−1)
+          
+          
+            
+              
+                F
+              
+            
+            
+              
+                a−1,denom,α=
+              
+              
+                
+                  
+                
+                .
+              
+              
+                05
+              
+              
+                
+                  
+                
+                /
+              
+              
+                b
+              
+            
+          
+        
+      
+    
+    
+body4Simple Effects B By A
+    
+      
+        
+          
+            q
+          
+        
+        
+          
+            b,denom,α=
+          
+          
+            
+              
+            
+            .
+          
+          
+            05
+          
+          
+            
+              
+            
+            /
+          
+          
+            a
+          
+        
+      
+      
+        
+          
+        
+        /
+      
+      
+        
+          
+        
+        
+        
+          
+            2
+          
+        
+      
+    
+    
+    
+      
+        
+          
+        
+        
+        
+          
+            (b−1)
+          
+          
+            
+              
+                F
+              
+            
+            
+              
+                b−1,denom,α=
+              
+              
+                
+                  
+                
+                .
+              
+              
+                05
+              
+              
+                
+                  
+                
+                /
+              
+              
+                b
+              
+            
+          
+        
+      
+    
+    
+body5Interaction
+    
+      
+        NA
+      
+    
+    
+    
+      
+        
+          
+        
+        
+        
+          
+            (a−1)(b−1)
+          
+          
+            
+              
+                F
+              
+            
+            
+              
+                (a−1)(b−1),denom,α=
+              
+              
+                
+                  
+                
+                .
+              
+              
+                05
+              
+            
+          
+        
+      
+    
+    
+    Denominator Degrees of Freedom For Contrasts (BS=between subject; WS=within subject)
+    header1analysis
+df
+body1BS ANOVA, 1-way
+n-a
+body2BS ANOVA, 2-way
+n-ab
+body3WS ANOVA, 1-way
+n-1
+body4WS ANOVA, 2-way
+n-1
+body5Split-Plot ANOVA
+n-a
+    
+    
+    Problems
+    
+    Problem 1
+    Here is data on the reading scores (converted to z-scores, so the unit of measurement is standard deviation) of first graders in 2013, by the education of the caretaking parent and income. The numbers in parentheses are cell sizes.
+    Calculate the difference between children from low-income families (<$75,000) and children from high-income families (>=$75,001) using the Type I and Type III approaches. Interpret the different effects. What conclusion do you make about the Type I effect of income—is it a “pure” income effect or not?
+    First Grade Reading Scores (z) By Family Income and Parental Education
+    header1Parental Education
+<$75,000
+$75,001+
+body1Less than BA
+-0.24
+0.19
+body2
+(n=6668)
+(n=1424)
+body3BA+
+0.30
+0.50
+body4
+(n=1437)
+(n=2916)
+    
+    
+    Problem 2
+    A researcher classifies her white subjects based on their political views into liberals, moderates, and conservatives. She gives them a vignette based on the Rodney King case: a police officer is accused of beating a motorist. The officer is acquitted of assault charges in state court but subsequently indicated and found guilty of violating the motorist’s civil rights in federal courts. Subjects were assigned to either of two conditions (this is a completely between-subjects design!): in one condition, the officer is white; in the other one, the officer is black. Subjects were asked to rate, on a scale from 1 to 7, how much they think this is a case of double jeopardy (a constitutional right not to be charged for the same crime twice). There are 10 people in each cell.
+    Here is the researcher’s data & ANOVA table:
+    df2<-data.frame(treatment=c("Black Officers","White Officers","Mean"),                liberal=c(3.19,1.91,2.55),                moderate=c(3.40,3.35,3.38),                conservative=c(1.25,4.62,2.94),                mean=c(2.61,3.29,2.95))fdf2<-flextable(df2)fdf2<-set_caption(fdf2,                caption="Problem 2 Cell and Marginal Means")fdf2
+    Problem 2 Cell and Marginal Means
+    header1treatment
+liberal
+moderate
+conservative
+mean
+body1Black Officers
+3.19
+3.40
+1.25
+2.61
+body2White Officers
+1.91
+3.35
+4.62
+3.29
+body3Mean
+2.55
+3.38
+2.94
+2.95
+    summary(m2)
+    ## Anova Table (Type 3 tests)## ## Response: dj##                       num Df den Df  MSE     F   ges  Pr(>F)    ## treatment                  1     54 1.73  4.01 0.069    0.05 .  ## orientation                2     54 1.73  2.00 0.069    0.15    ## treatment:orientation      2     54 1.73 16.72 0.382 2.2e-06 ***## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    m2$Anova
+    ## Anova Table (Type III tests)## ## Response: dv##                       Sum Sq Df F value  Pr(>F)    ## (Intercept)              523  1  301.64 < 2e-16 ***## treatment                  7  1    4.01    0.05 .  ## orientation                7  2    2.00    0.15    ## treatment:orientation     58  2   16.72 2.2e-06 ***## Residuals                 94 54                    ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    
+    Problem 2a
+    Interpret the omnibus F-statistics in this table.
+    
+    
+    Problem 2b
+    Interpret the main effect of the officer race factor. Is this a “consistent” main effect? (just based on the cell means)
+    
+    
+    Problem 2c
+    Interpret the main effects of political views. Are these “consistent” main effects? (just based on the cell means)
+    
+    
+    Problem 2d
+    Interpret how the effect of the officer race factor varies by levels of political views. (just based on the cell means)
+    
+    
+    Problem 2e
+    Calculate all αj, βk, αβjk
+    
+    
+    Problem 2f
+    A subject in our study is a conservative and he is assigned to the black officer condition. He gives a rating of 7. What is his eijk?
+    
+    
+    Problems 2g-2i
+    For each contrast, identify what kind of contrast it is (main effect of orientation; main effect of treatment; simple effect of orientation by treatment; simple effect of treatment by orientation; interaction); calculate the contrast value (psi-hat); interpret the contrast value; the t-test statistic; determine the post-hoc-adjusted t critical value (use Tukey if it is a pairwise contrast; use Scheffe if it is a complex contrast); and state if you retain or reject the null hypothesis.
+    
+    
+    
+    Problem 2g
+    H0:1μconservative,white+−1μconservative,black=0
+    
+    
+    Problem 2h
+    H0:1μconservative,white+−1μconservative,black+1μliberal,white+−1μliberal,black=0
+    
+    
+    Problem 2i
+    H0:1μconservative,white+1μmoderate,white+−2μliberal,white=0
+    
+    
+    
+    Problem 3
+    A researcher is interested in the racial attitude of Black Americans. Here is some data from the 2024 GSS, where subjects were asked to rate Black, Hispanic, and White people’s laziness on a scale of 1-7, where 1 means “not at all lazy” and 7 means “lazy”.
+    eb
+    ##  racef                     emmean     SE  df lower.CL upper.CL##  Rating.of.Black.people      3.05 0.0832 302     2.89     3.22##  Rating.of.Hispanic.People   2.46 0.0819 302     2.30     2.62##  Rating.of.White.People      3.99 0.0872 302     3.82     4.16## ## Confidence level used: 0.95
+    
+    Problem 3a
+    Calculate all fixed effects (that is, effects not related to the subject)
+    
+    
+    Problem 3b
+    Here is the output for a couple of contrasts. For each contrast, write the null hypothesis, the equation for the post-hoc-adjusted t critical value, find the adjusted t-critical value, and determine significance.
+    bcontrast1<-c(1,-1,0)bcontrast2<-c(-1,-1,2)bcontrastlist<-list(bcontrast1,bcontrast2)contrast(eb,bcontrastlist)
+    ##  contrast     estimate     SE  df t.ratio p.value##  c(1, -1, 0)     0.594 0.0851 302   6.979 <0.0001##  c(-1, -1, 2)    2.462 0.2170 302  11.372 <0.0001
+    
+    
+    
+    Problem 4
+    Fourteen infants less than 2 days old were shown a series of images: a schematic face, concentric circles, a section of a newspaper, and a plain white circle against a blue background. The outcome is length of gaze to a particular target.
+    Here is the data:
+    e4
+    ##  condition emmean    SE df lower.CL upper.CL##  face       1.679 0.158 13    1.338     2.02##  circle     1.421 0.199 13    0.992     1.85##  newspaper  0.971 0.088 13    0.781     1.16##  white      0.886 0.117 13    0.633     1.14## ## Confidence level used: 0.95
+    
+    Problem 4a
+    Calculate all fixed effects
+    
+    
+    Problem 4b
+    Here is output for a couple of contrasts. For each contrast, write out the null hypothesis, interpret the contrast value, calculate the post-hoc adjusted critical value (using Tukey for pairwise contrasts and Scheffe for complex contrasts), and state if you reject or retain the null hypothesis.
+    ##  contrast        estimate    SE df t.ratio p.value##  c(0, 1, -1, 0)      0.45 0.157 13   2.870  0.0131##  c(1, 1, -1, -1)     1.24 0.277 13   4.492  0.0006
+    
+    
+    
+    Problem 5
+    In 2000, researchers surveyed 726 non-Hispanic, non-Jewish white Americans and asked them to rate Asians, Blacks, Hispanics, Jews, and Whites on a variety of negative traits, from 1 (most positive) to 7 (most negative). There traits are:
+    Lacking commitment to family (“Anti family”)
+    Lacking commitment of fairness towards all groups (“Unfairness”)
+    Being lazy
+    Being unintelligent
+    Being violent
+    Being poor
+    Here is their data:
+    
+    
+    Problem 5a
+    Here are the sums of squares for this study.
+    Racial group being rated: 3494
+    Trait that is being rated: 1510
+    Subject: 5169
+    Racial group*trait: 955
+    Racial group*subject: 5641
+    Trait*subject: 9063
+    Racial grouptraitsubject: 9444
+    Fill in this ANOVA table:
+    a<-data.frame(Source=c("Racial group","Error","Trait","Error", "Racial group*trait","Error"),              SS=c(NA,NA,NA,NA,NA,NA),              df=c(NA,NA,NA,NA,NA,NA),              MS=c(NA,NA,NA,NA,NA,NA),              Fstat=c(NA,"N/A",NA,"N/A",NA,"N/A"),              Fcrit=c(NA,"N/A",NA,"N/A",NA,"N/A"),              p=c(NA,"N/A",NA,"N/A",NA,"N/A"))fa<-flextable(a)fa<-set_caption(fa,                caption="ANOVA table with blank cells")fa<-width(fa,width=1.00)fa<- border(fa, border.top = fp_border(color = "orange"))fa
+    ANOVA table with blank cells
+    header1Source
+SS
+df
+MS
+Fstat
+Fcrit
+p
+body1Racial group
+body2Error
+N/A
+N/A
+N/A
+body3Trait
+body4Error
+N/A
+N/A
+N/A
+body5Racial group*trait
+body6Error
+N/A
+N/A
+N/A
+    
+    
+    Problem 5b
+    Calculate the main effects of “Asian” and “unfairness”, and the interaction between “Asian” and “unfairness”. The grand mean across all observations is 3.70.
+    em5.group
+    ##  groupf            emmean     SE  df lower.CL upper.CL##  African.Americans   4.29 0.0270 725     4.24     4.35##  Asians              3.47 0.0277 725     3.41     3.52##  Hispanics           4.03 0.0240 725     3.99     4.08##  Jews                3.23 0.0272 725     3.17     3.28##  Whites              3.46 0.0247 725     3.41     3.51## ## Results are averaged over the levels of: traitf ## Confidence level used: 0.95
+    em5.trait
+    ##  traitf        emmean     SE  df lower.CL upper.CL##  Unfairness      3.87 0.0354 725     3.80     3.94##  Antifamily      3.27 0.0332 725     3.21     3.34##  Lazy            3.55 0.0283 725     3.50     3.61##  Unintelligent   3.54 0.0304 725     3.48     3.60##  Violent         3.89 0.0285 725     3.84     3.95##  Poor            4.05 0.0227 725     4.00     4.09## ## Results are averaged over the levels of: groupf ## Confidence level used: 0.95
+    em5.cell
+    ##  groupf            traitf        emmean     SE  df lower.CL upper.CL##  African.Americans Unfairness      4.22 0.0486 725     4.12     4.32##  Asians            Unfairness      3.82 0.0451 725     3.74     3.91##  Hispanics         Unfairness      4.02 0.0439 725     3.93     4.11##  Jews              Unfairness      3.66 0.0464 725     3.57     3.75##  Whites            Unfairness      3.63 0.0489 725     3.54     3.73##  African.Americans Antifamily      4.01 0.0485 725     3.92     4.11##  Asians            Antifamily      2.99 0.0468 725     2.90     3.08##  Hispanics         Antifamily      3.24 0.0488 725     3.14     3.33##  Jews              Antifamily      2.84 0.0455 725     2.75     2.93##  Whites            Antifamily      3.30 0.0458 725     3.21     3.39##  African.Americans Lazy            4.23 0.0423 725     4.14     4.31##  Asians            Lazy            3.20 0.0451 725     3.12     3.29##  Hispanics         Lazy            3.75 0.0454 725     3.67     3.84##  Jews              Lazy            3.19 0.0425 725     3.11     3.28##  Whites            Lazy            3.38 0.0392 725     3.30     3.46##  African.Americans Unintelligent   3.93 0.0404 725     3.85     4.01##  Asians            Unintelligent   3.31 0.0432 725     3.23     3.39##  Hispanics         Unintelligent   4.01 0.0393 725     3.93     4.08##  Jews              Unintelligent   3.20 0.0406 725     3.12     3.28##  Whites            Unintelligent   3.24 0.0373 725     3.16     3.31##  African.Americans Violent         4.46 0.0436 725     4.37     4.55##  Asians            Violent         3.65 0.0407 725     3.57     3.73##  Hispanics         Violent         4.24 0.0398 725     4.17     4.32##  Jews              Violent         3.33 0.0432 725     3.25     3.42##  Whites            Violent         3.77 0.0394 725     3.69     3.84##  African.Americans Poor            4.92 0.0360 725     4.85     4.99##  Asians            Poor            3.82 0.0438 725     3.74     3.91##  Hispanics         Poor            4.93 0.0398 725     4.85     5.01##  Jews              Poor            3.12 0.0439 725     3.03     3.20##  Whites            Poor            3.44 0.0341 725     3.37     3.50## ## Confidence level used: 0.95
+    
+    
+    Problem 5c
+    Interpret these contrasts. Explain what they are testing and assess significance using the appropriate Tukey or Scheffe adjustment.
+    em5.group
+    ##  groupf            emmean     SE  df lower.CL upper.CL##  African.Americans   4.29 0.0270 725     4.24     4.35##  Asians              3.47 0.0277 725     3.41     3.52##  Hispanics           4.03 0.0240 725     3.99     4.08##  Jews                3.23 0.0272 725     3.17     3.28##  Whites              3.46 0.0247 725     3.41     3.51## ## Results are averaged over the levels of: traitf ## Confidence level used: 0.95
+    em5.trait
+    ##  traitf        emmean     SE  df lower.CL upper.CL##  Unfairness      3.87 0.0354 725     3.80     3.94##  Antifamily      3.27 0.0332 725     3.21     3.34##  Lazy            3.55 0.0283 725     3.50     3.61##  Unintelligent   3.54 0.0304 725     3.48     3.60##  Violent         3.89 0.0285 725     3.84     3.95##  Poor            4.05 0.0227 725     4.00     4.09## ## Results are averaged over the levels of: groupf ## Confidence level used: 0.95
+    em5.cell
+    ##  groupf            traitf        emmean     SE  df lower.CL upper.CL##  African.Americans Unfairness      4.22 0.0486 725     4.12     4.32##  Asians            Unfairness      3.82 0.0451 725     3.74     3.91##  Hispanics         Unfairness      4.02 0.0439 725     3.93     4.11##  Jews              Unfairness      3.66 0.0464 725     3.57     3.75##  Whites            Unfairness      3.63 0.0489 725     3.54     3.73##  African.Americans Antifamily      4.01 0.0485 725     3.92     4.11##  Asians            Antifamily      2.99 0.0468 725     2.90     3.08##  Hispanics         Antifamily      3.24 0.0488 725     3.14     3.33##  Jews              Antifamily      2.84 0.0455 725     2.75     2.93##  Whites            Antifamily      3.30 0.0458 725     3.21     3.39##  African.Americans Lazy            4.23 0.0423 725     4.14     4.31##  Asians            Lazy            3.20 0.0451 725     3.12     3.29##  Hispanics         Lazy            3.75 0.0454 725     3.67     3.84##  Jews              Lazy            3.19 0.0425 725     3.11     3.28##  Whites            Lazy            3.38 0.0392 725     3.30     3.46##  African.Americans Unintelligent   3.93 0.0404 725     3.85     4.01##  Asians            Unintelligent   3.31 0.0432 725     3.23     3.39##  Hispanics         Unintelligent   4.01 0.0393 725     3.93     4.08##  Jews              Unintelligent   3.20 0.0406 725     3.12     3.28##  Whites            Unintelligent   3.24 0.0373 725     3.16     3.31##  African.Americans Violent         4.46 0.0436 725     4.37     4.55##  Asians            Violent         3.65 0.0407 725     3.57     3.73##  Hispanics         Violent         4.24 0.0398 725     4.17     4.32##  Jews              Violent         3.33 0.0432 725     3.25     3.42##  Whites            Violent         3.77 0.0394 725     3.69     3.84##  African.Americans Poor            4.92 0.0360 725     4.85     4.99##  Asians            Poor            3.82 0.0438 725     3.74     3.91##  Hispanics         Poor            4.93 0.0398 725     4.85     5.01##  Jews              Poor            3.12 0.0439 725     3.03     3.20##  Whites            Poor            3.44 0.0341 725     3.37     3.50## ## Confidence level used: 0.95
+    group.contrast5<-c(0,1,0,-1,0)trait.contrast5<-c(1,-1,0,0,0,0)cell.contrast5.1<-c(0,1,0,-1,0, # unfairness                     0,0,0,0,0, # anti-family                    0,0,0,0,0, # lazy                    0,0,0,0,0, # unintelligent                    0,0,0,0,0, # violent                    0,0,0,0,0)  # poorcell.contrast5.2<-c(0,0,0,0,0, # unfairness                     0,1,0,-1,0, # anti-family                    0,0,0,0,0, # lazy                    0,0,0,0,0, # unintelligent                    0,0,0,0,0, # violent                    0,1,0,-1,0)  # poorcell.contrast5.3<-c(0,1,0,-1,0, # unfairness                     0,-1,0,1,0, # anti-family                    0,0,0,0,0, # lazy                    0,0,0,0,0, # unintelligent                    0,0,0,0,0, # violent                    0,0,0,0,0)  # poorgroup.list5<-list(group.contrast5)trait.list5<-list(trait.contrast5)cell.list5<-list(cell.contrast5.1,cell.contrast5.2,cell.contrast5.3)contrast(em5.group,group.list5)
+    ##  contrast          estimate     SE  df t.ratio p.value##  c(0, 1, 0, -1, 0)    0.242 0.0237 725  10.204 <0.0001## ## Results are averaged over the levels of: traitf
+    contrast(em5.trait,trait.list5)
+    ##  contrast             estimate     SE  df t.ratio p.value##  c(1, -1, 0, 0, 0, 0)    0.598 0.0403 725  14.826 <0.0001## ## Results are averaged over the levels of: groupf
+    contrast(em5.cell,cell.list5)
+    ##  contrast                                                        estimate##  c(0, 1, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0.15978##  c(0, 0, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0.85813##  c(0, 1, 0, -1, 0, 0, -1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     0.00551##      SE  df t.ratio p.value##  0.0396 725   4.030 <0.0001##  0.0710 725  12.088 <0.0001##  0.0473 725   0.116  0.9074
+    
+    
+    
+    
+    Problem 6
+    We are looking at subjects’ ability to recall characters in a string based on (a) the type of string (digits/letters/mixed – within-subject factor) and (b) the type of brain damage the subject suffered (left brain / right brain / control – between-subject factor). The experiment is using a 3×3 design; n = 18. Note: when we tested assumptions we found equality of variances as well as equality of the covariance/variance matrices.
+    
+    
+    Problem 6a
+    Calculate the effects of “right brain”, “mixed”, and “right brain-mixed”. The grand mean across all subjects and observations is 7.48 characters.
+    em6.damage
+    ##  damagef emmean    SE df lower.CL upper.CL##  Left      6.17 0.254 15     5.62     6.71##  Right     7.61 0.254 15     7.07     8.15##  Control   8.67 0.254 15     8.12     9.21## ## Results are averaged over the levels of: stimuli ## Confidence level used: 0.95
+    em6.stimuli
+    ##  stimuli emmean    SE df lower.CL upper.CL##  digits    8.06 0.218 15     7.59     8.52##  letters   7.28 0.259 15     6.72     7.83##  mixed     7.11 0.251 15     6.58     7.65## ## Results are averaged over the levels of: damagef ## Confidence level used: 0.95
+    em6.cell
+    ##  damagef stimuli emmean    SE df lower.CL upper.CL##  Left    digits    7.00 0.378 15     6.20     7.80##  Right   digits    8.17 0.378 15     7.36     8.97##  Control digits    9.00 0.378 15     8.20     9.80##  Left    letters   5.67 0.449 15     4.71     6.62##  Right   letters   7.50 0.449 15     6.54     8.46##  Control letters   8.67 0.449 15     7.71     9.62##  Left    mixed     5.83 0.435 15     4.91     6.76##  Right   mixed     7.17 0.435 15     6.24     8.09##  Control mixed     8.33 0.435 15     7.41     9.26## ## Confidence level used: 0.95
+    
+    
+    Problem 6b
+    Fill in this ANOVA table.
+    Damage SS: 57
+    Stimuli SS: 9
+    Subject SS: 17.4
+    Damage*Stimuli SS: 2
+    Subject*Stimuli SS: 30.6
+    a<-data.frame(Source=c("Damage group","Error","Stimuli","Error", "Damage*stimuli","Error"),              SS=c(NA,NA,NA,NA,NA,NA),              df=c(NA,NA,NA,NA,NA,NA),              MS=c(NA,NA,NA,NA,NA,NA),              Fstat=c(NA,"N/A",NA,"N/A",NA,"N/A"),              Fcrit=c(NA,"N/A",NA,"N/A",NA,"N/A"),              p=c(NA,"N/A",NA,"N/A",NA,"N/A"))fa<-flextable(a)fa<-set_caption(fa,                caption="ANOVA table with blank cells")fa<-width(fa,width=1.00)fa<- border(fa, border.top = fp_border(color = "orange"))fa
+    ANOVA table with blank cells
+    header1Source
+SS
+df
+MS
+Fstat
+Fcrit
+p
+body1Damage group
+body2Error
+N/A
+N/A
+N/A
+body3Stimuli
+body4Error
+N/A
+N/A
+N/A
+body5Damage*stimuli
+body6Error
+N/A
+N/A
+N/A
+    
+    
+    Problem 6c
+    For each contrast: (a) identify the type of contrast; (b) write the null hypothesis that contrast is testing; (c) calculate the appropriate posthoc-adjusted critical value; and (d) interpret the contrast, including directionality. (you should be able to explain exactly what comparison the contrast is referring to). (use the Tukey adjustment for pairwise contrasts; use the Scheffe adjustment for complex contrasts).
+    em6.damage
+    ##  damagef emmean    SE df lower.CL upper.CL##  Left      6.17 0.254 15     5.62     6.71##  Right     7.61 0.254 15     7.07     8.15##  Control   8.67 0.254 15     8.12     9.21## ## Results are averaged over the levels of: stimuli ## Confidence level used: 0.95
+    em6.stimuli
+    ##  stimuli emmean    SE df lower.CL upper.CL##  digits    8.06 0.218 15     7.59     8.52##  letters   7.28 0.259 15     6.72     7.83##  mixed     7.11 0.251 15     6.58     7.65## ## Results are averaged over the levels of: damagef ## Confidence level used: 0.95
+    em6.cell
+    ##  damagef stimuli emmean    SE df lower.CL upper.CL##  Left    digits    7.00 0.378 15     6.20     7.80##  Right   digits    8.17 0.378 15     7.36     8.97##  Control digits    9.00 0.378 15     8.20     9.80##  Left    letters   5.67 0.449 15     4.71     6.62##  Right   letters   7.50 0.449 15     6.54     8.46##  Control letters   8.67 0.449 15     7.71     9.62##  Left    mixed     5.83 0.435 15     4.91     6.76##  Right   mixed     7.17 0.435 15     6.24     8.09##  Control mixed     8.33 0.435 15     7.41     9.26## ## Confidence level used: 0.95
+    damage.contrast6<-c(-2,1,1)stimuli.contrast6<-c(1,0,-1)cell.contrast6.1<-c(-2,1,1,0,0,0,0,0,0)cell.contrast6.2<-c(0,0,0,0,0,0,-2,1,1)cell.contrast6.3<-c(-2,1,1,0,0,0,2,-1,-1)damage6.list<-list(damage.contrast6)stimuli6.list<-list(stimuli.contrast6)cell6.list<-list(cell.contrast6.1,cell.contrast6.2,cell.contrast6.3)contrast(em6.damage,damage6.list)
+    ##  contrast    estimate    SE df t.ratio p.value##  c(-2, 1, 1)     3.94 0.623 15   6.335 <0.0001## ## Results are averaged over the levels of: stimuli
+    contrast(em6.stimuli,stimuli6.list)
+    ##  contrast    estimate    SE df t.ratio p.value##  c(1, 0, -1)    0.944 0.311 15   3.034  0.0084## ## Results are averaged over the levels of: damagef
+    contrast(em6.cell,cell6.list)
+    ##  contrast                        estimate    SE df t.ratio p.value##  c(-2, 1, 1, 0, 0, 0, 0, 0, 0)      3.167 0.925 15   3.424  0.0038##  c(0, 0, 0, 0, 0, 0, -2, 1, 1)      3.833 1.060 15   3.601  0.0026##  c(-2, 1, 1, 0, 0, 0, 2, -1, -1)   -0.667 1.320 15  -0.505  0.6211
+     ## Solutions
+    
+    
+    
+    Problem 1
+    First Grade Reading Scores (z) By Family Income and Parental Education
+    header1Parental Education
+<$75,000
+$75,001+
+body1Less than BA
+-0.24
+0.19
+body2
+(n=6668)
+(n=1424)
+body3BA+
+0.30
+0.50
+body4
+(n=1437)
+(n=2916)
+    
+    Type I approach:
+    We have to construct weighted averages.
+    Low-income mean: (-.246668 + .301437)/(6668+1437) = -.14 SD
+    High-income mean: (.191424 + .502916)/(1424+2916) = .40SD
+    Difference: .40 - -.14 = .54 SD
+    On average, children from high-income families have reading scores that is .54 SD higher than children from low-income families, if we ignore the fact that these two groups have different distributions of parental education.
+    
+    
+    Type III approach:
+    Low-income mean: (-.24 + .30)/2 = .03
+    High income mean: (.19+.50)/2 = .35
+    Difference: .35 - .03 = .32
+    
+    
+    Wrap-Up
+    On average, if we envisioned a world where low-income and high-income families had the same distribution of parental education, we would see that high-income children score better on the reading test by .32 SD.
+    If we compare these differences, we see that the Type I approach is larger than the Type III approach. The Type III approach yields an effect that is 41% smaller than the Type I approach. The Type I approach gives us an effect that is not a “pure” income effect. It is picking up also a parental education effect (although the purer income effect using the Type III approach is also quite sizable!)
+    
+    
+    
+    Problem 2
+    
+    Problem 2a
+    A 2 × 3 ANOVA of subjects’ evaluation that the government is violating the double jeopardy clause in the constitution shows a significant interaction between subjects’ political orientation and the experimental condition, F(2,54) = 16.716, p<.001, but no significant main effects of political orientation or the experimental condition (ps>.05). The effect of treatment is marginally significant however, F(1,54) = 4.010, p=.51.
+    
+    
+    Problem 2b
+    On average, subjects reported a stronger case for double jeopardy when the hypothetical officer was white (M = 3.29) than when the officer is black (M = 2.61). However, this is not a consistent main effect; we see this pattern only for conservatives but not for liberals or moderates.
+    
+    
+    Problem 2c
+    On average, moderate subjects (M=3.38) reported a stronger case for double jeopardy than liberal (M = 2.55) or conservative (M=2.94) subjects . This is not a consistent main effect; we do not see this Moderate > Conservative > Liberal pattern for either the black officer condition (moderate > liberal > conservative) or the white officer condition ( conservative > moderate > liberal).
+    
+    
+    Problem 2d
+    Liberal subjects report a stronger case for double jeopardy when the hypothetical officer is black (M=3.19) than when the officer is white (M=1.91); conservatives have the opposite pattern (Ms=1.25 vs 4.62, respectively); and moderates make a similar case for double jeopardy regardless of the officer rate (Ms = 3.40 vs 3.35, respectively).
+    
+    
+    Problem 2e
+    Let’s make the alphas the race of the officer factor and the betas the political views factor.
+    Grand mean = 2.95
+    αblack = 2.61-2.95 = -.34 αwhite = 3.29-2.95 = +.34 βliberal = 2.55-2.95 = -.4 βmoderate = 3.38-2.95 = .43 βconservative = 2.94-2.95 = -.01 αβblack,liberal = 3.19-2.61-2.55+2.95 =0.98 αβblack,moderate = 3.4-2.61-3.38+2.95=0.36 αβblack,conservative = 1.25-2.61-2.94+2.95=-1.35 αβwhite,liberal=1.91-3.29-2.55+2.95=-0.98 αβwhite,moderate=3.35-3.29-3.38+2.95=-0.37 αβwhite,conservative=4.62-3.29-2.94+2.95=1.34
+    
+    
+    Problem 2f
+    eijk = 7-1.25 = 5.75
+    
+    
+    Problem 2g
+    Simple effect of officer race by orientation.
+    psihat=4.62-1.25= 3.37
+    Conservative subjects indicated stronger agreement that there is double-jeopardy when the officer is white than when the officer is black by 3.37 points.
+    t=3.371.734110+110=5.7226
+    t crit=q2,54,α=.05/32=3.49432=2.4708
+    q2,54,=.05/3 /sqrt(2)=3.4943/sqrt(2) = 2.4708 We reject the null hypothesis.
+    
+    
+    Problem 2h
+    Interaction contrast.
+    psihat= 4.62-1.25-1.91+3.19=4.65
+    Conservatives are more likely to agree that there is double-jeopardy when the hypothetical officer is white than when the officer is black by 3.37 points; liberals are less likely to agree that there is double-jeopardy when the officer is white than when the officer is black by 1.28 points. In other words, the “white officer” effect is +3.37 points for conservatives; it is -1.28 for liberals. The difference between these two effects of officer race for liberals and conservatives is 4.65 points (3.37 - -1.28 = 4.65).
+    t=4.651.734110+110+110+110=5.5834
+    t-crit = sqrt(2F2,54,a=.05) = sqrt(2*3.1682) = 2.5172
+    We reject the null hypothesis.
+    
+    
+    Problem 2i
+    Simple effect of ideology by officer race. psihat = 3.35+4.62-2*1.91=4.15
+    Conservatives and moderates are on average agree that there is double jeopardy for the white officer than liberals by 2.08 points (4.15*2/4).
+    t=4.151.734110+110+410=4.0686
+    t-crit= sqrt(2F2,54,a=.05/2)=sqrt(2*3.9528)=2.8117
+    We reject the null hypothesis.
+    
+    
+    
+    Problem 3
+    
+    Problem 3a
+    Calculating the fixed effects: for the race factor:
+    Grand mean is (3.05+2.46+3.99)/3=3.17
+    αblack = 3.05-3.17 = -.12
+    αhispanic = 2.46-3.17 = -.71
+    αwhite = 3.99-3.17 = .82
+    
+    
+    Problem 3b
+    
+    Contrast 1
+    H0:1αblack+−1αhispanic+0αwhite=0
+    tcrit: t*=3,3022≈q3,1202=3.362=2.47
+    African-Americans give African Americans a significantly higher laziness rating than they do Hispanic people.
+    
+    
+    Contrast 2
+    H0:−1αblack+−1αhispanic+2αwhite=0
+    tcrit: t*=3,3022≈q3,1202=3.362=2.47
+    African-Americans give white people a significantly higher laziness rating than they do Black people and Hispanic people.
+    African-Americans give African Americans a significantly higher rating than they do Hispanic people.
+    
+    
+    
+    
+    Problem 4
+    
+    problem 4a
+    Grand mean: (1.68+1.42+.97+.88)/4=4.95/4=1.24
+    αface=1.68−1.24=+.44
+    αcircles=1.42−1.24=+.18
+    αnewspaper=0.97−1.24=−.27
+    αwhitecircle=.88−1.24=−.36
+    
+    
+    Problem 4b
+    
+    Contrast 1
+    $H_0: (0){face} + (1){circles} + (-1){newspaper} + (0){whitecircle}=0 $
+    Contrast value: The infants looked at the circles longer than the newspaper on average by .45 seconds.
+    t-crit:
+    t*=q4,13,α=.05(2)=4.15(2)=2.93
+    We RETAIN the null hypothesis.
+    
+    
+    Contrast 2
+    $H_0: (1){face} + (1){circles} + (-1){newspaper} + (-1){whitecircle}=0 $
+    Contrast value: On average the infants looked at the face and circles longer than the newspaper and white circle by .625 seconds (1.25*4/2).
+    t*=3F3,13,α=.05=3*3.4105=3.20
+    We REJECT the null hypothesis.
+    
+    
+    
+    
+    Problem 5
+    
+    Problem 5a
+    a<-data.frame(Source=c("Racial group","Error","Trait","Error", "Racial group*trait","Error"),              SS=c(3494,5641,1510,9063,955,9444),              df=c("4","725*4=2900","5","725*5=3625","20","725*20=14500"),              MS=c(873.5,1.9,302,2.5,47.8,.7),              Fstat=c("459.7","N/A","120.8","N/A","68.3","N/A"),              Fcrit=c("2.4472 [F(4,120)]","N/A","2.2899 [F(5,120)]","N/A","1.9588 [F(9,120)]","N/A"),              p=c("<.05","N/A","<.05","N/A","<.05","N/A"))fa<-flextable(a)fa<-set_caption(fa,                caption="ANOVA table with filled-in cells")fa<-width(fa,width=1)fa<- border(fa, border.top = fp_border(color = "orange"))fa
+    ANOVA table with filled-in cells
+    header1Source
+SS
+df
+MS
+Fstat
+Fcrit
+p
+body1Racial group
+3,494
+4
+873.5
+459.7
+2.4472 [F(4,120)]
+<.05
+body2Error
+5,641
+725*4=2900
+1.9
+N/A
+N/A
+N/A
+body3Trait
+1,510
+5
+302.0
+120.8
+2.2899 [F(5,120)]
+<.05
+body4Error
+9,063
+725*5=3625
+2.5
+N/A
+N/A
+N/A
+body5Racial group*trait
+955
+20
+47.8
+68.3
+1.9588 [F(9,120)]
+<.05
+body6Error
+9,444
+725*20=14500
+0.7
+N/A
+N/A
+N/A
+    
+    
+    Problem 5b
+    em5.group
+    ##  groupf            emmean     SE  df lower.CL upper.CL##  African.Americans   4.29 0.0270 725     4.24     4.35##  Asians              3.47 0.0277 725     3.41     3.52##  Hispanics           4.03 0.0240 725     3.99     4.08##  Jews                3.23 0.0272 725     3.17     3.28##  Whites              3.46 0.0247 725     3.41     3.51## ## Results are averaged over the levels of: traitf ## Confidence level used: 0.95
+    em5.trait
+    ##  traitf        emmean     SE  df lower.CL upper.CL##  Unfairness      3.87 0.0354 725     3.80     3.94##  Antifamily      3.27 0.0332 725     3.21     3.34##  Lazy            3.55 0.0283 725     3.50     3.61##  Unintelligent   3.54 0.0304 725     3.48     3.60##  Violent         3.89 0.0285 725     3.84     3.95##  Poor            4.05 0.0227 725     4.00     4.09## ## Results are averaged over the levels of: groupf ## Confidence level used: 0.95
+    em5.cell
+    ##  groupf            traitf        emmean     SE  df lower.CL upper.CL##  African.Americans Unfairness      4.22 0.0486 725     4.12     4.32##  Asians            Unfairness      3.82 0.0451 725     3.74     3.91##  Hispanics         Unfairness      4.02 0.0439 725     3.93     4.11##  Jews              Unfairness      3.66 0.0464 725     3.57     3.75##  Whites            Unfairness      3.63 0.0489 725     3.54     3.73##  African.Americans Antifamily      4.01 0.0485 725     3.92     4.11##  Asians            Antifamily      2.99 0.0468 725     2.90     3.08##  Hispanics         Antifamily      3.24 0.0488 725     3.14     3.33##  Jews              Antifamily      2.84 0.0455 725     2.75     2.93##  Whites            Antifamily      3.30 0.0458 725     3.21     3.39##  African.Americans Lazy            4.23 0.0423 725     4.14     4.31##  Asians            Lazy            3.20 0.0451 725     3.12     3.29##  Hispanics         Lazy            3.75 0.0454 725     3.67     3.84##  Jews              Lazy            3.19 0.0425 725     3.11     3.28##  Whites            Lazy            3.38 0.0392 725     3.30     3.46##  African.Americans Unintelligent   3.93 0.0404 725     3.85     4.01##  Asians            Unintelligent   3.31 0.0432 725     3.23     3.39##  Hispanics         Unintelligent   4.01 0.0393 725     3.93     4.08##  Jews              Unintelligent   3.20 0.0406 725     3.12     3.28##  Whites            Unintelligent   3.24 0.0373 725     3.16     3.31##  African.Americans Violent         4.46 0.0436 725     4.37     4.55##  Asians            Violent         3.65 0.0407 725     3.57     3.73##  Hispanics         Violent         4.24 0.0398 725     4.17     4.32##  Jews              Violent         3.33 0.0432 725     3.25     3.42##  Whites            Violent         3.77 0.0394 725     3.69     3.84##  African.Americans Poor            4.92 0.0360 725     4.85     4.99##  Asians            Poor            3.82 0.0438 725     3.74     3.91##  Hispanics         Poor            4.93 0.0398 725     4.85     5.01##  Jews              Poor            3.12 0.0439 725     3.03     3.20##  Whites            Poor            3.44 0.0341 725     3.37     3.50## ## Confidence level used: 0.95
+    αAsian=3.47−3.70=−0.23
+    βunfairness=3.87−3.70=.17
+    αβAsian,unfairness=3.82−3.47−3.87+3.70=0.18
+    
+    
+    Problem 5c
+    
+    Contrast 1
+    Main effect, racial group.
+    Null: H0:0αBlack+1αAsian+0αHispanic+−1αJew+0αWhite
+    t-crit: t*=q5,725,α=.052=3.86742=2.7347
+    Non-Hispanic, Non-Jewish white people rate Asians significantly more negatively than Jews.
+    
+    
+    Contrast 2
+    Main effect, trait
+    Null:
+    H0:1βunfairness+−1βantifamily+0βlazy+0αunintelligent+0βviolent+0βpoor=0
+    t-crit: t*=q6,725,α=.052=4.04092=2.8573
+    Non-Hispanic, Non-Jewish white people tend to rate all groups significantly higher on “unfairness” than “antifamily-ness”.
+    
+    
+    Contrast 3
+    Simple effect of racial group by trait
+    H0:1αβAsian,unfairness+−1αβJew,unfairness=0
+    t-crit: t*=q5,725,α=.05/62=4.69712=3.3214
+    Non-Hispanic, Non-Jewish White people significantly rate Asians higher on unfairness than Jews.
+    
+    
+    Contrast 4
+    Simple effect of racial group by trait
+    H0:1αβAsian,antifamily+−1αβJew,antifamily=0
+    t-crit: t*=q5,725,α=.05/62=4.69712=3.3214
+    Non-Hispanic, Non-Jewish White people significantly rate Asians higher on “antifamily-ness” than Jews.
+    
+    
+    Contrast 5
+    Interaction
+    H0:1αβAsian,unfairness+−1αβJew,unfairness+−1αβAsian,antifamily+1αβJew,antifamily=0
+    t-crit: t*=5−16−1F5−16−1,725,α=.05=20*1.5851=5.6305
+    Non-Hispanic, Non-Jewish White people rate Asians more negatively than Jews on both “unfairness” and “antifamilyness” as seen above. For “unfairness”, Asians are rated more negatively by .16 points, and for “antifamilyness”, Asians are rated more negatively by .15 points, and the difference between these two effects is not significant.
+    
+    
+    
+    
+    Problem 6
+    
+    Problem 6a
+    em6.damage
+    ##  damagef emmean    SE df lower.CL upper.CL##  Left      6.17 0.254 15     5.62     6.71##  Right     7.61 0.254 15     7.07     8.15##  Control   8.67 0.254 15     8.12     9.21## ## Results are averaged over the levels of: stimuli ## Confidence level used: 0.95
+    em6.stimuli
+    ##  stimuli emmean    SE df lower.CL upper.CL##  digits    8.06 0.218 15     7.59     8.52##  letters   7.28 0.259 15     6.72     7.83##  mixed     7.11 0.251 15     6.58     7.65## ## Results are averaged over the levels of: damagef ## Confidence level used: 0.95
+    em6.cell
+    ##  damagef stimuli emmean    SE df lower.CL upper.CL##  Left    digits    7.00 0.378 15     6.20     7.80##  Right   digits    8.17 0.378 15     7.36     8.97##  Control digits    9.00 0.378 15     8.20     9.80##  Left    letters   5.67 0.449 15     4.71     6.62##  Right   letters   7.50 0.449 15     6.54     8.46##  Control letters   8.67 0.449 15     7.71     9.62##  Left    mixed     5.83 0.435 15     4.91     6.76##  Right   mixed     7.17 0.435 15     6.24     8.09##  Control mixed     8.33 0.435 15     7.41     9.26## ## Confidence level used: 0.95
+    αright=7.61−7.48=+.13
+    βmixed=7.11−7.48=−.37
+    αβright,mixed=7.17−7.61−7.11+7.48=−.07
+    
+    
+    Problem 6b
+    a<-data.frame(Source=c("Damage group","Error","Stimuli","Error", "Damage*stimuli","Error"),              SS=c(57,17.4,9,30.6,2,30.6),              df=c(2,15,2,30,4,30),              MS=c(28.5,1.2,4.5,1.02,.5,1.02),              Fstat=c(23.8,"N/A",4.4,"N/A",.5,"N/A"),              Fcrit=c(NA,"N/A",NA,"N/A",NA,"N/A"),              p=c(NA,"N/A",NA,"N/A",NA,"N/A"))fa<-flextable(a)fa<-set_caption(fa,                caption="ANOVA table with filled-in cells")fa<-width(fa,width=1.00)fa<- border(fa, border.top = fp_border(color = "orange"))fa
+    ANOVA table with filled-in cells
+    header1Source
+SS
+df
+MS
+Fstat
+Fcrit
+p
+body1Damage group
+57.0
+2
+28.50
+23.8
+body2Error
+17.4
+15
+1.20
+N/A
+N/A
+N/A
+body3Stimuli
+9.0
+2
+4.50
+4.4
+body4Error
+30.6
+30
+1.02
+N/A
+N/A
+N/A
+body5Damage*stimuli
+2.0
+4
+0.50
+0.5
+body6Error
+30.6
+30
+1.02
+N/A
+N/A
+N/A
+    
+    
+    Problem 6c
+    
+    Contrast 1
+    Main effect of damage (between-subject factor)
+    H0:−2αleft+1αright+1αcontrol
+    t-crit: t*=3−1F3−1,15,α=.05=2*3.682=2.71
+    Subjects with left-brain damage recalled significantly fewer characters than a combined group consisting of subjects with right-brain damage and control subjects.
+    
+    
+    Contrast 2
+    Main effect of stimuli (within-subject factor)
+    H0:−1βdigits+0βletters+1βmixed=0
+    t-crit: t*=3−1F3−1,15,α=.05=2*3.682=2.71
+    Subjects recalled significantly more characters when the stimuli was digits only, as opposed to a mixture of digits and strings.
+    
+    
+    Contrast 3
+    Simple effect of damage by stimuli
+    H0:−2αβleft,digits+1αβright,digits+1αβcontrol,digits=0
+    t-crit: t*=3−1F3−1,15,α=.05/3=2*5.446=3.3003
+    When digits are the stimuli, subjects with left-brain damage recalled significantly fewer characters than a combined group of right-brain damaged subjects and control subjects.
+    
+    
+    Contrast 4
+    Simple effect of damage by stimuli
+    H0:−2αβleft,mixed+1αβright,mixed+1αβcontrol,mixed=0
+    t-crit: t*=3−1F3−1,15,α=.05/3=2*5.446=3.3003
+    When mixed characters are the stimuli, subjects with left-brain damage recalled significantly fewer characters than a combined group of right-brain damaged subjects and control subjects.
+    
+    
+    Contrast 5
+    Interaction
+    H0:−2αβleft,digits+1αβright,digits+1αβcontrol,digits++2αβleft,mixed+−1αβright,mixed+−1αβcontrol,mixed=0
+    t-crit: t*=3−13−1F3−13−1,15,α=.05=4*3.056=3.4963
+    Regardless if the stimuli is pure digits or mixed characters, left-brain damaged subjects did worse than a combined group of right-brain damaged subjects and control subjects. The effect is slightly larger for mixed characters (MDIF=1.9 characters) than for digits (MDIF=1.6 characters), but the difference between these effects is not significant.
+    
+    
+    
+    
+    
+    
+    END END END END END END END END END END

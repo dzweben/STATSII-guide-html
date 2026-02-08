@@ -1,0 +1,660 @@
+Lecture Notes 10: Repeated-Measures ANOVA (aka Within-Subjects ANOVA)
+    
+    
+      
+        
+      
+      Josh Klugman
+    
+    
+    Advantages and Disadvantages of Repeated-Measures Designs
+    Advantages
+    Economical–you get multiple data points per subjects
+    Power–differences between individuals are removed from the residual variation term
+    Disadvantages
+    Order effects
+    Differential carryover–effect of doing treatment A first and treatment B second is different than doing treatment B first and treatment A second
+    
+    
+    Examples of Repeated Measures Designs
+    
+    Each Subject is observed in a different treatment condition
+    Correll (2007) had subjects play a video game where they were supposed to “shoot” armed targets and hit a “no shoot” button for unarmed targets. They varied the “targets” so that subjects were faced with an armed black male; an unarmed black male; an armed white male; and an unarmed white male. The researchers measured how fast the subject took to make the correct decision (to shoot or not).
+    
+    
+    Each subject’s score is observed on a different measure
+    Example: Elias (2007) surveyed college students asking them how appropriate is it for professors to use varying bases of social power (soft power, harsh power, informational power, expert power) in the classroom. He asked subjects to rate, on a scale of 1-7 (1=highly inappropriate; 4=neutral; 7=appropriate) the appropriateness of professors saying certain things to get students to comply with a request.(you should only use an ANOVA for this situation when all of the variables are scaled the same)
+    Note this requires comparability among the different measures. This probably would not work with comparing ability scores across different subjects that are derived from item response theory.
+    
+    
+    Each subject is measured at differnt time points
+    Example: Haight et al (1999) tracked the amount of time children spent engaging in spontaneous pretend play at ages 30, 36, and 48 months.
+    
+    
+    
+    Illustration
+    We are interested in seeing if there are differences between how testing companies evaluate written essays. We get 8 students to write an essay and ask four different testing companies to score the essays.
+    We have 8 subjects, and 4 observations (or “periods”) for each subject. We have a total of 32 “person-periods” or “person-observations”.
+    
+    Mean Across All person-Periods = 63.9375
+    tdf<-data.frame(student=c("Renee","Harvey","Skeeter","Sven","Kerry","Kermit","Roy","Patrick"),              act=c(62,63,65,68,69,71,78,75),              cb=c(58,60,61,64,65,67,66,73),              ets=c(63,68,72,58,54,65,67,75),              tp=c(64,65,65,61,59,50,50,45))tdf
+    ##   student act cb ets tp## 1   Renee  62 58  63 64## 2  Harvey  63 60  68 65## 3 Skeeter  65 61  72 65## 4    Sven  68 64  58 61## 5   Kerry  69 65  54 59## 6  Kermit  71 67  65 50## 7     Roy  78 66  67 50## 8 Patrick  75 73  75 45
+    The data frame, tdf, is in a conventional format we are used to: one line per person, with the different test scores represented as separate variables. This is person-level data, and sometimes called wide data because the different measures extend the data frame horizontally.
+    For various reasons, we will also need to work a different version of this data frame, called person-measure, or person-period, or long. We will use dplyr::pivot_longer to create a “reshaped”, long version of the data.
+    tl<-pivot_longer(tdf,cols=c("act","cb","ets","tp"),                 names_to="company",                 values_to="score")tl
+    ## # A tibble: 32 × 3##    student company score##    <chr>   <chr>   <dbl>##  1 Renee   act        62##  2 Renee   cb         58##  3 Renee   ets        63##  4 Renee   tp         64##  5 Harvey  act        63##  6 Harvey  cb         60##  7 Harvey  ets        68##  8 Harvey  tp         65##  9 Skeeter act        65## 10 Skeeter cb         61## # ℹ 22 more rows
+    Now we have four lines per person, with each test measure represented by a single variable, score. We keep track of the different measures by using the company variable.
+    Before proceeding, let us create a factor version of company:
+    tl$companyf<-factor(tl$company,                    levels=c("act","cb","ets","tp"),                    labels=c("ACT","College \n Board", "ETS", "Thompson \n Prometric"))table(tl$companyf,tl$company)
+    ##                        ##                         act cb ets tp##   ACT                     8  0   0  0##   College \n Board        0  8   0  0##   ETS                     0  0   8  0##   Thompson \n Prometric   0  0   0  8
+    
+    Confidence Intervals
+    If you want to present confidence intervals for the condition means, the recommendation is to use Cousineau-Morey confidence intervals (Baguley 2012).
+    Recall the traditional formula for a confidence interval:
+    Estimate ± Margin of Error = Estimate ± (standard error*critical value)
+    When we calculate confidence intervals for means (dropping the homoscedasticity assumption), this simplifies to:
+    Yj±sjnjtn−1*
+    For within-subject designs, we will change this to:
+    Yj±aa−1sj,demeanedntn−1*
+    (where j now indexes condition, not sample; note that I have deliberately omitted the j subscript from n because now we have one sample)
+    Our standard error will use the standard deviation of the “person-centered” version of the scores, where the person mean is subtracted from each person’s scores. This strips out between-person variation while leaving within-person (between-group) variation intact. This person-centering results in a downwardly biased standard error, which we will offset by using the “Morey correction” of a/a−1.
+    
+    
+    To automate the construction of these confidence intervals, Thom Baguley produced code that should help.
+    We first need to create a wide dataframe with just the measures (no subject IDs).
+    tss<-subset(tdf,select=c(act,cb,ets,tp))
+    Then I use Baguley’s cm.ci function to produce the confidence intervals on this dataframe, and I coerce the results into a group-level dataframe with just the confidence intervals.
+    cm<-as.data.frame(cm.ci(data.frame=tss,      conf.level=.95,      difference=FALSE))cm$company<-rownames(cm)cm
+    ##           lower       upper company## act 64.07112622 73.67887378     act## cb  60.34412842 68.15587158      cb## ets 60.14712440 70.35287560     ets## tp  48.70335165 66.04664835      tp
+    I go to the long dataframe and use dplyr::summarize to create another group-level dataframe with mean values.
+    tl<-group_by(tl,company,companyf)tls<-summarize(tl,M=mean(score,na.rm=TRUE))
+    ## `summarise()` has grouped output by 'company'. You can override using the## `.groups` argument.
+    tls
+    ## # A tibble: 4 × 3## # Groups:   company [4]##   company companyf                    M##   <chr>   <fct>                   <dbl>## 1 act     "ACT"                    68.9## 2 cb      "College \n Board"       64.2## 3 ets     "ETS"                    65.2## 4 tp      "Thompson \n Prometric"  57.4
+    I use cbind to bind the columns of these two dataframes (using cbind is very risky–you need to make sure the rows are in the same order in both datasets!)
+    grafdata<-merge(tls,cm,by="company")grafdata
+    ##   company              companyf      M       lower       upper## 1     act                   ACT 68.875 64.07112622 73.67887378## 2      cb      College \n Board 64.250 60.34412842 68.15587158## 3     ets                   ETS 65.250 60.14712440 70.35287560## 4      tp Thompson \n Prometric 57.375 48.70335165 66.04664835
+    Then I can graph the means and their error bars. The convention in psychology is to use line-graphs to present within-subject results. Because company or companyf are character/factor variables, this will cause ggplot some issues unless I declare there is only one group in the aesthetics argument.
+    ggplot(data=grafdata,aes(x=companyf,y=M,group=1))+  geom_line()+  geom_point()+  geom_errorbar(aes(ymin=lower,ymax=upper),width=.1)+  scale_y_continuous(limit=c(0,80))+  labs(title="Score By Test Company",subtitle="Fictitious data",       y="Mean points",x="",caption="Error bars represent 95% Cousinea-Morey Confidence intervals.")
+    
+    
+    Farewell to Cummings & Finch
+    Recall when we first covered confidence intervals that one could use them to approximate null hypothesis significance tests of equal population means. We used the Cummings and Finch rule that an overlap of half the margin of error or less indicates you can reject the hypothesis of equal population means.
+    
+    This rule no longer applies to confidence intervals for means for within-subject conditions. Baguley proposes yet another correction to the Cousineau-Morey confidence interval (multiply the margin of error by 2/2=.71 and following a strict overlap/no overlap rule, but in this example data we are using there are contradictions between the results of contrasts and this “Cousineau-Morey confidence interval for a difference” so I will not pursue this in these notes.
+    
+    
+    
+    
+    General Linear Model for a Repeated-Measures ANOVA
+    Yij=Y+αj+πi+eij
+    i indexes subject
+    j indexes condition
+    αj is the effect of being in level j of the factor (what we are interested in)
+    αj=Yj−Y
+    πi is the effect of being subject i (we are not interested in this effect)
+    πi=Yi−Y
+    ei is the effect of being in level j for subject i (we are not interested in this effect)
+    eij=Yij−Yj−Yi+Y
+    The null hypothesis for the repeated measures ANOVA in this instance is:
+    H0:αACT=αCB=αETS=αTP
+    
+    Sources of Variation in a Repeated-Measures ANOVA
+    
+    n = number of subjects a = number of levels in Factor A (observations) N = number of person-periods (N=n×a)
+    We have two factors in the model: the repeated measure (a fixed factor), and the subject (a random factor). The interaction between subjects and the fixed factor is actually our residual term.
+    
+    Model Sums of Squares
+    
+    
+    
+    R reports the model sums of squares is 554.125.
+    SSModel=j​nYj−Y2
+    
+    
+    Subject Sums of Squares
+    
+    
+    
+    SSsubject=i​aYi−Y2
+    Most statistical packages (afex::aov_car and SPSS included) do not report the subject sum of squares, because it is not inherently of interest (some measures of effect size require you to calculate it, but we will not worry about them). You can figure out the subject sums of squares in a person-level dataset by calculating the variance of the subject means, and multiply the variance by an−1 (the number of levels × number of subjects minus 1).
+    SSsubject=an−1ssubjectmeans2
+    tdf$pmean<-(tdf$act+tdf$cb+tdf$ets+tdf$tp)/4varsubmeans<-var(tdf$pmean)varsubmeans
+    ## [1] 3.691964286
+    n.subjects<-nrow(tdf)a.conditions<-4SSsub<-a.conditions*(n.subjects-1)*varsubmeans SSsub
+    ## [1] 103.375
+    
+    
+    Residual Sum of Squares
+    
+    
+    
+    
+    Residual sums of squares according to R: 1048.375
+    SSresidual=injaYij−Yj−Yi+Y2
+    
+    
+    
+    
+    Repeated-Measures ANOVA in R
+    We need to use our “long” or “person-period” level dataframe.
+    Note that for our error term, you have to specify the subject ID first, followed by a forward slash, followed by the within-subject factor. If you list the error term the other way for some reason aov_car will just do an omnibus F test for the subject factor, which we do not want.
+    m1<-aov_car(score~company+Error(student/company),data=tl)summary(m1)
+    ## ## Univariate Type III Repeated-Measures ANOVA Assuming Sphericity## ##                 Sum Sq num Df Error SS den Df    F value             Pr(>F)    ## (Intercept) 130816.125      1  103.375      7 8858.16566 0.0000000000040272 ***## company        554.125      3 1048.375     21    3.69989           0.027846 *  ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ## ## Mauchly Tests for Sphericity## ##         Test statistic     p-value## company      0.1310624 0.043056764## ## ## Greenhouse-Geisser and Huynh-Feldt Corrections##  for Departure from Sphericity## ##            GG eps Pr(>F[GG])  ## company 0.5576185   0.062879 .## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ##               HF eps    Pr(>F[HF])## company 0.7122542578 0.04712855991
+    #m1$Anova
+    ## Do NOT DO THIS (list the WS factor first in the error term followed by subject ID)!m2<-aov_car(score~company+Error(company/student),data=tl)summary(m2)#m2$Anova
+    When you assume sphericity, the F-statistic is the ratio of the model mean square divided by the residual mean square.
+    Model sum of squares: 554.125.
+    Model degrees of freedom: a–1=4−1=3
+    Model mean square: 554.125/3=184.708
+    Residual sum of squares: 1048.375
+    Residual degrees of freedom: a−1n−1=4−18−1=21
+    Residual mean square: 1048.375/21=49.923
+    F3,21=554.125/31048.375/21=184.70849.923=3.70
+    Write-Up: Company does not have a significant effect on students’ score according to a repeated-measures ANOVA, F(1.67,11.71)=3.70, p=0.06.
+    
+    
+    Assumptions of Repeated-Measures ANOVA
+    The old assumptions:
+    Random sampling
+    Cases are independently sampled
+    The dependent variable is normally distributed within each level
+    Doing graphical exploratory data analysis on the subject-level dataframe:
+    eda.uni(tdf$act)
+    
+    eda.uni(tdf$cb)
+    
+    eda.uni(tdf$ets)
+    
+    eda.uni(tdf$tp)
+    
+    stat.desc(tdf,norm=T)
+    ##            student             act              cb            ets## nbr.val         NA   8.00000000000   8.00000000000   8.0000000000## nbr.null        NA   0.00000000000   0.00000000000   0.0000000000## nbr.na          NA   0.00000000000   0.00000000000   0.0000000000## min             NA  62.00000000000  58.00000000000  54.0000000000## max             NA  78.00000000000  73.00000000000  75.0000000000## range           NA  16.00000000000  15.00000000000  21.0000000000## sum             NA 551.00000000000 514.00000000000 522.0000000000## median          NA  68.50000000000  64.50000000000  66.0000000000## mean            NA  68.87500000000  64.25000000000  65.2500000000## SE.mean         NA   1.99497135676   1.66636902104   2.4476665272## CI.mean         NA   4.71735765142   3.94033659926   5.7878116301## var             NA  31.83928571429  22.21428571429  47.9285714286## std.dev         NA   5.64263109855   4.71320333895   6.9230463980## coef.var        NA   0.08192567838   0.07335725041   0.1061003279## skewness        NA   0.28706991699   0.40741230618  -0.2093619514## skew.2SE        NA   0.19084521340   0.27084930852  -0.1391846513## kurtosis        NA  -1.51880178469  -1.00080692792  -1.3683078548## kurt.2SE        NA  -0.51280363481  -0.33790942015  -0.4619913201## normtest.W      NA   0.95428271368   0.96063588928   0.9789698460## normtest.p      NA   0.75422086636   0.81613554207   0.9576276453##                        tp           pmean## nbr.val      8.0000000000   8.00000000000## nbr.null     0.0000000000   0.00000000000## nbr.na       0.0000000000   0.00000000000## min         45.0000000000  61.75000000000## max         65.0000000000  67.00000000000## range       20.0000000000   5.25000000000## sum        459.0000000000 511.50000000000## median      60.0000000000  63.62500000000## mean        57.3750000000  63.93750000000## SE.mean      2.7962826089   0.67933462720## CI.mean      6.6121576712   1.60637113443## var         62.5535714286   3.69196428571## std.dev      7.9090815793   1.92144848635## coef.var     0.1378489164   0.03005198024## skewness    -0.3709088092   0.24675898255## skew.2SE    -0.2465816397   0.16404634514## kurtosis    -1.7785609803  -1.62688476710## kurt.2SE    -0.6005079429  -0.54929644566## normtest.W   0.8604243919   0.93737477785## normtest.p   0.1212496235   0.58544918228
+    Doing same analyses on long dataframe:
+    eda.uni(tl$score[tl$company=="act"])
+    
+    eda.uni(tl$score[tl$company=="cb"])
+    
+    eda.uni(tl$score[tl$company=="ets"])
+    
+    eda.uni(tl$score[tl$company=="tp"])
+    
+    tapply(tl$score,tl$company,stat.desc,norm=TRUE)
+    ## $act##         nbr.val        nbr.null          nbr.na             min             max ##   8.00000000000   0.00000000000   0.00000000000  62.00000000000  78.00000000000 ##           range             sum          median            mean         SE.mean ##  16.00000000000 551.00000000000  68.50000000000  68.87500000000   1.99497135676 ##    CI.mean.0.95             var         std.dev        coef.var        skewness ##   4.71735765142  31.83928571429   5.64263109855   0.08192567838   0.28706991699 ##        skew.2SE        kurtosis        kurt.2SE      normtest.W      normtest.p ##   0.19084521340  -1.51880178469  -0.51280363481   0.95428271368   0.75422086636 ## ## $cb##         nbr.val        nbr.null          nbr.na             min             max ##   8.00000000000   0.00000000000   0.00000000000  58.00000000000  73.00000000000 ##           range             sum          median            mean         SE.mean ##  15.00000000000 514.00000000000  64.50000000000  64.25000000000   1.66636902104 ##    CI.mean.0.95             var         std.dev        coef.var        skewness ##   3.94033659926  22.21428571429   4.71320333895   0.07335725041   0.40741230618 ##        skew.2SE        kurtosis        kurt.2SE      normtest.W      normtest.p ##   0.27084930852  -1.00080692792  -0.33790942015   0.96063588928   0.81613554207 ## ## $ets##        nbr.val       nbr.null         nbr.na            min            max ##   8.0000000000   0.0000000000   0.0000000000  54.0000000000  75.0000000000 ##          range            sum         median           mean        SE.mean ##  21.0000000000 522.0000000000  66.0000000000  65.2500000000   2.4476665272 ##   CI.mean.0.95            var        std.dev       coef.var       skewness ##   5.7878116301  47.9285714286   6.9230463980   0.1061003279  -0.2093619514 ##       skew.2SE       kurtosis       kurt.2SE     normtest.W     normtest.p ##  -0.1391846513  -1.3683078548  -0.4619913201   0.9789698460   0.9576276453 ## ## $tp##        nbr.val       nbr.null         nbr.na            min            max ##   8.0000000000   0.0000000000   0.0000000000  45.0000000000  65.0000000000 ##          range            sum         median           mean        SE.mean ##  20.0000000000 459.0000000000  60.0000000000  57.3750000000   2.7962826089 ##   CI.mean.0.95            var        std.dev       coef.var       skewness ##   6.6121576712  62.5535714286   7.9090815793   0.1378489164  -0.3709088092 ##       skew.2SE       kurtosis       kurt.2SE     normtest.W     normtest.p ##  -0.2465816397  -1.7785609803  -0.6005079429   0.8604243919   0.1212496235
+    A new assumption: Compound symmetry/sphericity
+    Sphericity: A somewhat less restrictive assumption than compound symmetry, but it is somewhat difficult to test.
+    Sphericity is when the variances for all possible difference scores are equal to one another.
+     As you can tell here, we are not doing a great job fulfilling this assumption.
+    Sphericity is a sufficient and necessary requirement to meet the assumptions of a repeated-measures ANOVA.
+    Compound symmetry: A more restrictive assumption than sphericity. It holds that the variances for each level of the factor are the same, and that the correlations (or covariances) between factors are the same. This is a little bit easier to test for. Compound symmetry, a type of sphericity, is a sufficient but not necessary requirement to meet the assumptions of a repeated-measures ANOVA.
+    It is only in special circumstances when sphericity is satisfied but not compound symmetry. 
+    
+    A correlation is a measure of association between two continuous variables. It ranges from -1 (a perfect negative association) to 1 (a perfect positive association). Covariances are unstandardized correlations ranging from −∞ to +∞. The covariance of a variable with itself is just its variance. We will get a variance/covariance matrix from R to check out compound symmetry.
+    A covariance between two variables is denoted with σxx, where xx represent the two different variables that covary. Example: σ12 represents the covariance between variables 1 & 2 (note = this is the same as σ21 )
+    The variance of one variable is denoted with σX2 .
+    tss
+    ##   act cb ets tp## 1  62 58  63 64## 2  63 60  68 65## 3  65 61  72 65## 4  68 64  58 61## 5  69 65  54 59## 6  71 67  65 50## 7  78 66  67 50## 8  75 73  75 45
+    cov(tss)
+    ##               act            cb           ets           tp## act  31.839285714  22.321428571   7.607142857 -40.23214286## cb   22.321428571  22.214285714   8.785714286 -34.25000000## ets   7.607142857   8.785714286  47.928571429 -16.96428571## tp  -40.232142857 -34.250000000 -16.964285714  62.55357143
+    As you can tell, we are doing a horrible job of fulfilling the assumption of compound symmetry.
+    Maxwell & Delaney argue that analysts should take it for granted that the sphericity assumption is not fulfilled. So rather than using the unadjusted F-test, a researcher should probably either make adjustments to the repeated-measures ANOVA or go with another technique, such as MANOVA (multivariate analysis of variance, which we will not cover.
+    
+    
+    Adjusted Repeated-Measures ANOVA
+    In 1954, George E. P. Box hypothesized that an analyst could adjust the degrees of freedom for a repeated-measures ANOVA if he/she knew ε, a parameter that ranges from 0 (massive violations of sphericity) to 1 (the data perfectly meet sphericity). Unfortunately, this was only a hypothetical parameter and Box left it to other statisticians to figure out ε.
+    afex::aov_car gives us two different ε’s: the Greenouse-Geisser and Huynh-Feldt estimates.
+    summary(m1)
+    ## ## Univariate Type III Repeated-Measures ANOVA Assuming Sphericity## ##                 Sum Sq num Df Error SS den Df    F value             Pr(>F)    ## (Intercept) 130816.125      1  103.375      7 8858.16566 0.0000000000040272 ***## company        554.125      3 1048.375     21    3.69989           0.027846 *  ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ## ## Mauchly Tests for Sphericity## ##         Test statistic     p-value## company      0.1310624 0.043056764## ## ## Greenhouse-Geisser and Huynh-Feldt Corrections##  for Departure from Sphericity## ##            GG eps Pr(>F[GG])  ## company 0.5576185   0.062879 .## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ##               HF eps    Pr(>F[HF])## company 0.7122542578 0.04712855991
+    For both of these adjustments, the model and residual degrees of freedom are multiplied by ε . The ratio between the model mean square and residual mean-square remains the same, so the F statistic is unaffected. The ε adjustment affects critical values and p-values (because by adjusting the degrees of freedom, you are using a different F distribution).
+    R basically just reports the p value for the adjusted F test next to the ε estimate.
+    In this example, we would write-up the unadjusted F test this way:
+    A repeated-measure ANOVA shows significant differences in subject test scores across the companies, F(3,21)=3.70,p=.03
+    If we used the Greenhouse-Geisser adjustment:
+    # numerator df.5576185*3 
+    ## [1] 1.6728555
+    # denominator df.5576185*21
+    ## [1] 11.7099885
+    A repeated-measure ANOVA (using the Greenhouse-Geiser adjustment) shows significant differences in subject test scores across the comapnies,F(1.7,11.7)=3.70, p=.047.
+    Greenhouse-Geisser & Huyn-Feldt developed complex formulas to calculate ε . Greenhouse-Geisser’s adjustment is denoted as ε and Huyn-Feldt’s adjustment is denoted as ε . ε is more conservative than ε (which does slightly increase the probability of committing Type I error), and the conventional wisdom is to go with ε . The guidelines I have heard is that values of ε at or above .7 and below 1 indicate modest to moderate violations of sphericity and you should use the ε-corrected results. Values below .7 indicate severe violations and you should consider using MANOVA.
+    
+    
+    Effect Sizes for the Omnibus Test in Repeated-Measures ANOVA
+    
+    Omega Squared
+    It is possible to calculate Omega squared for omnibus tests for repeated-measures designs.
+    Here is the formula according to Maxwell and Delaney:
+    ω2=a−1MSA−MSA×SSSTOTAL+MSS
+    Unfortunately, this formula only works for the omnibus test, not for contrasts. The analyst wishing to use this measure for omnibus tests is forced to manually calculate MSS and SSTOTAL. We will not be using it in this class.
+    
+    
+    Eta Squared Partial
+    ηpartial2=SSeffectSSeffect+SSErrorTermForEffect
+    For the effect of test company:
+    ηpartial,company2=554.125554.125+1048.375=554.1251602.5=.35
+    I do not see the eta-squared effect sizes used for contrasts, and I am not sure how they would be calculated (e.g. it is not clear to me if one uses the error sums of squares for the contrast, or the error sums of squares from the omnibus test). I would not use eta-squared partial for contrasts.
+    Eta squared partial is usually reported as ηP2.
+    
+    
+    Generalized Eta Squared
+    Some researchers prefer to report “generalized eta square” where the denominator includes the sums of squares of the focal effect, the subject sums of squares, and all error sums of squares (it removes the sums of squares of other “allowed-for” effects). For a single-factor repeated measures ANOVA, this is equivalent to regular eta squared.
+    ηgeneralized2=SSeffectSSeffect+SSErrorTermForEffect+SSSubject
+    ηgeneralized,company2=554.125554.125+1048.375+103.375=554.1251705.875=.32
+    Eta squared generalized is usually reported as ηG2.
+    
+    
+    
+    Contrasts for Repeated-Measures ANOVAs
+    The logic of contrasts for repeated-measures ANOVAs works exactly the same was as before, with one major difference: we cannot use the residual mean square to calculate the F-statistic, because of issues having to do with sphericity. Essentially, we have to use a contrast-specific residual mean square to calculate contrasts. This is analogous to the situation we ran into before when we were calculating contrasts for ANOVAs with heterogeneous variances.
+    F1,n−1=ψ2MSresidual,contrast−specificj​cj2/n
+    tn−1=ψMSresidual,contrast−specificj​cj2/n
+    We will not worry about calculating the contrast-specific residual mean square by hand; we will have R do it for us.
+    
+    Planned and Post-Hoc Tests
+    Bonferroni: F1,n−1,α=.05/C*=tn−1,α=.05/C*
+    Tukey: qa,n−1,α=.052
+    Scheffe: a−1Fa−1,n−1,α=.05*
+    Note that for all adjustments the degrees of freedom are n−1. In this example, that would be 8 – 1 = 7. IT IS NOT N−1 (32-1 = 31).
+    
+    
+    Cohen’s d
+    When we learned Cohen’s d for a dependent samples t-test, we standardized the difference using the standard deviation of the difference score. This is one of three proposed variants of Cohen’s d that Lakens (2013; dx.doi.org/10.3389/fpsyg.2013.00863) labels dz. He does not seem to like it (preferring dav and ​drm), but my sense is it is commonly used in the literatures and it is fairly easy to calculate.
+    
+    
+    Pairwise Tests
+    We can use emmeans to conduct contrasts as we have been doing with between-subject ANOVA:
+    e1<-emmeans::emmeans(m1,~company)e1
+    ##  company emmean          SE df    lower.CL    upper.CL##  act     68.875 1.994971357  7 64.15764235 73.59235765##  cb      64.250 1.666369021  7 60.30966340 68.19033660##  ets     65.250 2.447666527  7 59.46218837 71.03781163##  tp      57.375 2.796282609  7 50.76284233 63.98715767## ## Confidence level used: 0.95
+    # getting pair-wise contrastspairs(e1,adjust="none")
+    ##  contrast  estimate          SE df t.ratio p.value##  act - cb     4.625 1.084591760  7   4.264  0.0037##  act - ets    3.625 2.840633103  7   1.276  0.2426##  act - tp    11.500 4.675162335  7   2.460  0.0435##  cb - ets    -1.000 2.563479778  7  -0.390  0.7081##  cb - tp      6.875 4.377040341  7   1.571  0.1602##  ets - tp     7.875 4.248686772  7   1.854  0.1062
+    # with tukey adjustmentpairs(e1,adjust="tukey")
+    ##  contrast  estimate          SE df t.ratio p.value##  act - cb     4.625 1.084591760  7   4.264  0.0153##  act - ets    3.625 2.840633103  7   1.276  0.6039##  act - tp    11.500 4.675162335  7   2.460  0.1521##  cb - ets    -1.000 2.563479778  7  -0.390  0.9783##  cb - tp      6.875 4.377040341  7   1.571  0.4502##  ets - tp     7.875 4.248686772  7   1.854  0.3263## ## P value adjustment: tukey method for comparing a family of 4 estimates
+    # tukey critqtukey(.95,4,7)/sqrt(2)
+    ## [1] 3.310161651
+    Doing contrasts in a repeated-measures ANOVA is the same thing as doing a dependent-sample t-test, although using emmeans is more convenient to apply the Tukey adjustment!
+    tdf$act.v.cb<-tdf$act-tdf$cb tdf$act.v.ets<-tdf$act-tdf$etstdf$act.v.tp<-tdf$act-tdf$tptdf$ets.v.cb<-tdf$ets-tdf$cb tdf$ets.v.tp<-tdf$ets-tdf$tp tdf$cb.v.tp<-tdf$cb-tdf$tp t.test(tdf$act.v.cb,mu=0)
+    ## ##  One Sample t-test## ## data:  tdf$act.v.cb## t = 4.2642773, df = 7, p-value = 0.003726875## alternative hypothesis: true mean is not equal to 0## 95 percent confidence interval:##  2.060348021 7.189651979## sample estimates:## mean of x ##     4.625
+    t.test(tdf$act.v.ets,mu=0)
+    ## ##  One Sample t-test## ## data:  tdf$act.v.ets## t = 1.276124, df = 7, p-value = 0.2426193## alternative hypothesis: true mean is not equal to 0## 95 percent confidence interval:##  -3.092029926 10.342029926## sample estimates:## mean of x ##     3.625
+    t.test(tdf$act.v.tp,mu=0)
+    ## ##  One Sample t-test## ## data:  tdf$act.v.tp## t = 2.4598076, df = 7, p-value = 0.04347758## alternative hypothesis: true mean is not equal to 0## 95 percent confidence interval:##   0.4449977629 22.5550022371## sample estimates:## mean of x ##      11.5
+    t.test(tdf$ets.v.cb,mu=0)
+    ## ##  One Sample t-test## ## data:  tdf$ets.v.cb## t = 0.39009475, df = 7, p-value = 0.7080646## alternative hypothesis: true mean is not equal to 0## 95 percent confidence interval:##  -5.061666451  7.061666451## sample estimates:## mean of x ##         1
+    t.test(tdf$ets.v.tp,mu=0)
+    ## ##  One Sample t-test## ## data:  tdf$ets.v.tp## t = 1.8535139, df = 7, p-value = 0.1062179## alternative hypothesis: true mean is not equal to 0## 95 percent confidence interval:##  -2.171547778 17.921547778## sample estimates:## mean of x ##     7.875
+    t.test(tdf$cb.v.tp,mu=0)
+    ## ##  One Sample t-test## ## data:  tdf$cb.v.tp## t = 1.5706961, df = 7, p-value = 0.1602461## alternative hypothesis: true mean is not equal to 0## 95 percent confidence interval:##  -3.475055739 17.225055739## sample estimates:## mean of x ##     6.875
+    We can use these difference scores to calculate Cohen’s dz:
+    act.v.cb.d<-mean(tdf$act.v.cb)/sd(tdf$act.v.cb)act.v.cb.d
+    ## [1] 1.507649691
+    act.v.ets.d<-mean(tdf$act.v.ets)/sd(tdf$act.v.ets)act.v.ets.d
+    ## [1] 0.4511779572
+    act.v.tp.d<-mean(tdf$act.v.tp)/sd(tdf$act.v.tp)act.v.tp.d 
+    ## [1] 0.8696733291
+    ets.v.cb.d<-mean(tdf$ets.v.cb)/sd(tdf$ets.v.cb)ets.v.cb.d 
+    ## [1] 0.1379193211
+    ets.v.tp.d<-mean(tdf$ets.v.tp)/sd(tdf$ets.v.tp)ets.v.tp.d 
+    ## [1] 0.6553161248
+    cb.v.tp.d<-mean(tdf$cb.v.tp)/sd(tdf$cb.v.tp)cb.v.tp.d 
+    ## [1] 0.5553249162
+    Example write-up: Although students scored higher on the ACT (M=68.88, SD=5.64) than the Thompson-Prometric test (M=57.38, SD=7.91), this difference was not significant according to Tukey’s honestly significant difference test, t(7)=2.46, Tukey-adjusted p=0.15, dz=0.87.
+    sd(tdf$act)
+    ## [1] 5.642631099
+    sd(tdf$tp)
+    ## [1] 7.909081579
+    
+    
+    Complex Contrasts
+    Note that I am not going to worry about the adjustment to calculate dz because the contrast coefficients occur in both the numerator of dz (the mean contrast value) and the denominator (the standard deviation).
+    # doing a complex contrastcontrast.tp.vs.else<-c(1,1,1,-3)contrast.act.vs.else<-c(3,-1,-1,-1)contrast.list<-list(contrast.tp.vs.else,contrast.act.vs.else)contrast(e1,contrast.list)
+    ##  contrast         estimate          SE df t.ratio p.value##  c(1, 1, 1, -3)      26.25 12.70369744  7   2.066  0.0776##  c(3, -1, -1, -1)    19.75  7.03752696  7   2.806  0.0263
+    # Scheffe crit value F3*qf(.95,3,7)
+    ## [1] 13.0404942
+    # Scheffe crit value tsqrt(3*qf(.95,3,7))
+    ## [1] 3.611162444
+    # Cohen's dtdf$tp.v.else<-1*tdf$act+1*tdf$cb+1*tdf$ets+-3*tdf$tptdf$act.v.else<-3*tdf$act+-1*tdf$cb+-1*tdf$ets+-1*tdf$tptp.v.else.d<-mean(tdf$tp.v.else)/sd(tdf$tp.v.else)tp.v.else.d
+    ## [1] 0.7305571114
+    act.v.else.d<-mean(tdf$act.v.else)/sd(tdf$act.v.else)act.v.else.d
+    ## [1] 0.9922064248
+    Example write-up: Post-hoc examination suggest subjects score highest on the ACT tests (M=68.88) than the other companies (Ms = 64.25,65.25,57.38), and they score the worst on the THompson-Prometric test (M = 57.38) than the other companies (Ms = 68.88, 64.25,65.25). However, Scheffe-adjusted complex contrasts found no significant differences between the ACT test and the others (dz=0.99), nor between the Thompson-Prometric test and the others (dz=0.73, both Scheffe-adjusted ps>0.05).
+    
+    
+    
+    Alternatives to Omnibus Test If Normality Is Questionable
+    
+    Repeated-Measures ANOVA for Trimmed Means
+    Let’s calculate difference scores for all possible pairs of testing companies, and calculate regular means and 20% trimmed means (recall that with 20% trimmed means, you order the values from lowest to highest and then exclude the bottom 20% (well, the bottom .2n rounded down to the closest integer) and exclude the top 20% (ditto). In this case, the trimmed means are based on the middle 6 cases.
+    
+    First consider the regular, untrimmed means. Look at the ACT-College Board difference. When we calculate the difference score, the average difference is 4.625 points (ACT scores the essays higher by 4.625 points than the College Board). We get the same result if we compare the regular means: 68.875-64.25=4.625.
+    Now consider the trimmed means. The trimmed mean of the ACT-College Board difference scores is 3.83. But if we compare the trimmed means of the ACT and College Board scores, we get 68.5-63.83 = 4.67.
+    In other words, when we use regular means, there is a necessary equivalence between the mean of the difference scores and the difference in the marginal means. When we use trimmed means, this is not necessarily the case; the trimmed mean of the difference scores (3.83) is not the same as the difference in the trimmed marginal means (68.5-63.83=4.67).
+    When you do omnibus tests and contrasts, you will have to choose between comparing trimmed means of difference scores or trimmed marginal means. Wilcox seems to favor the former rather than the latter (Wilcox, 2017, Modern Statistics for the Social and Behavioral Sciences, 2nd edition: 436), but this may not be possible doing omnibus tests for more complicated designs (factorial-repeated measures ANOVA and split-plot ANOVA).
+    If you test for the equality of trimmed means, your null hypothesis is that
+    H0:αt1=αt2=αt3=αt4
+    If you test the trimmed difference scores, the null hypothesis can only be expressed using matrix algebra, but the gist is that in the population the trimmed means of all possible difference scores are jointly equal to zero.
+    # use long data frametlist<-fac2list(tl$score,tl[c("company")])
+    ## [1] "Group Levels:"## [1] "1" "2" "3" "4"
+    # comparing trimmed meansrmanova(tlist)
+    ## $num.groups## [1] 4## ## $test## [1] 2.348733922## ## $df## [1] 1.994226484 9.971132418## ## $p.value## [1] 0.1460211102## ## $tmeans## [1] 68.50000000 63.83333333 65.50000000 58.16666667## ## $ehat## [1] 0.5322935## ## $etil## [1] 0.6647421612
+    # comparing trimmed differenc scoresrmdzero(tlist,est=tmean)
+    ## $p.value## [1] 0.0119760479## ## $center## [1]  3.833333333  3.500000000 10.666666667 -1.333333333  5.500000000## [6]  6.333333333
+    In this case, we get vastly different conclusions. If we compare trimmed means we get a p-value of .146, so we retain the null hypothesis. If we look at the trimmed means of difference scores we get a p-value of .012, so we reject the null hypothesis.
+    
+    
+    Friedman’s ANOVA
+    You would want to do a Friedman’s ANOVA if you were experiencing massive violations of the normality assumption. If your data was normally distributed but you were violating sphericity, you should probably opt for an adjusted repeated-measures ANOVA or go with MANOVA.
+    Friedman’s ANOVA is very similar in logic to the Kruskal-Wallis test.
+    Example: imagine we are testing how much subjects’ weight changes over time under a new dietary regimen.
+    
+    For each person, we need to rank their values, from lowest to highest.
+    
+    The null hypothesis is that each level has the same sum of ranks in the population (or, in other words, each level has the same median in the population).
+    Based on the sum of ranks, we calculate the Friedman test statistic, Fr, which has a chi-square distribution with a-1 degrees of freedom (although this is the case only when you have 10 or more subjects).
+    Fr=12naa+1j=1a​−3na+1
+    Fr=1210(34192+202+212−3104
+    Fr=.20
+    χ22=5.99
+    Our test statistic is .20; the critical value from a chi-square distribution with a-1 degrees of freedom is 5.99. We have to retain the null hypothesis.
+    To do this test in R, we must use data in long format. The friedman.test function is a base function.
+    w<-data.frame(subject=rep(seq(1,10),each=3),              timepoint=rep(c("Start","Month 1","Month 2"),by=3),              weight=c(63.75,65.38,81.34,                     62.98,66.24,69.31,                     65.98,67.70,77.89,                     107.27,102.72,91.33,                     66.58,69.45,72.87,                     120.46,119.96,114.26,                     62.01,66.09,68.01,                     71.87,73.62,55.43,                     83.01,75.81,71.63,                     76.62,67.66,68.60))w
+    ##    subject timepoint weight## 1        1     Start  63.75## 2        1   Month 1  65.38## 3        1   Month 2  81.34## 4        2     Start  62.98## 5        2   Month 1  66.24## 6        2   Month 2  69.31## 7        3     Start  65.98## 8        3   Month 1  67.70## 9        3   Month 2  77.89## 10       4     Start 107.27## 11       4   Month 1 102.72## 12       4   Month 2  91.33## 13       5     Start  66.58## 14       5   Month 1  69.45## 15       5   Month 2  72.87## 16       6     Start 120.46## 17       6   Month 1 119.96## 18       6   Month 2 114.26## 19       7     Start  62.01## 20       7   Month 1  66.09## 21       7   Month 2  68.01## 22       8     Start  71.87## 23       8   Month 1  73.62## 24       8   Month 2  55.43## 25       9     Start  83.01## 26       9   Month 1  75.81## 27       9   Month 2  71.63## 28      10     Start  76.62## 29      10   Month 1  67.66## 30      10   Month 2  68.60
+    friedman.test(y=w$weight,groups=w$timepoint,blocks=w$subject)
+    ## ##  Friedman rank sum test## ## data:  w$weight, w$timepoint and w$subject## Friedman chi-squared = 0.2, df = 2, p-value = 0.9048374
+    
+    
+    
+    Multi-Factor Repeated Measures ANOVA
+    In this section we will discuss ANOVAs with more than one repeated-measure.
+    
+    Illustration
+    A psychologist is interested in determining the extent to which interfering visual stimuli slow the ability to recognize letters. In the experiment, subjects are placed in front of a tachistoscope (which is like a slide projector that displays images at a rate set by the researcher). They are told they will see either the letter “T” or the letter “I” displayed on the screen. In some trials, the letter appears by itself, but in other trial, the target letter is embedded in a group of other letters. This is the first factor, noise. The other factor is where in the display the target letter appears. This angle factor has three levels. The target letter is either shown at the center of the screen ( off-center), off-center, or off-center. The dependent variable is reaction time (latency), measured in milliseconds (ms), required by a subject to identify the correct target letter.
+    
+    
+    Mean across all subjects and all observations = 569
+    Noise Absent Mean: 500
+    Noise Present Mean: 638
+    0 degree Mean: 477
+    4 degee mean: 585
+    8 degree mean: 645
+    Subject mean variance: 5410
+    ldf<-data.frame(subject=seq(1:10),              lat.na.0=c(420,420,480,420,540,360,480,480,540,480),              lat.na.4=c(420,480,480,540,660,420,480,600,600,420),              lat.na.8=c(480,480,540,540,540,360,600,660,540,540),              lat.np.0=c(480,360,660,480,480,360,540,540,480,540),              lat.np.4=c(600,480,780,780,660,480,720,720,720,660),              lat.np.8=c(780,600,780,900,720,540,840,900,780,780))              ldf
+    ##    subject lat.na.0 lat.na.4 lat.na.8 lat.np.0 lat.np.4 lat.np.8## 1        1      420      420      480      480      600      780## 2        2      420      480      480      360      480      600## 3        3      480      480      540      660      780      780## 4        4      420      540      540      480      780      900## 5        5      540      660      540      480      660      720## 6        6      360      420      360      360      480      540## 7        7      480      480      600      540      720      840## 8        8      480      600      660      540      720      900## 9        9      540      600      540      480      720      780## 10      10      480      420      540      540      660      780
+    lldf<-pivot_longer(ldf,cols=starts_with("lat"),                   names_to="condition",                   values_to="latency")lldf$noise<-NAlldf$noise<-ifelse(substr(lldf$condition,5,6)=="na","Noise Absent","Noise Present")table(lldf$condition,lldf$noise,exclude=NULL)
+    ##           ##            Noise Absent Noise Present##   lat.na.0           10             0##   lat.na.4           10             0##   lat.na.8           10             0##   lat.np.0            0            10##   lat.np.4            0            10##   lat.np.8            0            10
+    lldf$angle<-NAlldf$angle<-ifelse(substr(lldf$condition,8,8)=="0",0,lldf$angle)lldf$angle<-ifelse(substr(lldf$condition,8,8)=="4",4,lldf$angle)lldf$angle<-ifelse(substr(lldf$condition,8,8)=="8",8,lldf$angle)table(lldf$condition,lldf$angle,exclude=NULL)
+    ##           ##             0  4  8##   lat.na.0 10  0  0##   lat.na.4  0 10  0##   lat.na.8  0  0 10##   lat.np.0 10  0  0##   lat.np.4  0 10  0##   lat.np.8  0  0 10
+    Making Cousineau-Morey confidence intervals:
+    # using wide dataframe, just the measureslss<-subset(ldf,select=c(lat.na.0,lat.na.4,lat.na.8,lat.np.0,lat.np.4,lat.np.8))# getting CM CIscml<-as.data.frame(cm.ci(data.frame=lss,conf.level=.95,difference=FALSE))cml$condition<-rownames(cml)cml
+    ##                lower       upper condition## lat.na.0 423.4237529 500.5762471  lat.na.0## lat.na.4 453.0762861 566.9237139  lat.na.4## lat.na.8 501.5028094 554.4971906  lat.na.8## lat.np.0 449.3897012 534.6102988  lat.np.0## lat.np.4 622.0658434 697.9341566  lat.np.4## lat.np.8 713.9697632 810.0302368  lat.np.8
+    # getting meanslldf<-group_by(lldf,condition,noise,angle)lldfs<-summarize(lldf,M=mean(latency,na.rm=TRUE))
+    ## `summarise()` has grouped output by 'condition', 'noise'. You can override## using the `.groups` argument.
+    lldfs
+    ## # A tibble: 6 × 4## # Groups:   condition, noise [6]##   condition noise         angle     M##   <chr>     <chr>         <dbl> <dbl>## 1 lat.na.0  Noise Absent      0   462## 2 lat.na.4  Noise Absent      4   510## 3 lat.na.8  Noise Absent      8   528## 4 lat.np.0  Noise Present     0   492## 5 lat.np.4  Noise Present     4   660## 6 lat.np.8  Noise Present     8   762
+    # combining the twollc<-merge(lldfs,cml,by="condition")llc
+    ##   condition         noise angle   M       lower       upper## 1  lat.na.0  Noise Absent     0 462 423.4237529 500.5762471## 2  lat.na.4  Noise Absent     4 510 453.0762861 566.9237139## 3  lat.na.8  Noise Absent     8 528 501.5028094 554.4971906## 4  lat.np.0 Noise Present     0 492 449.3897012 534.6102988## 5  lat.np.4 Noise Present     4 660 622.0658434 697.9341566## 6  lat.np.8 Noise Present     8 762 713.9697632 810.0302368
+    # graphingggplot(data=llc,aes(x=noise,y=M,group=as.factor(angle),color=as.factor(angle)))+  geom_line()+  geom_point()+  geom_errorbar(aes(ymin=lower,ymax=upper),width=.1)+  labs(title="Latency By Letter Angle and Noise Conditions",subtitle="Fictitious data",color="Angle",group="Angle",       y="Mean latency (miliseconds)",x="",caption="Error bars represent 95% Cousineau-Morey Confidence intervals.")+  theme(legend.position="bottom")
+    
+    
+    
+    
+    General Linear Model, Sources of Variation, and ANOVA Table
+    
+    General Linear Model
+    Yijk=Y+αj+βk+πi+αβjk+απij+βπik+αβπijk
+    i indexes subject
+    j indexes level for Factor A
+    k indexes level for Factor B
+    αj is the effect of being in level j of Factor A
+    αj=Yj−Y
+    βk is the effect of being in level k of Factor B
+    βk=Yk−Y
+    πi is the effect of being subject i (we’re not interested in this effect)
+    πi=Yi−Y
+    αβjk is the effect of being in level j of Factor A and level k of Factor B
+    αβjk=Yjk−Yj−Yk+Y
+    απij is the effect of being subject i and being in level j of Factor A
+    απij=Yij−Yi−Yj+Y
+    βπik is the effect of being subject i and being in level k of Factor B
+    βπik=Yik−Yi−Yk+Y
+    αβπijk is the effect of being subject i in level j of Factor A and level k of Factor B
+    αβπijk=Yijk−Yij−Yik−Yjk+Yi+Yj+Yk−Y
+    
+    
+    Illustration
+    
+    Main Effect of Noise:
+    Predictions for Latency Based Only On Noise Factor:
+    
+    Sums of Squares Attributable to Noise Effect:
+    
+    Variation Caused By Noise:
+    
+    Sums of Squares:
+    SSA=bnj​Yj−Y2=310500−5692+638−5692=285660
+    
+    
+    Interaction Between Noise & Subject
+    Predictions for Latency Based Only on Noise × Subject Interaction:
+    
+    Variation Caused By Noise × Subject Interaction:
+    
+    
+    Sum of Squares for Noise × Subject Interaction
+    SSA×S=bj​i​Yij−Yi−Yj+Y2=76140
+    You can think of the Noise × Subject Interaction as the error or residual term for the Noise Main Effect. The interaction represents how much the noise effect differs across subjects.
+    The same logic applies to the Angle Main Effect and the Angle × Subject interaction.
+    
+    
+    Interaction Between Noise and Angle
+    Prediction For Latency Based on Noise × Angle Interaction
+    
+    Variation Caused By Noise × Angle
+    
+    
+    Sums of Squares for Noise × Angle Interaction
+    SSA×B=nj​k​Yjk−Yj−Yk+Y2=105120
+    
+    
+    The Noise × Angle × Subject interaction
+    SSA×B×S=k​j​i​Yijk−Yij−Yik−Yjk+Yi+Yj+Yk−Y2=20880
+    The A×B×S interaction represents how the A×B interaction varies across subjects. In other words, it is the error term for the A×B interaction.
+    
+    
+    Main Effect of Subject
+    (remember, this effect is not really of substantive interest)
+    Predictions Based on Subject Means Only
+    
+    Variation Caused By Subject
+    
+    
+    SSsubject=abi​Yi−Y2
+    Short-cut: SSsubject=abn−1ssubjectmeans2
+    ldf$smeans<-(ldf$lat.na.0+ldf$lat.na.4+ldf$lat.na.8+ldf$lat.np.0+ldf$lat.np.4+ldf$lat.np.8)/6varsub<-var(ldf$smeans)varsub
+    ## [1] 5410
+    SSsub<-3*2*9*varsubSSsub
+    ## [1] 292140
+    MSsub<-SSsub/9MSsub
+    ## [1] 32460
+    
+    
+    
+    Null hypotheses:
+    H0:αNA=αNP=0
+    H0:β0=β4=β8=0
+    H0:αβNA,0=αβNA,4=αβNA,8=αβNP,0=αβNP,4=αβNP,8
+    
+    
+    Sources of Variation in a Multi-Factor Repeated-Measures ANOVA
+    
+    
+    
+    ANOVA Table
+    
+    We are interested in three fixed factors: the main effect of Factor A, the main effect of Factor B, and the interaction between Factors A & B. We are not substantively interested in the main effect of subjects or any of the interactions involving subjects.
+    If we include the main effect of subject, we have four different residual terms. In contrast to a between-subjects two-way ANOVA, for a within-subjects two-way ANOVA we will have a different denominator (MS) for each fixed effect.
+    For each fixed factor, the residual variance is represented by the mean square of the interaction between subjects and the fixed effect.
+    
+    
+    
+    Multi-Factor Repeated Measures ANOVA in R
+    m3<-aov_car(latency~angle*noise+Error(subject/noise*angle),data=lldf)summary(m3)
+    ## Warning in summary.Anova.mlm(object$Anova, multivariate = FALSE): HF eps > 1## treated as 1
+    ## ## Univariate Type III Repeated-Measures ANOVA Assuming Sphericity## ##               Sum Sq num Df Error SS den Df   F value          Pr(>F)    ## (Intercept) 19425660      1   292140      9 598.44917 0.0000000015266 ***## noise         285660      1    76140      9  33.76596      0.00025597 ***## angle         289920      2    64080     18  40.71910 0.0000002086763 ***## noise:angle   105120      2    20880     18  45.31034 0.0000000942409 ***## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ## ## Mauchly Tests for Sphericity## ##             Test statistic    p-value## angle           0.96010605 0.84972192## noise:angle     0.89377725 0.63814178## ## ## Greenhouse-Geisser and Huynh-Feldt Corrections##  for Departure from Sphericity## ##                 GG eps    Pr(>F[GG])    ## angle       0.96163652 0.00000034017 ***## noise:angle 0.90397707 0.00000034539 ***## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ##                  HF eps          Pr(>F[HF])## angle       1.217563603 0.00000020867632005## noise:angle 1.117869775 0.00000009424092559
+    
+    
+    Omnibus Test Effect Sizes
+    
+    Eta Squared Partial & Eta Squared Generalized
+    ηP2=SSeffectSSeffect+SSErrorTermForEffect
+    For the effect of Noise:
+    ηP,noise2=285660285660+76140=285660361800=.79
+    For ηG2, the denominator consists of everything in the modest EXCEPT for the sums of squares associated with the other factors
+    ηG,noise2=SSnoiseSSnoise+SSnoise×subject+SSsubject+SSangle×subject+SSangle×noise×subject=285660285660+76140+292140+64080+20880=.387
+    For the effect of angle:
+    ηP,angle2=289920289920+64080=289920354000=.82
+    ηG,angle2=SSangleSSangle+SSangle×subject+SSsubject+SSnoise×subject+SSangle×noise×subject=289920289920+64080+292140+76140+20880=.390
+    The the angle × noise interaction:
+    ηP,angle×noise2=105120105120+20880=105120126000=.834
+    ηG,angle×noise2=SSangle×noiseSSangle×noise+SSangle×noise×subject+SSsubject+SSangle×subject+SSnoise×subject=105120105120+20880+292140+64080+76140=.188
+    
+    
+    Write-Up
+    According to the main effects omnibus tests, subjects; latencies significantly differed based on the presence or absence noise F(1,9)=33.77, p<0.001, ηP=0.79 and also the degree to which the letter was offset had significantly larger latencies when noise was present, Greenhouse-Geiser adjusted F(1.92,17.31)=40.72, p<0.001, ηP=0.82. The two factors also significantly interact, Greenhouse-Geiser adjusted F(1.81,16.27)=45.31, p<0.001, ηP=.83.
+    
+    
+    
+    Assumptions of Multi-Factor Repeated-Measures ANOVA
+    
+    Normality Assumption
+    We have to analyze the normality assumption in each combination of levels.
+    Doing graphical exploratory data analysis on the subject-level dataframe:
+    eda.uni(ldf$lat.na.0)
+    
+    eda.uni(ldf$lat.na.4)
+    
+    eda.uni(ldf$lat.na.8)
+    
+    eda.uni(ldf$lat.np.0)
+    
+    eda.uni(ldf$lat.np.4)
+    
+    eda.uni(ldf$lat.np.8)
+    
+    stat.desc(ldf,norm=T)
+    ##                    subject        lat.na.0        lat.na.4         lat.na.8## nbr.val      10.0000000000   10.0000000000   10.0000000000   10.00000000000## nbr.null      0.0000000000    0.0000000000    0.0000000000    0.00000000000## nbr.na        0.0000000000    0.0000000000    0.0000000000    0.00000000000## min           1.0000000000  360.0000000000  420.0000000000  360.00000000000## max          10.0000000000  540.0000000000  660.0000000000  660.00000000000## range         9.0000000000  180.0000000000  240.0000000000  300.00000000000## sum          55.0000000000 4620.0000000000 5100.0000000000 5280.00000000000## median        5.5000000000  480.0000000000  480.0000000000  540.00000000000## mean          5.5000000000  462.0000000000  510.0000000000  528.00000000000## SE.mean       0.9574271078   18.0000000000   27.2029410175   24.97999199359## CI.mean.0.95  2.1658505897   40.7188289304   61.5373278718   56.50866781495## var           9.1666666667 3240.0000000000 7400.0000000000 6240.00000000000## std.dev       3.0276503541   56.9209978830   86.0232526704   78.99367063253## coef.var      0.5504818826    0.1232056231    0.1686730445    0.14960922468## skewness      0.0000000000   -0.1686548085    0.4071809184   -0.46274398773## skew.2SE      0.0000000000   -0.1227396455    0.2963285898   -0.33676497871## kurtosis     -1.5616363636   -1.1707407407   -1.4705259313   -0.07792899408## kurt.2SE     -0.5852118431   -0.4387265580   -0.5510688728   -0.02920332244## normtest.W    0.9701646112    0.9108483995    0.8855740300    0.89705470030## normtest.p    0.8923673075    0.2868696262    0.1511062118    0.20331125762##                      lat.np.0          lat.np.4         lat.np.8## nbr.val        10.00000000000    10.00000000000    10.0000000000## nbr.null        0.00000000000     0.00000000000     0.0000000000## nbr.na          0.00000000000     0.00000000000     0.0000000000## min           360.00000000000   480.00000000000   540.0000000000## max           660.00000000000   780.00000000000   900.0000000000## range         300.00000000000   300.00000000000   360.0000000000## sum          4920.00000000000  6600.00000000000  7620.0000000000## median        480.00000000000   690.00000000000   780.0000000000## mean          492.00000000000   660.00000000000   762.0000000000## SE.mean        28.00000000000    34.64101615138    36.9323706252## CI.mean.0.95   63.34040055835    78.36342281345    83.5468267490## var          7840.00000000000 12000.00000000000 13640.0000000000## std.dev        88.54377448471   109.54451150103   116.7904105653## coef.var        0.17996702131     0.16597653258     0.1532682553## skewness        0.06720992461    -0.59154036211    -0.5971445954## skew.2SE        0.04891246441    -0.43049738675    -0.4345759044## kurtosis       -0.69009995835    -1.21800000000    -0.9126239884## kurt.2SE       -0.25860992863    -0.45643662089    -0.3419991867## normtest.W      0.89684134022     0.86870122059     0.8922126801## normtest.p      0.20220820329     0.09653794942     0.1795659014##                        smeans## nbr.val        10.00000000000## nbr.null        0.00000000000## nbr.na          0.00000000000## min           420.00000000000## max           650.00000000000## range         230.00000000000## sum          5690.00000000000## median        605.00000000000## mean          569.00000000000## SE.mean        23.25940669923## CI.mean.0.95   52.61643346709## var          5410.00000000000## std.dev        73.55270219373## coef.var        0.12926661194## skewness       -0.86372109301## skew.2SE       -0.62857870273## kurtosis       -0.77754562134## kurt.2SE       -0.29137955336## normtest.W      0.85270628986## normtest.p      0.06255491353
+    Doing same analyses on long dataframe (results not printed):
+    eda.uni(lldf$latency[lldf$condition=="lat.na.0"])eda.uni(lldf$latency[lldf$condition=="lat.na.4"])eda.uni(lldf$latency[lldf$condition=="lat.na.8"])eda.uni(lldf$latency[lldf$condition=="lat.np.0"])eda.uni(lldf$latency[lldf$condition=="lat.np.4"])eda.uni(lldf$latency[lldf$condition=="lat.np.8"])tapply(lldf$latency,lldf$condition,stat.desc,norm=TRUE)
+    We do not have any severely asymmetrical cells. The data is a bit ambiguous regarding normality, for nearly all of the cells the test statistic is a litle shy of 0.90 (ideally it would be above .9) and for noise present - 4 degrees the p-value is less than 0.10. Nonetheless, we will assume normality for the sake of illustration.
+    
+    
+    Sphericity Assumption
+    The sphericity assumption is a bit tricky to examine in a multi-factor repeated-measures ANOVA. We need to check it for the A main effect, the B main effect, and the A×B interaction effect.
+    Short-cut: Look at the ANOVA output!
+    
+    According to the Greenhouse-Geiser epsilon, we are doing a pretty good job of meeting compound symmetry in all three families.
+    
+    Compound Symmetry for Noise
+    There is no issue of compound symmetry for the Noise family, since there are only two levels and compound symmetry/sphericity is only an issue for families with more than two levels.
+    
+    
+    
+    
+    Contrasts
+    
+    Adjustments to Critical Values
+    Planned:
+    
+    Post-Hoc:
+    
+    
+    
+    Main Effects Contrast
+    Thre is no point in doing a contrast for the noise condition, we can just use the omnibus test for any level with two factors.
+    For illustrative purposes, let’s look at the main effect of angle. Although the angle effect is “consistent” (latency is monotonically larger for each increase in degree for both noise conditions), the differences are so much larger when noise is present that I would probably not mess with main effects.
+    m3.margins.angle<-emmeans(m3,~angle)m3.margins.angle
+    ##  angle emmean          SE df    lower.CL    upper.CL##  X0       477 20.22374842  9 431.2507027 522.7492973##  X4       585 26.17250466  9 525.7936811 644.2063189##  X8       645 29.74894956  9 577.7032007 712.2967993## ## Results are averaged over the levels of: noise ## Confidence level used: 0.95
+    pairs(m3.margins.angle, adjust="none")
+    ##  contrast estimate          SE df t.ratio p.value##  X0 - X4      -108 17.43559577  9  -6.194  0.0002##  X0 - X8      -168 20.59126028  9  -8.159 <0.0001##  X4 - X8       -60 18.43908891  9  -3.254  0.0099## ## Results are averaged over the levels of: noise
+    pairs(m3.margins.angle, adjust="tukey")
+    ##  contrast estimate          SE df t.ratio p.value##  X0 - X4      -108 17.43559577  9  -6.194  0.0004##  X0 - X8      -168 20.59126028  9  -8.159 <0.0001##  X4 - X8       -60 18.43908891  9  -3.254  0.0244## ## Results are averaged over the levels of: noise ## P value adjustment: tukey method for comparing a family of 3 estimates
+    contrasts.angle<-c(-2,1,1)contrasts.list<-list(contrasts.angle)contrast(m3.margins.angle,contrasts.list, adjust="none")
+    ##  contrast    estimate          SE df t.ratio p.value##  c(-2, 1, 1)      276 33.40658618  9   8.262 <0.0001## ## Results are averaged over the levels of: noise
+    ## getting the tukey critical value tqtukey(.95,3, 9)/sqrt(2) 
+    ## [1] 2.792005612
+    ## getting tukey critical value F qtukey(.95,3, 9)^2/2 
+    ## [1] 7.795295336
+    ## getting the Scheffe critical tsqrt(2*qf(1-.05,2,9))
+    ## [1] 2.917702771
+    ## getting cohen's d ldf$angle4.v.0<-(ldf$lat.na.4+ldf$lat.np.4)-(ldf$lat.na.0+ldf$lat.np.0)angle4.v.0.d<-mean(ldf$angle4.v.0)/sd(ldf$angle4.v.0)angle4.v.0.d
+    ## [1] 1.958785875
+    ldf$angle8.v.0<-(ldf$lat.na.8+ldf$lat.np.8)-(ldf$lat.na.0+ldf$lat.np.0)angle8.v.0.d<-mean(ldf$angle8.v.0)/sd(ldf$angle8.v.0)angle8.v.0.d
+    ## [1] 2.580039491
+    ldf$angle8.v.4<-(ldf$lat.na.8+ldf$lat.np.8)-(ldf$lat.na.4+ldf$lat.np.4)angle8.v.4.d<-mean(ldf$angle8.v.4)/sd(ldf$angle8.v.4)angle8.v.4.d
+    ## [1] 1.028991511
+    Write-Up: The subjects had longer latencies in the 8 degree condition (M=645) than the 4 degree condition (M=585), and in turn longer latencies in the 4 degree condition than the 0 degree condition (M=477), with all conditions being significantly different from each other (Tukey HSD ps < 0.025, 0 vs 4 dz=1.96, 0 vs 8 dz=2.58, 4 vs 8 dz=1.03)
+    
+    
+    Simple Effects (Follow-Up Contrasts)
+    em3.cell<-emmeans::emmeans(m3,~angle*noise)em3.cell
+    ##  angle noise         emmean          SE df    lower.CL    upper.CL##  X0    Noise.Absent     462 18.00000000  9 421.2811711 502.7188289##  X4    Noise.Absent     510 27.20294102  9 448.4626721 571.5373279##  X8    Noise.Absent     528 24.97999199  9 471.4913322 584.5086678##  X0    Noise.Present    492 28.00000000  9 428.6595994 555.3404006##  X4    Noise.Present    660 34.64101615  9 581.6365772 738.3634228##  X8    Noise.Present    762 36.93237063  9 678.4531733 845.5468267## ## Confidence level used: 0.95
+    
+    Angle By Noise
+    pairs(em3.cell,simple="angle", adjust="none")
+    ## noise = Noise.Absent:##  contrast estimate          SE df t.ratio p.value##  X0 - X4       -48 19.59591794  9  -2.449  0.0368##  X0 - X8       -66 18.86796226  9  -3.498  0.0067##  X4 - X8       -18 25.37715508  9  -0.709  0.4961## ## noise = Noise.Present:##  contrast estimate          SE df t.ratio p.value##  X0 - X4      -168 19.59591794  9  -8.573 <0.0001##  X0 - X8      -270 27.20294102  9  -9.925 <0.0001##  X4 - X8      -102 18.00000000  9  -5.667  0.0003
+    ## getting the tukey critical value tqtukey(1-(.05/2),3,9)/sqrt(2) 
+    ## [1] 3.23727877
+    ## Cohen's d ldf$na0.v.na4<-ldf$lat.na.0-ldf$lat.na.4 ldf$na4.v.na8<-ldf$lat.na.4-ldf$lat.na.8 ldf$na0.v.na8<-ldf$lat.na.0-ldf$lat.na.8 na0.v.na4.d<-mean(ldf$na0.v.na4)/sd(ldf$na0.v.na4)na4.v.na8.d<-mean(ldf$na4.v.na8)/sd(ldf$na4.v.na8)na0.v.na8.d<-mean(ldf$na0.v.na8)/sd(ldf$na0.v.na8)na0.v.na4.d 
+    ## [1] -0.7745966692
+    na4.v.na8.d 
+    ## [1] -0.2243001538
+    na0.v.na8.d 
+    ## [1] -1.106162513
+    ldf$np0.v.np4<-ldf$lat.np.0-ldf$lat.np.4 ldf$np4.v.np8<-ldf$lat.np.4-ldf$lat.np.8 ldf$np0.v.np8<-ldf$lat.np.0-ldf$lat.np.8 np0.v.np4.d<-mean(ldf$np0.v.np4)/sd(ldf$np0.v.np4)np4.v.np8.d<-mean(ldf$np4.v.np8)/sd(ldf$np4.v.np8)np0.v.np8.d<-mean(ldf$np0.v.np8)/sd(ldf$np0.v.np8)np0.v.np4.d 
+    ## [1] -2.711088342
+    np4.v.np8.d 
+    ## [1] -1.791957341
+    np0.v.np8.d 
+    ## [1] -3.138686246
+    Write-Up: When there is no noise, the only significant pairwise difference surviving a Tukey HSD and Bonferroni adjustment (to hold the familywise error rate at .05) is between 0 (M=462) and 8 degrees (M=528), t(9)=3.498, unadjusted p=0.01 dz=1.11.
+    When noise is present, subjects have higher latencies in the 8 degree condition (M=762) than the 4 degree condition (M=660) which in turn is higher than the 0 degree condition (M=492), with all pairwise comparisons surviving a Tukey HSD+Bonferroni adjustment, all unadjusted ps<0.001, all dzs >1.79.
+    
+    
+    Noise By Angle
+    pairs(em3.cell,simple="noise", adjust="none")
+    ## angle = X0:##  contrast                     estimate          SE df t.ratio p.value##  Noise.Absent - Noise.Present      -30 24.08318916  9  -1.246  0.2443## ## angle = X4:##  contrast                     estimate          SE df t.ratio p.value##  Noise.Absent - Noise.Present     -150 33.76388603  9  -4.443  0.0016## ## angle = X8:##  contrast                     estimate          SE df t.ratio p.value##  Noise.Absent - Noise.Present     -234 20.88061302  9 -11.207 <0.0001
+    ## getting the tukey critical value tqtukey(1-(.05/3),2,9)/sqrt(2) 
+    ## [1] 2.933324084
+    ## Cohen's dldf$na0.v.np0<-ldf$lat.na.0-ldf$lat.np.0ldf$na4.v.np4<-ldf$lat.na.4-ldf$lat.np.4ldf$na8.v.np8<-ldf$lat.na.8-ldf$lat.np.8na0.v.np0.d<-mean(ldf$na0.v.np0)/sd(ldf$na0.v.np0)na4.v.np4.d<-mean(ldf$na4.v.np4)/sd(ldf$na4.v.np4)na8.v.np8.d<-mean(ldf$na8.v.np8)/sd(ldf$na8.v.np8)na0.v.np0.d
+    ## [1] -0.3939192986
+    na4.v.np4.d
+    ## [1] -1.404878717
+    na8.v.np8.d
+    ## [1] -3.543827817
+    Write-up: At 0 (Mdif=30), 4 (Mdif=150), and 8 (Mdif=234) degrees, subjects had higher latency when noise was present. However, the difference is significant at 4 and 8 degrees (both Bonferroni-adjusted ps < 0.004, both dzs > 1.40), but not 0 degrees (Bonferroni adjusted p = 0.48, dz=0.39).
+    
+    
+    
+    Complex Simple Effects & Interaction Contrast
+    em3.cell
+    ##  angle noise         emmean          SE df    lower.CL    upper.CL##  X0    Noise.Absent     462 18.00000000  9 421.2811711 502.7188289##  X4    Noise.Absent     510 27.20294102  9 448.4626721 571.5373279##  X8    Noise.Absent     528 24.97999199  9 471.4913322 584.5086678##  X0    Noise.Present    492 28.00000000  9 428.6595994 555.3404006##  X4    Noise.Present    660 34.64101615  9 581.6365772 738.3634228##  X8    Noise.Present    762 36.93237063  9 678.4531733 845.5468267## ## Confidence level used: 0.95
+    contrast.na0.v.na48<-c(-2,1,1,0,0,0)contrast.np0.v.np48<-c(0,0,0,-2,1,1)int.contrast<-c(2,-1,-1,-2,1,1)contrast.list<-list(contrast.na0.v.na48,contrast.np0.v.np48,int.contrast)contrast(em3.cell,contrast.list)
+    ##  contrast               estimate          SE df t.ratio p.value##  c(-2, 1, 1, 0, 0, 0)        114 28.91366459  9   3.943  0.0034##  c(0, 0, 0, -2, 1, 1)        438 43.86342440  9   9.986 <0.0001##  c(2, -1, -1, -2, 1, 1)      324 32.49615362  9   9.970 <0.0001
+    ## Scheffe crit for SE contrastssqrt((3-1)*qf(1-(.05)/2,         (3-1),         9))
+    ## [1] 3.380741157
+    ## Scheffe crit for interaction contrastssqrt((3-1)*(2-1)*qf(1-(.05),               ((3-1)*(2-1)),               9))
+    ## [1] 2.917702771
+    ldf$na0.v.na48<-ldf$lat.na.0*-2+ldf$lat.na.4+ldf$lat.na.8ldf$np0.v.np48<-ldf$lat.np.0*-2+ldf$lat.np.4+ldf$lat.np.8ldf$interaction<-ldf$np0.v.np48-ldf$na0.v.na48 na0.v.na48Madj<-mean(ldf$na0.v.na48)*2/4 np0.v.np48Madj<-mean(ldf$np0.v.np48)*2/4 interactionadj<-mean(ldf$interaction)*2/4 na0.v.na48Madj
+    ## [1] 57
+    np0.v.np48Madj
+    ## [1] 219
+    interactionadj
+    ## [1] 162
+    na0.v.na48.d<-mean(ldf$na0.v.na48)/sd(ldf$na0.v.na48)np0.v.np48.d<-mean(ldf$np0.v.np48)/sd(ldf$np0.v.np48)interaction.d<-mean(ldf$interaction)/sd(ldf$interaction)na0.v.na48.d
+    ## [1] 1.246814122
+    np0.v.np48.d
+    ## [1] 3.157705159
+    interaction.d
+    ## [1] 3.152920724
+    Write-Up: The presence of any off-set (4 and 8 degrees) results in a higher latency when noise is absent (Mdif=57, dz=1.25) and especially when noise is present (Mdif=219. dz=3.16, both Scheffe- and Bonferroni-adjusted ps<0.05). The difference between these contrasts survive a Scheffe adjustment (Scheffe-adjusted p<0.05).
+    
+    A note about Cohen’s d and interaction contrasts in within-subjects designs
+    Since we have covered dependent-samples t-tests, we have learned to calculate a measure of Cohen’s d, dz, by dividing the difference variable’s mean by its standard deviation. This will not work for interaction contrasts, as it will lead to confusing results. The dz for the complex contrast when noise is absent is 1.25; dz when noise is present is 3.16. If we we calculate dz for the interaction contrast, we get 3.15, which does not make sense–it should capture the difference between the two simple effects contrasts. I handle this in my wrap-up by just reporting the dz for the two simple effects contrasts, and noting that different between them is significant, so the reader has a sense of how big the interaction is.

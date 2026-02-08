@@ -1,0 +1,624 @@
+Lecture Notes 11: Split Plot ANOVA (Designs With One Between-Subjects Factor and One Within-Subjects Factor)
+    
+    
+      
+        
+      
+      Josh Klugman
+    
+    Split-Plot designs are a compromise between within-subject and between-subject designs. We get the benefits of the economy of the within-subject design (multiple data points per subject) without some of the drawbacks (differential carry-over, fatigue effects).
+    A terminological note: “Factor A” = the between-subjects factor “groups” = levels for the between-subjects factor “Factor B” = the within-subjects factor
+    But before diving into this technique, let’s review the assumption of compound symmetry for a one-way repeated measures ANOVA
+    
+    Review of Compound Symmetry
+    Compound symmetry holds that the variances for each level of the factor are the same, and that the correlations between factors are the same.
+    tss<-data.frame(act=c(62,63,65,68,69,71,78,75),              cb=c(58,60,61,64,65,67,66,73),              ets=c(63,68,72,58,54,65,67,75),              tp=c(64,65,65,61,59,50,50,45))tss
+    ##   act cb ets tp## 1  62 58  63 64## 2  63 60  68 65## 3  65 61  72 65## 4  68 64  58 61## 5  69 65  54 59## 6  71 67  65 50## 7  78 66  67 50## 8  75 73  75 45
+    cov(tss)
+    ##               act            cb           ets           tp## act  31.839285714  22.321428571   7.607142857 -40.23214286## cb   22.321428571  22.214285714   8.785714286 -34.25000000## ets   7.607142857   8.785714286  47.928571429 -16.96428571## tp  -40.232142857 -34.250000000 -16.964285714  62.55357143
+    Covariances are unstandardized correlations ranging from −∞ to +∞. The covariance of a variable with itself is just its variance. We will get a variance/covariance matrix from R to check out compound symmetry.
+    A covariance between two variables is denoted with σxx, where xx represent the two different variables that covary. Example: σ12 represents the covariance between variables 1 & 2 (note = this is the same as σ21 )
+    The variance of one variable is denoted with σX2 .
+    We often symbolize covariance-variance matrices with this kind of notation:
+    
+    In fact, you only need one side of the diagonal to evaluate compound symmetry.
+    
+    The assumption of compound symmetry for a within-subject factor with three levels or conditions can be expressed as:
+    
+    The lack of subscripts for the sigmas indicate that all of the variances are the same and all of the covariances are the same.
+    Subscripts imply that the variances and the covariances can differ.
+    
+    
+    Illustration
+    Let’s revisit the tachistoscope experiment. Subjects are told they will see either the letter “T” or the letter “I” displayed on the screen. In some trials, the letter appears dead center on the screen ( off-center) and in others it is off-center, or off-center. We are going to replace the noise factor with a between-subject age factor, with two levels: young and old.
+    
+    
+    dfs<-data.frame(id=seq(1,20),                age=rep(c("Young","Old"),each=10),                a0=c(450,390,570,450,510,360,510,510,510,510,420,600,450,630,420,600,630,480,690,510),                a4=c(510,480,630,660,660,450,600,660,660,540,570,720,540,660,570,780,690,570,750,690),                a8=c(630,540,660,720,630,450,720,780,660,660,690,810,690,780,780,870,870,720,900,810))dfs
+    ##    id   age  a0  a4  a8## 1   1 Young 450 510 630## 2   2 Young 390 480 540## 3   3 Young 570 630 660## 4   4 Young 450 660 720## 5   5 Young 510 660 630## 6   6 Young 360 450 450## 7   7 Young 510 600 720## 8   8 Young 510 660 780## 9   9 Young 510 660 660## 10 10 Young 510 540 660## 11 11   Old 420 570 690## 12 12   Old 600 720 810## 13 13   Old 450 540 690## 14 14   Old 630 660 780## 15 15   Old 420 570 780## 16 16   Old 600 780 870## 17 17   Old 630 690 870## 18 18   Old 480 570 720## 19 19   Old 690 750 900## 20 20   Old 510 690 810
+    dfs$age<-factor(dfs$age,levels=c("Young","Old"))
+    
+    Graphing the Data
+    I first restructure the data so it is in “long” format and I create a summary dataframe of means for combination of angle and age.
+    ldf<-pivot_longer(dfs,cols=c("a0","a4","a8"),                 names_to="angle",                 values_to="latency")ldf
+    ## # A tibble: 60 × 4##       id age   angle latency##    <int> <fct> <chr>   <dbl>##  1     1 Young a0        450##  2     1 Young a4        510##  3     1 Young a8        630##  4     2 Young a0        390##  5     2 Young a4        480##  6     2 Young a8        540##  7     3 Young a0        570##  8     3 Young a4        630##  9     3 Young a8        660## 10     4 Young a0        450## # ℹ 50 more rows
+    ldf<-group_by(ldf,age,angle)Ms<-summarize(ldf,M=mean(latency))
+    ## `summarise()` has grouped output by 'age'. You can override using the `.groups`## argument.
+    ldf<-ungroup(ldf)Ms
+    ## # A tibble: 6 × 3## # Groups:   age [2]##   age   angle     M##   <fct> <chr> <dbl>## 1 Young a0      477## 2 Young a4      585## 3 Young a8      645## 4 Old   a0      543## 5 Old   a4      654## 6 Old   a8      792
+    Then I create a subsetted version of the wide dataframe with just the condition variables and age grouping variable. Because the baguley.txt is finnicky with the grouping variables (which I believe have to be last in the dataframe), I convert it to a numeric 1,2 variable.
+    dfss<-dfs[c("a0","a4","a8","age")]dfss$age<-ifelse(dfss$age=="Young",1,2)dfss
+    ##     a0  a4  a8 age## 1  450 510 630   1## 2  390 480 540   1## 3  570 630 660   1## 4  450 660 720   1## 5  510 660 630   1## 6  360 450 450   1## 7  510 600 720   1## 8  510 660 780   1## 9  510 660 660   1## 10 510 540 660   1## 11 420 570 690   2## 12 600 720 810   2## 13 450 540 690   2## 14 630 660 780   2## 15 420 570 780   2## 16 600 780 870   2## 17 630 690 870   2## 18 480 570 720   2## 19 690 750 900   2## 20 510 690 810   2
+    I use the baguley.txt function cm.ci.mixed to produce the Cousineau-Morey confidence intervals for each combination of age and angle. I have to do some data wrangling because of how the function named the lower and upper bound variables for the old condition.
+    cmdf<-as.data.frame(cm.ci.mixed(dfss,difference=F))cmdf$angle<-rownames(cmdf)cmdf.young<-subset(cmdf,select=c("angle","lower","upper"))cmdf.old<-subset(cmdf,select=c("angle","lower.1","upper.1"))cmdf.old<-rename(cmdf.old,lower=lower.1,upper=upper.1)cmdf.young$age<-"Young"cmdf.old$age<-"Old"cmdf.both<-rbind(cmdf.young,cmdf.old)cmdf.both
+    ##     angle       lower       upper   age## a0     a0 446.1482896 507.8517104 Young## a4     a4 557.8541140 612.1458860 Young## a8     a8 612.6899331 677.3100669 Young## a01    a0 512.9323088 573.0676912   Old## a41    a4 632.7589987 675.2410013   Old## a81    a8 768.4728405 815.5271595   Old
+    Combining the mean summary data frame and the Cousineau-Morey confidence interval data frame into one dataframe.
+    cmdf.merge<-merge(Ms,cmdf.both,by=c("angle","age"))cmdf.merge$angle<-as.numeric(substr(cmdf.merge$angle,2,2))cmdf.merge
+    ##   angle   age   M       lower       upper## 1     0   Old 543 512.9323088 573.0676912## 2     0 Young 477 446.1482896 507.8517104## 3     4   Old 654 632.7589987 675.2410013## 4     4 Young 585 557.8541140 612.1458860## 5     8   Old 792 768.4728405 815.5271595## 6     8 Young 645 612.6899331 677.3100669
+    The graph:
+    ggplot(data=cmdf.merge,aes(x=angle,y=M,color=age))+  geom_line(size=1)+  geom_point()+  geom_errorbar(aes(ymin=lower,ymax=upper,width=.2))+  labs(x="Angle (Degrees of Offset)",       y="Latency (ms)",       color="",       title="Latency By Subject Age Group and Letter Angle",       caption="Error Bars are Cousineau-Morey 95% confidence intervals.")+  scale_x_continuous(breaks=c(0,4,8))+  scale_color_manual(values=c("grey50","black"))+  theme(legend.position="bottom")
+    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.## ℹ Please use `linewidth` instead.## This warning is displayed once every 8 hours.## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was## generated.
+    
+    
+    
+    
+    General Linear Model, Sources of Variation and ANOVA Table
+    
+    GLM
+    Yijk=Y+αj+βk+πi+αβjk+βπijk
+    Factor A: The between-subjects factor (age)
+    Factor B: the within-subjects factor (angle)
+    i indexes subjects
+    j indexes levels of the between-subjects Factor A
+    k indexes levels of the within-subjects Factor B
+    αj is the effect of being in level j of between-subject Factor A
+    αj=Yj−Y
+    πi is the effect of being subject i (we are not interested in this effect)
+    πi=Yij−Yj
+    (note how the subject effect is calculated, because subject is nested within age)
+    βk is the effect of being in level k of withn-subject factor B
+    βk=Yk−Y
+    αβjk is the effect of being in level j of between-subject Factor A and level k of within-subject Factor B
+    αβjk=Yjk−Yj−Yk+Y
+    βπijk is the effect of being subject i and being in level k of Factor B
+    βπijk=Yijk−Yij−Yjk+Yj
+    
+    
+    Sums of Squares
+    
+    Main Effects of Age
+    SSA=bj=1anjYj−Y2
+    
+    
+    Main Effect of Subject
+    SSsubjet=bj=1ai=1nYij−Yj2=bj=1anj−1ssubjectmeans2
+    
+    
+    Main Effect of Angle
+    SSB=nk=1bYk−Y2
+    
+    
+    Calculating Main Effects
+    
+    
+    
+    Interaction Between A & B
+    SSA×B=j=1ak=1bnjYjk−Yj−Yk+Y2
+    Cell means:
+    
+    Interaction Effects
+    αβjk=Yjk−Yj−Yk+Y
+    
+    Sums of Squares njαβjk2
+    
+    
+    
+    Interaction Between Factor B & Subject
+    SSB×S=k=1bj=1ai=1nYijk−Yij−Yjk+Yj2
+    
+    SSB×S=54420
+    
+    
+    Null hypotheses:
+    H0:αyoung=αold=0
+    H0:β0=β4=β8=0
+    H0:αβyoung,0=αβyoung,4=αβyoung,8=αβold,0=αβold,4=αβold,8=0
+    
+    
+    
+    Sources of Variation in a Split-Plot ANOVA
+    
+    
+    
+    ANOVA Table
+    
+    
+    The subject effect is now the residual term for Factor A (between-subject factor). The subject effect is essentially the within-group variation for Factor A—it is capturing the variation going on within the age categories.
+    The angle×subject interaction effect is the residual term for Factor B and Factor A×B. The angle×subject interaction is capturing how the angle effect varies from subject to subject. Intuitively, it makes sense that it would be the residual term for Factor B.
+    It is not so intuitive why the angle×subject interaction effect is the residual term for A×B. Because the interaction involves a within-subject effect, the residual term has to come from a within-subject source of variance.
+    (plus, there is no A×B×S factor, because subject is nested in factor A)
+    
+    
+    
+    Split-Plot ANOVA in R
+    m1<-aov_car(latency~age*angle+Error(id/angle),data=ldf)
+    ## Contrasts set to contr.sum for the following variables: age
+    summary(m1)
+    ## Warning in summary.Anova.mlm(object$Anova, multivariate = FALSE): HF eps > 1## treated as 1
+    ## ## Univariate Type III Repeated-Measures ANOVA Assuming Sphericity## ##               Sum Sq num Df Error SS den Df    F value                 Pr(>F)## (Intercept) 22767360      1   327900     18 1249.80933 < 0.000000000000000222## age           132540      1   327900     18    7.27575              0.0147340## angle         435090      2    54420     36  143.91069 < 0.000000000000000222## age:angle      21090      2    54420     36    6.97574              0.0027515##                ## (Intercept) ***## age         *  ## angle       ***## age:angle   ** ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ## ## Mauchly Tests for Sphericity## ##           Test statistic    p-value## angle         0.93683697 0.57430711## age:angle     0.93683697 0.57430711## ## ## Greenhouse-Geisser and Huynh-Feldt Corrections##  for Departure from Sphericity## ##               GG eps             Pr(>F[GG])    ## angle     0.94058952 < 0.000000000000000222 ***## age:angle 0.94058952              0.0033994 ** ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ##                HF eps                    Pr(>F[HF])## angle     1.046677106 0.000000000000000006728921246## age:angle 1.046677106 0.002751523391096888891682593
+    
+    
+    Assumptions of Split-Plot ANOVA
+    We always assume that the cases are randomly drawn from the population and are independently sampled.
+    Normality assumption – each cell defined by Factors A and B are normally distributed
+    Overall sphericity / compound symmetry – equality of variances and covariances overall
+    
+    Equality of variances and covariances across groups (Levene’s tests; Box test)
+    
+    Within group compound symmetry (we will not worry about this – you would use this if you were going to do repeated-measures ANOVAs on just young people or just old people
+    
+    
+    Table of Tests and Analytic Relevance; BS=between-subject; WS=within-subject
+    header1test
+analysis
+body1Cell-By-Cell Normality
+All analyses
+body2Sphericity
+OMNIBUS tests of WS, WS*BS
+body3Subject Mean Equality of Variances Across BS Factor
+MAIN effects of BS factor
+body4Condition Variable Equality of Variances Across BS Factor
+WS, WS*BS (cell) analyses
+body5Box  Test for equality of covariance matrices across BS factor
+OMNIBUS tests of WS, WS*BS
+    
+    Testing the Assumptions
+    
+    Normality For Each Cell
+    tapply(dfs,dfs$age,pastecs::stat.desc,norm=T)
+    ## $Young##                         id age              a0               a4              a8## nbr.val      10.0000000000  NA   10.0000000000   10.00000000000   10.0000000000## nbr.null      0.0000000000  NA    0.0000000000    0.00000000000    0.0000000000## nbr.na        0.0000000000  NA    0.0000000000    0.00000000000    0.0000000000## min           1.0000000000  NA  360.0000000000  450.00000000000  450.0000000000## max          10.0000000000  NA  570.0000000000  660.00000000000  780.0000000000## range         9.0000000000  NA  210.0000000000  210.00000000000  330.0000000000## sum          55.0000000000  NA 4770.0000000000 5850.00000000000 6450.0000000000## median        5.5000000000  NA  510.0000000000  615.00000000000  660.0000000000## mean          5.5000000000  NA  477.0000000000  585.00000000000  645.0000000000## SE.mean       0.9574271078  NA   20.2237484162   26.17250465660   29.7489495613## CI.mean.0.95  2.1658505897  NA   45.7492973382   59.20631887731   67.2967993358## var           9.1666666667  NA 4090.0000000000 6850.00000000000 8850.0000000000## std.dev       3.0276503541  NA   63.9531078213   82.76472678623   94.0744386111## coef.var      0.5504818826  NA    0.1340736013    0.14147816545    0.1458518428## skewness      0.0000000000  NA   -0.5029051485   -0.41433074372   -0.6323877804## skew.2SE      0.0000000000  NA   -0.3659925275   -0.30153192216   -0.4602243639## kurtosis     -1.5616363636  NA   -1.0483368105   -1.67833928286   -0.4935219764## kurt.2SE     -0.5852118431  NA   -0.3928565775   -0.62894541131   -0.1849437629## normtest.W    0.9701646112  NA    0.8820045721    0.84161910016    0.9255582758## normtest.p    0.8923673075  NA    0.1375844583    0.04613886707    0.4056497409## ## $Old##                          id age                a0                 a4## nbr.val       10.0000000000  NA   10.000000000000   10.0000000000000## nbr.null       0.0000000000  NA    0.000000000000    0.0000000000000## nbr.na         0.0000000000  NA    0.000000000000    0.0000000000000## min           11.0000000000  NA  420.000000000000  540.0000000000000## max           20.0000000000  NA  690.000000000000  780.0000000000000## range          9.0000000000  NA  270.000000000000  240.0000000000000## sum          155.0000000000  NA 5430.000000000000 6540.0000000000000## median        15.5000000000  NA  555.000000000000  675.0000000000000## mean          15.5000000000  NA  543.000000000000  654.0000000000000## SE.mean        0.9574271078  NA   31.128764832547   27.1293199325011## CI.mean.0.95   2.1658505897  NA   70.418158335007   61.3707854071514## var            9.1666666667  NA 9690.000000000000 7360.0000000000000## std.dev        3.0276503541  NA   98.437797618598   85.7904423581089## coef.var       0.1953322809  NA    0.181285078487    0.1311780464191## skewness       0.0000000000  NA    0.005434746947    0.0010262620852## skew.2SE       0.0000000000  NA    0.003955172814    0.0007468689782## kurtosis      -1.5616363636  NA   -1.772943956139   -1.7491605623819## kurt.2SE      -0.5852118431  NA   -0.664397822961   -0.6554851695291## normtest.W     0.9701646112  NA    0.904847558425    0.9061451274590## normtest.p     0.8923673075  NA    0.247439417213    0.2555473955988##                            a8## nbr.val        10.00000000000## nbr.null        0.00000000000## nbr.na          0.00000000000## min           690.00000000000## max           900.00000000000## range         210.00000000000## sum          7920.00000000000## median        795.00000000000## mean          792.00000000000## SE.mean        23.74868417408## CI.mean.0.95   53.72325601142## var          5640.00000000000## std.dev        75.09993342207## coef.var        0.09482314826## skewness       -0.06578468591## skew.2SE       -0.04787523758## kurtosis       -1.57373019466## kurt.2SE       -0.58974391810## normtest.W      0.92540148713## normtest.p      0.40421221811
+    ggplot(data=ldf,aes(x=latency,y=age,fill=angle))+  geom_boxplot()+  coord_flip()
+    
+    Normality assumption checks out, except for the young-4 degree angle condition.
+    
+    
+    Overall Sphericity
+    
+    According to the Greenhouse-Geisser ε , we have moderate violations of sphericity. To play it safe, we should use the adjusted repeated-measures ANOVA output (although we possibly could get away with the unadjusted version).
+    
+    
+    Equality of Variances Averaging Across Levels of the Within-Subject Factor
+    dfs$pmean<-(dfs$a0+dfs$a4+dfs$a8)/3 car::leveneTest(pmean~age, data=dfs, center="mean")
+    ## Levene's Test for Homogeneity of Variance (center = "mean")##       Df F value Pr(>F)## group  1 0.56773 0.4609##       18
+    We have homogeneity of variances.
+    Assuming normality is met, this means the following:
+    We can do an omnibus test on the main effect of the between-subject factor
+    When we do the main-effects contrasts for age we can assume equal variances
+    
+    
+    Equality of Variances for Each Level of the Within-Subject Factor
+    Null hypotheses for Levene’s test:
+    H0:σ0,young2=σ0,old2
+    H0:σ4,young2=σ4,old2
+    H0:σ8,young2=σ8,old2
+    Again, we want insignificant tests (we want to retain these null hypotheses).
+    car::leveneTest(a0~age, data=dfs,center="mean")
+    ## Levene's Test for Homogeneity of Variance (center = "mean")##       Df F value   Pr(>F)  ## group  1 5.19638 0.035046 *##       18                   ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    car::leveneTest(a4~age, data=dfs,center="mean")
+    ## Levene's Test for Homogeneity of Variance (center = "mean")##       Df F value Pr(>F)## group  1 0.00577 0.9403##       18
+    car::leveneTest(a8~age, data=dfs,center="mean")
+    ## Levene's Test for Homogeneity of Variance (center = "mean")##       Df F value  Pr(>F)## group  1 0.06372 0.80357##       18
+    The Levene’s test suggests that the “young, 0 degrees” variance is significantly different from the “old, 0 degrees” variance.
+    This means (assuming normality):
+    The fact that the Levene’s test is significant at 0 degrees should make us weary of doing omnibus tests involving Angle—suggests we should not average across age groups. We should check out the Box’s test though.
+    We should be careful about assuming equal variances when we do simple effects tests looking either at the effect of Factor A (age) within levels of Factor B (angle) or the effect of Factor B (angle) within levels of Factor A (age).
+    We should probably not assume equal variances when doing interaction contrasts.
+    
+    
+    Equality of Covariance / Variance Matrices
+    We will ask multiUS::BoxMTest to produce Box’s test of the equality of covariance matrices and Levene’s test of equality of variances. I think it’d be easiest to use the wide dataframe. For the X argument I tell it to use the wide dataframe, specifically the third, fourth, and fifth columns (a0, a4, and a8). For the cl argument I specify the age variable (this variable MUST be a factor variable).
+    Null hypothesis for Box’s test:
+    
+    We want an insignificant test result!
+    multiUS::BoxMTest(X=dfs[,c(3,4,5)],cl=dfs$age)
+    ## ## ------------------------------------------------------------##       MBox          F        df1           df2            p## ------------------------------------------------------------##     5.9239     0.8065          6      2347.472       0.5647## ------------------------------------------------------------## Covariance matrices are not significantly different.
+    This means (assuming normality):
+    We have evidence that we can pool the different age groups together to do omnibus tests of the within-subject factor (angle) and the interaction between the within-subject factor and the between-subject factor. We should check out the Levene’s test for equality of variances for each level of angle though (above).
+    
+    
+    
+    If Assumptions Are Violated…
+    
+    If data are non-normal…
+    Robust tests (see work of Rand Wilcox)
+    
+    
+    If variances are not equal across the between-subject groups…
+    Should use Welch’s V test for between-subject omnibus tests.
+    Contrasts for between-subject factor would have to use contrast-specific error terms
+    
+    
+    Overall compound symmetry/sphericity
+    For moderate violations, use epsilon-adjusted omnibus tests
+    For severe violations, consider using MANOVA for omnibus tests
+    You can still use contrasts testing main effect of within-subject factor, but they have to use a contrast-specific residual MS (which we have been doing by default anyway)
+    
+    
+    Equality of covariance/variance matrices across groups
+    For omnibus F-test: use MANOVA
+    You can still use simple effects contrasts, but they must use a contrast-specific residual MS (which we have been doing by default anyway)
+    For our example, we did find a significant violation of the assumption of homogenous variances for the 0 degrees level. This implies that any simple effects contrasts looking at the effect of age within angle 0 will have to drop the assumption of homogenous variances (use contrast-specific error terms).
+    
+    
+    Correcting for Heterogeneous Variances
+    We previously calculated the average latency for each subject (pmean). We will do a regular ANOVA and a Welch’s V test (which is the ANOVA equivalent for data violating the equal variances assumption).
+    # Vanilla ANOVAsummary(aov(pmean~age,data=dfs))
+    ##             Df Sum Sq  Mean Sq F value   Pr(>F)  ## age          1  44180 44180.00 7.27575 0.014734 *## Residuals   18 109300  6072.22                   ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    # Welch's Voneway.test(pmean~age,data=dfs,var.equal=FALSE)
+    ## ##  One-way analysis of means (not assuming equal variances)## ## data:  pmean and age## F = 7.2757548, num df = 1.000000, denom df = 17.788432, p-value =## 0.01483957
+    For the omnibus F test, our conclusions do not change when we account for heterogeneous variances–the Welch’s V is significant as well.
+    Here is the output for the between-subject factor from the split-plot ANOVA:
+    
+    The point of this is to show you that the between-subjects ANOVA is the same as a regular oneway ANOVA (averaged across the within-subjects levels). The unadjusted F statistic is the exact same (7.276). The mean squares in the split-plot ANOVA are exactly three times the mean squares in the oneway ANOVA, because there are three within-subject levels in the split-plot ANOVA.
+    If the variances were unequal for young and old subjects, we could just use the Welch’s V output and forgo the between-subject ANOVA produced by aov_car.
+    
+    
+    
+    
+    Effect Sizes
+    ηP2=SSeffectSSeffect+SSerrortermforeffect
+    summary(m1)
+    ## Warning in summary.Anova.mlm(object$Anova, multivariate = FALSE): HF eps > 1## treated as 1
+    ## ## Univariate Type III Repeated-Measures ANOVA Assuming Sphericity## ##               Sum Sq num Df Error SS den Df    F value                 Pr(>F)## (Intercept) 22767360      1   327900     18 1249.80933 < 0.000000000000000222## age           132540      1   327900     18    7.27575              0.0147340## angle         435090      2    54420     36  143.91069 < 0.000000000000000222## age:angle      21090      2    54420     36    6.97574              0.0027515##                ## (Intercept) ***## age         *  ## angle       ***## age:angle   ** ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ## ## Mauchly Tests for Sphericity## ##           Test statistic    p-value## angle         0.93683697 0.57430711## age:angle     0.93683697 0.57430711## ## ## Greenhouse-Geisser and Huynh-Feldt Corrections##  for Departure from Sphericity## ##               GG eps             Pr(>F[GG])    ## angle     0.94058952 < 0.000000000000000222 ***## age:angle 0.94058952              0.0033994 ** ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ##                HF eps                    Pr(>F[HF])## angle     1.046677106 0.000000000000000006728921246## age:angle 1.046677106 0.002751523391096888891682593
+    var(dfs$pmean)
+    ## [1] 8077.894737
+    ηP,age2=SSageSSage+SSsubject=1354013540+327900=.288
+    ηP,angle2=SSangleSSangle+SSangle×subject=435090435090+54420=.889
+    ηP,angle×age2=SSangle×ageSSangle×age+SSangle×subject=2109021090+54420=.279
+    
+    
+    Contrasts
+    
+    Planned & Post-Hoc Adjustments
+    
+    Note about denominator degrees of freedom for contrasts: usually the denominator degrees of freedom will be n – a (total number of subjects minus number of groups, assuming no adjustments for unequal variances).
+    
+    
+    Effect Sizes for Contrasts
+    I think probably the easiest and most straight-forward approach to effect sizes for split-plot ANOVA contrasts is to drop what we have been using thus far for repeated-measures designs: dz, where the standardizer (the denominator) is the standard deviation of the difference variable. If we apply dz to a split-plot ANOVA, we would end up with a variety of standardizers depending on the contrast.
+    Instead, let us switch to dav, where we basically treat all the factors as between-subjects (that is, treat each observation as coming from a different subject). We can get a single standardizer for a variety of contrasts this way.
+    To do this, I will do a regular two-way ANOVA on the within-subject and between-subject factor, extract the MSW, and take the square root of it, to get the pooled SD.
+    # creating fake ID for observations in long data frameldf$fakeid<-seq(1:60)summary(afex::aov_car(latency~age*angle+Error(fakeid),data=ldf))
+    ## Converting to factor: angle
+    ## Contrasts set to contr.sum for the following variables: age, angle
+    ## Anova Table (Type 3 tests)## ## Response: latency##           num Df den Df  MSE        F        ges          Pr(>F)    ## age            1     54 7080 18.72034 0.25742920 0.0000657993153 ***## angle          2     54 7080 30.72669 0.53227878 0.0000000012293 ***## age:angle      2     54 7080  1.48941 0.05227932         0.23462    ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    sqrt(7080)
+    ## [1] 84.14273587
+    pooledsd<-sqrt(7080)
+    Our pooled SD, the square root of 7080, is 84.14, which we will use to standardize all contrasts.
+    Go back to our split-plot ANOVA sums of squares. The SSSUBJECT (dfSUBJECT=n−a=20−2=18) was 54,420, and the SSB×SUBJECT (dfB×SUBJECT=a−1n−a=36) was 327,900. If we add up these two sums of squares, we get 382,320, with a combined degrees of freedom of 54. The mean square of this combined residual is 382,320/54 = 7080.
+    
+    
+    Between-Subjects Main Effects Contrasts
+    
+    Assuming Equal Variances
+    If we assume equal variances, we can use emmeans to carry out any kind of contrast.
+    For a main effects contrast on a between-subjects factor, this is equivalent to comparing differences for a person-mean (averaging across the within-subject levels; we have already done this in the form of dfs$pmean). In this case, we are comparing the overall subject mean latency of young subjects versus old subjects:
+    H0:αyoung=αold
+    It is of course redundant to do such a contrast, since the factor has only two levels, and we could just rely on the omnibus test to do this for us.
+    # creating marginal means em objectem1.age<-emmeans::emmeans(m1,~age)em1.age 
+    ##  age   emmean          SE df    lower.CL    upper.CL##  Young    569 24.64187944 18 517.2293324 620.7706676##  Old      663 24.64187944 18 611.2293324 714.7706676## ## Results are averaged over the levels of: angle ## Confidence level used: 0.95
+    # performing contrast (could also use pairs)A.main.contrasts.list<-list(c(-1,1))contrast(em1.age,A.main.contrasts.list)
+    ##  contrast estimate         SE df t.ratio p.value##  c(-1, 1)       94 34.8488801 18   2.697  0.0147## ## Results are averaged over the levels of: angle
+    pairs(em1.age)
+    ##  contrast    estimate         SE df t.ratio p.value##  Young - Old      -94 34.8488801 18  -2.697  0.0147## ## Results are averaged over the levels of: angle
+    summary(m1)
+    ## Warning in summary.Anova.mlm(object$Anova, multivariate = FALSE): HF eps > 1## treated as 1
+    ## ## Univariate Type III Repeated-Measures ANOVA Assuming Sphericity## ##               Sum Sq num Df Error SS den Df    F value                 Pr(>F)## (Intercept) 22767360      1   327900     18 1249.80933 < 0.000000000000000222## age           132540      1   327900     18    7.27575              0.0147340## angle         435090      2    54420     36  143.91069 < 0.000000000000000222## age:angle      21090      2    54420     36    6.97574              0.0027515##                ## (Intercept) ***## age         *  ## angle       ***## age:angle   ** ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ## ## Mauchly Tests for Sphericity## ##           Test statistic    p-value## angle         0.93683697 0.57430711## age:angle     0.93683697 0.57430711## ## ## Greenhouse-Geisser and Huynh-Feldt Corrections##  for Departure from Sphericity## ##               GG eps             Pr(>F[GG])    ## angle     0.94058952 < 0.000000000000000222 ***## age:angle 0.94058952              0.0033994 ** ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ##                HF eps                    Pr(>F[HF])## angle     1.046677106 0.000000000000000006728921246## age:angle 1.046677106 0.002751523391096888891682593
+    
+    
+    Dropping Equal Variances Assumption
+    If we were worried about the equal variances assumption, and we were doing a pair-wise contrast, we could use Welch’s t on the subject means (from the wide data frame). If this was a complex contrast we would either have to manually calculate the contrast (see Lecture Notes 7 on contrasts) or use a regression-based model that would adjust for heteroscedasticity.
+    # welch's tt.test(pmean~age,data=dfs)
+    ## ##  Welch Two Sample t-test## ## data:  pmean by age## t = -2.6973607, df = 17.788432, p-value = 0.01483957## alternative hypothesis: true difference in means between group Young and group Old is not equal to 0## 95 percent confidence interval:##  -167.27724764  -20.72275236## sample estimates:## mean in group Young   mean in group Old ##                 569                 663
+    
+    
+    Cohen’s d and post-hoc adjustment
+    # getting Cohen's d94/pooledsd
+    ## [1] 1.117149318
+    Cohen’s d: 9484.14=1.12
+    Tukey post-hoc adjustment (redundant, it will resolve to a regular t critical value):
+    qtukey(1-.05,2,18)/sqrt(2)
+    ## [1] 2.10092196
+    qt(.05/(2),18)
+    ## [1] -2.10092204
+    
+    
+    Write-Up (assuming equal variances)
+    Older subjects had higher latency than younger subjects, t(18) = -2.70, p = .015, dav = 1.12.
+    
+    
+    
+    Within-Subjects Main Effects
+    We will test two pairwise contrasts:
+    H0:−1β0+1β4=0
+    H0:−1β0+1β8=0
+    When you are dealing with a purely within-subjects contrast, you do not have to worry about homoscedasticity (or sphericity for that matter).
+    
+    Mechanics (using emmeans)
+    em1.angle<-emmeans::emmeans(m1,~angle)em1.angle
+    ##  angle emmean          SE df    lower.CL    upper.CL##  a0     510.0 18.56071119 18 471.0053928 548.9946072##  a4     619.5 18.84807682 18 579.9016600 659.0983400##  a8     718.5 19.03286631 18 678.5134317 758.4865683## ## Results are averaged over the levels of: age ## Confidence level used: 0.95
+    contrast.4v0<-c(-1,1,0)contrast.8v0<-c(-1,0,1)B.main.contrasts.list<-list(contrast.4v0,contrast.8v0)contrast(em1.angle,B.main.contrasts.list)
+    ##  contrast    estimate          SE df t.ratio p.value##  c(-1, 1, 0)    109.5 12.09338662 18   9.055 <0.0001##  c(-1, 0, 1)    208.5 13.64734406 18  15.278 <0.0001## ## Results are averaged over the levels of: age
+    # because this is a main effects contrast it is OK to use Tukey adjustment in the pairs function (as opposed to doing the Tukey adjustment yourself)pairs(em1.angle,adjust="tukey")
+    ##  contrast estimate          SE df t.ratio p.value##  a0 - a4    -109.5 12.09338662 18  -9.055 <0.0001##  a0 - a8    -208.5 13.64734406 18 -15.278 <0.0001##  a4 - a8     -99.0 11.00000000 18  -9.000 <0.0001## ## Results are averaged over the levels of: age ## P value adjustment: tukey method for comparing a family of 3 estimates
+    
+    
+    Cohen’s d and Tukey critical t*
+    # Cohen's d# take value of psi-hat and divide into it the standardizer# 4 vs 0109.5/pooledsd
+    ## [1] 1.30136011
+    # 8 vs 0208.5/pooledsd
+    ## [1] 2.477932264
+    # manually getting Tukey t:qtukey(1-.05,3,18)/sqrt(2)
+    ## [1] 2.552163148
+    
+    
+    Write-Up
+    Latency is significantly higher at 4 degrees (M=620 ms) than at 0 degrees (M=510 ms), averaging across age groups, t(18)=9.05, Tukey adjusted p <.05, dav=1.30. It is also higher at 8 degrees (M=719 ms) than at 0 degrees, t(18)=15.28, Tukey adjusted p < .05, dav=2.48.
+    
+    
+    
+    Simple Effects: Effect of A (Between-Subjects Factor) At One Level of B (wihin-Subjects Factor)
+    We want to know if age has a significant effect when the letter appears dead-center.
+    H0:αβ0,young=αβ0,old
+    We want to know if age has a significant effect when the letter appears 4 degrees off-center.
+    H0:αβ4,young=αβ4,old
+    We want to know if age has a significant effect when the letter appears 8 degrees off-center.
+    H0:αβ8,young=αβ8,old
+    
+    
+    Age Effects at 0 degrees, dropping assumption of equal variances
+    We actually rejected null hypothesis that latency at 0 degrees has the same variance between older and younger subjects, so we should use a Welch’s t-test for this contrast. This will ONLY WORK for pairwise contrasts. For complex contrasts where you reject the equal variances assumption you need to manually calculate the contrast. Ugh.
+    t.test(a0~age,data=dfs,var.equal=FALSE)
+    ## ##  Welch Two Sample t-test## ## data:  a0 by age## t = -1.7779491, df = 15.44866, p-value = 0.09509749## alternative hypothesis: true difference in means between group Young and group Old is not equal to 0## 95 percent confidence interval:##  -144.92277041   12.92277041## sample estimates:## mean in group Young   mean in group Old ##                 477                 543
+    
+    
+    Age Effects at 4 and 8 degrees, assuming equal variances
+    If you assume equal variances, you can use emmeans for your contrast.
+    em1.cell<-emmeans::emmeans(m1,~angle*age)pairs(em1.cell,simple="age")
+    ## angle = a0:##  contrast    estimate          SE df t.ratio p.value##  Young - Old      -66 37.12142239 18  -1.778  0.0923## ## angle = a4:##  contrast    estimate          SE df t.ratio p.value##  Young - Old      -69 37.69615365 18  -1.830  0.0838## ## angle = a8:##  contrast    estimate          SE df t.ratio p.value##  Young - Old     -147 38.06573262 18  -3.862  0.0011
+    # Cohen's d young v old at 4 degrees69/pooledsd
+    ## [1] 0.8200351377
+    # Cohen's d young v old at 8 degrees147/pooledsd
+    ## [1] 1.74703138
+    
+    
+    Cohen’s d and Bonferroni correction
+    # old vs young, 0 degrees66/pooledsd
+    ## [1] 0.7843814361
+    # old vs young, 4 degrees69/pooledsd 
+    ## [1] 0.8200351377
+    # old vs young, 8 degrees147/pooledsd
+    ## [1] 1.74703138
+    # Bonferroni-corrected crit value--b/c age has only two levels, Tukey tcrit resolves to regular tcrit.qtukey(1-.05/3,2,18)/sqrt(2)
+    ## [1] 2.639144817
+    abs(qt(.05/(2*3),18))
+    ## [1] 2.639144819
+    
+    
+    Write-Up
+    Because the variances of latencies at the 0 degree condition are significantly different between younger and older subjects, we used a Welch’s t test to compare the mean latencies of those groups (M= 477 and 543 ms, respectively), finding a non-significant difference, t(15.45)=1.77, p=0.10, dav=0.78. Our diagnostics suggest equal variances between the two groups at at the 4 and 8 degree conditions, so we use regular contrasts for those conditions. As with the 0 degree condition, older subjects have longer latencies in the 4 and 8 degree conditions (Ms= 585 vs 654 for 4 degrees, dav=0.82, and 645 v 792 for 8 degrees, dav=1.75), but only the difference at 8 degrees is significant, surviving a Bonferroni adjustment to keep the familywise error rate at 0.05, t(18)=3.86, Bonferroni-adjusted p<.0.05.
+    
+    
+    
+    Simple Effects of B (Within-Sujects Factor) at One Level of A (Between-Subjects Factor)
+    Let us say we were interested in testing a pairwise difference between 0 and 8 degrees, and a complex contrast comparing 4 degrees to 0 and 8 degrees.
+    H0:−1αβ0,young+0β4,young+1β8,young=0
+    H0:−1αβ0,old+0β4,old+1β8,old=0
+    H0:1αβ0,young+−2β4,young+1β8,young=0
+    H0:1αβ0,old+−2β4,old+1β8,old=0
+    (these are actually trend contrasts, with the pairwise contrast testing for a linear trend and the complex contrast testing for a quadratic trend).
+    
+    Assuming Equal Variances (emmeans)
+    
+    
+    Dropping the equality of variances assumption
+    If we drop the equal variances assumption, we will construct difference variables capturing the contrast and then do dependent-samples t tests on them.
+    dfs$a8va0<- -1*dfs$a0 + 0*dfs$a4 + 1*dfs$a8dfs$a4va08<- 2*dfs$a4 + -1*dfs$a0 + -1*dfs$a8tapply(dfs$a8va0, dfs$age, t.test,mu=0)
+    ## $Young## ##  One Sample t-test## ## data:  X[[i]]## t = 8.1588012, df = 9, p-value = 0.00001891159## alternative hypothesis: true mean is not equal to 0## 95 percent confidence interval:##  121.4193331 214.5806669## sample estimates:## mean of x ##       168 ## ## ## $Old## ##  One Sample t-test## ## data:  X[[i]]## t = 13.897825, df = 9, p-value = 0.0000002184787## alternative hypothesis: true mean is not equal to 0## 95 percent confidence interval:##  208.4701226 289.5298774## sample estimates:## mean of x ##       249
+    tapply(dfs$a4va08, dfs$age, t.test,mu=0)
+    ## $Young## ##  One Sample t-test## ## data:  X[[i]]## t = 1.6329932, df = 9, p-value = 0.1369041## alternative hypothesis: true mean is not equal to 0## 95 percent confidence interval:##  -18.4935692 114.4935692## sample estimates:## mean of x ##        48 ## ## ## $Old## ##  One Sample t-test## ## data:  X[[i]]## t = -1.173913, df = 9, p-value = 0.2705574## alternative hypothesis: true mean is not equal to 0## 95 percent confidence interval:##  -79.02961474  25.02961474## sample estimates:## mean of x ##       -27
+    
+    
+    Cohen’s d & Bonferroni-Tukey critical value
+    # Getting Cohen's dmean(dfs$a8va0[dfs$age=="Young"])/pooledsd
+    ## [1] 1.996607292
+    mean(dfs$a8va0[dfs$age=="Old"])/pooledsd
+    ## [1] 2.959257236
+    # note adjustment for complex contrast--halving the contrast value.(mean(dfs$a4va08[dfs$age=="Young"])*2/4)/pooledsd
+    ## [1] 0.2852296131
+    (mean(dfs$a4va08[dfs$age=="Old"])*2/4)/pooledsd
+    ## [1] -0.1604416574
+    # getting tukey critical value with bonferroni adjustmentqtukey(1-.05/2,3,9)/sqrt(2)
+    ## [1] 3.23727877
+    # getting scheffe critical value with bonferroni adjustmentsqrt((3-1)*qf(1-.05/2,2,9))
+    ## [1] 3.380741157
+    We see significant greater latency at 8 degrees than at 0 degrees for both the young and old subjects, t(9)=8.16, dav=2.20, and t(9)=13.90, dav=2.96, respectively, and both survive a Tukey adjustment meant to maintain the family-wise error rate at .05, both adjusted ps<.05. There are no significant differences between 4 degrees, on the one hand, and 0 and 8 degrees on the other, all unadjusted ps>0.14.
+    
+    
+    
+    Interaction Contrasts
+    Let us say we are interested in whether or not the difference between 0 degrees and 8 degrees is the same for young people as it is for old people.
+    H0:αβ0,young−αβ8,young=αβ0,old−αβ8,old
+    
+    
+    Assuming Equal Variances
+    
+    
+    Not Assuming Equal Variances
+    # not assuming equal variances (perferred)t.test(a8va0~age,data=dfs)
+    ## ##  Welch Two Sample t-test## ## data:  a8va0 by age## t = -2.9676104, df = 17.662393, p-value = 0.008369684## alternative hypothesis: true difference in means between group Young and group Old is not equal to 0## 95 percent confidence interval:##  -138.42268076  -23.57731924## sample estimates:## mean in group Young   mean in group Old ##                 168                 249
+    
+    
+    Scheffe Adjustment
+    # Scheffe adjustmentsqrt((2-1)*(3-1)*qf(1-.05,2,17.66))
+    ## [1] 2.670806521
+    Pasting interpretation of 0 vs 8 degree contrasts from previous section:
+    We see significant greater latency at 8 degrees than at 0 degrees for both the young and old subjects, t(9)=8.16, dav=2.20, and t(9)=13.90, dav=2.96, respectively, and both survive a Tukey adjustment meant to maintain the family-wise error rate at .05, both adjusted ps<.05.
+    Interaction contrast write-up:
+    According to a Scheffe-adjusted contrast, the latency difference between the 0 and 8 degrees conditions are significantly stronger for older people than for younger people, t(17.66) = 2.97, p<.05.
+    
+    
+    
+    
+    Another Example of Split-Plot ANOVA
+    c<-read_sav("split_plot_anova_chol.sav")c$id<-rownames(c)colnames(c)
+    ## [1] "sex"     "tc1"     "tc2"     "tc3"     "tc4"     "tc_mean" "id"
+    c$sex<-factor(c$sex,labels=c("Male","Female"))cl<-pivot_longer(c,               cols=c("tc1","tc2","tc3","tc4"),               names_to="obs",               values_to="chol")cl$seasonnum<-as.numeric(substr(cl$obs,3,3))cl$seasonnum<-ifelse(cl$sex=="Male",cl$seasonnum+.5,cl$seasonnum)cl$season<-factor(cl$obs,labels=c("Winter","Spring","Summer","Fall"))
+    Looking at the effect of gender and seasons on cholesterol. Subjects were volunteers recruited from a large HMO in Massachusetts. During each season (winter, spring, summer, fall) researchers recorded the subjects’ total cholesterol level. There were 220 men and 211 women in the data.
+    
+    cl<-group_by(cl,sex,obs)cls<-summarize(cl,M=mean(chol))
+    ## `summarise()` has grouped output by 'sex'. You can override using the `.groups`## argument.
+    cl<-ungroup(cl)cmc<-as.data.frame(cm.ci.mixed(c[c("tc1","tc2","tc3","tc4","sex")]))cmc$obs<-rownames(cmc)cmc.male<-subset(cmc,select=c("obs","lower","upper"))cmc.male$sex<-"Male"cmc.female<-subset(cmc,select=c("obs","lower.1","upper.1"))cmc.female<-rename(cmc.female,lower=lower.1,upper=upper.1)cmc.female$sex<-"Female"cmc.both<-rbind(cmc.male,cmc.female)cmc.both$sex<-factor(cmc.both$sex)gdf<-merge(cmc.both,cls,by=c("sex","obs"))gdf
+    ##      sex obs       lower       upper           M## 1 Female tc1 214.8902716 217.9438516 216.4170616## 2 Female tc2 211.9175914 214.5231669 213.2203791## 3 Female tc3 212.5544375 215.6303967 214.0924171## 4 Female tc4 213.4463755 216.7431980 215.0947867## 5   Male tc1 222.5045477 225.6136341 224.0590909## 6   Male tc2 217.3824841 220.2538795 218.8181818## 7   Male tc3 220.6903741 223.6368986 222.1636364## 8   Male tc4 221.0912051 223.9451585 222.5181818
+    gdf$season<-factor(gdf$obs,labels=c("Winter","Spring","Summer","Fall"))
+    ggplot(data=gdf,aes(x=season,y=M,color=sex,group=sex))+  geom_line()+  geom_errorbar(aes(ymin=lower,ymax=upper),width=.2)+  labs(title="Cholesterol By Gender and Season",       y="Cholesterol (mg/dl",x="Season",caption="Error bars represent COusineau-Morey 95% confidence intervals")
+    
+    
+    Testing Assumptions
+    
+    Normality
+    tapply(c,c$sex,stat.desc,norm=T)
+    ## $Male##            sex                tc1                tc2                 tc3## nbr.val     NA   220.000000000000   220.000000000000   220.0000000000000## nbr.null    NA     0.000000000000     0.000000000000     0.0000000000000## nbr.na      NA     0.000000000000     0.000000000000     0.0000000000000## min         NA   118.000000000000   101.000000000000   103.0000000000000## max         NA   368.000000000000   374.000000000000   397.0000000000000## range       NA   250.000000000000   273.000000000000   294.0000000000000## sum         NA 49293.000000000000 48140.000000000000 48876.0000000000000## median      NA   218.000000000000   218.250000000000   217.5000000000000## mean        NA   224.059090909091   218.818181818182   222.1636363636364## SE.mean     NA     2.750294266373     2.704420482617     2.8047194152269## CI.mean     NA     5.420432216149     5.330021623222     5.5276963128764## var         NA  1664.106081361561  1609.055832295558  1730.6192195931922## std.dev     NA    40.793456354685    40.113038183308    41.6007117678675## coef.var    NA     0.182065615768     0.183316751149     0.1872525695419## skewness    NA     0.578324909380     0.468365321788     0.7157075681707## skew.2SE    NA     1.762827005159     1.427652560242     2.1815913658636## kurtosis    NA     0.772421204669     1.389492629201     1.4172688989089## kurt.2SE    NA     1.182401358835     2.126997502048     2.1695166597911## normtest.W  NA     0.978329546360     0.979435795415     0.9708013987146## normtest.p  NA     0.001836050261     0.002685496457     0.0001625828016##                           tc4            tc_mean id## nbr.val      220.000000000000   220.000000000000 NA## nbr.null       0.000000000000     0.000000000000 NA## nbr.na         0.000000000000     0.000000000000 NA## min           97.000000000000   104.750000000000 NA## max          397.000000000000   377.500000000000 NA## range        300.000000000000   272.750000000000 NA## sum        48954.000000000000 48816.290000000001 NA## median       221.000000000000   219.755000000000 NA## mean         222.518181818182   221.892227272727 NA## SE.mean        2.690611906222     2.580213299837 NA## CI.mean        5.302806916321     5.085227230401 NA## var         1592.666334578663  1464.650147984641 NA## std.dev       39.908223896569    38.270747941275 NA## coef.var       0.179348148410     0.172474486428 NA## skewness       0.461764949245     0.531736452212 NA## skew.2SE       1.407533566965     1.620817921523 NA## kurtosis       1.237220396247     1.146633761278 NA## kurt.2SE       1.893903311897     1.755235756381 NA## normtest.W     0.982086686117     0.981359406997 NA## normtest.p     0.006853771199     0.005281310711 NA## ## $Female##            sex               tc1              tc2              tc3## nbr.val     NA   211.00000000000   211.0000000000   211.0000000000## nbr.null    NA     0.00000000000     0.0000000000     0.0000000000## nbr.na      NA     0.00000000000     0.0000000000     0.0000000000## min         NA   106.00000000000   115.5000000000   100.0000000000## max         NA   327.00000000000   326.0000000000   320.0000000000## range       NA   221.00000000000   210.5000000000   220.0000000000## sum         NA 45664.00000000000 44989.5000000000 45173.5000000000## median      NA   216.50000000000   213.0000000000   212.0000000000## mean        NA   216.41706161137   213.2203791469   214.0924170616## SE.mean     NA     2.94987194554     2.7835274976     2.8280019984## CI.mean     NA     5.81515570314     5.4872367687     5.5749104547## var         NA  1836.06808846761  1634.8333446175  1687.4926088919## std.dev     NA    42.84936508827    40.4330724113    41.0791018511## coef.var    NA     0.19799439457     0.1896304311     0.1918755574## skewness    NA     0.08870872946     0.2620590048     0.1641362350## skew.2SE    NA     0.26488527920     0.7825111811     0.4901126721## kurtosis    NA    -0.23582377879    -0.2236938522    -0.1638554460## kurt.2SE    NA    -0.35369590200    -0.3355030575    -0.2457555386## normtest.W  NA     0.99528164572     0.9908555466     0.9939673971## normtest.p  NA     0.75876692976     0.2049080681     0.5538727261##                         tc4          tc_mean id## nbr.val      211.0000000000   211.0000000000 NA## nbr.null       0.0000000000     0.0000000000 NA## nbr.na         0.0000000000     0.0000000000 NA## min          112.0000000000   114.8800000000 NA## max          343.0000000000   320.0000000000 NA## range        231.0000000000   205.1200000000 NA## sum        45385.0000000000 45303.5000000000 NA## median       213.0000000000   214.2500000000 NA## mean         215.0947867299   214.7085308057 NA## SE.mean        2.9588984798     2.7242194232 NA## CI.mean        5.8329499339     5.3703212912 NA## var         1847.3219250733  1565.9093792598 NA## std.dev       42.9804830717    39.5715728682 NA## coef.var       0.1998211287     0.1843036824 NA## skewness       0.3740015845     0.1735780855 NA## skew.2SE       1.1167730024     0.5183061457 NA## kurtosis       0.1786247596    -0.1667240747 NA## kurt.2SE       0.2679070184    -0.2500579979 NA## normtest.W     0.9884962393     0.9944866127 NA## normtest.p     0.0879079516     0.6342334257 NA
+    ggplot(data=cl,aes(x=sex,y=chol,fill=season))+  geom_boxplot()
+    
+    The distributions are more or less symmetrical, but we see that men have some positive outliers that result in significant levels of skewness and violations of normality. We should consider the use of robust statistical analyses.
+    
+    
+    SPhericity
+    m3<-aov_car(chol~sex*season+Error(id/season),data=cl)
+    ## Contrasts set to contr.sum for the following variables: sex
+    summary(m3)
+    ## ## Univariate Type III Repeated-Measures ANOVA Assuming Sphericity## ##               Sum Sq num Df   Error SS den Df     F value## (Intercept) 82119677      1 2598411.69    429 13558.02911## sex            22232      1 2598411.69    429     3.67048## season          3982      3  317410.66   1287     5.38244## sex:season       385      3  317410.66   1287     0.51972##                             Pr(>F)    ## (Intercept) < 0.000000000000000222 ***## sex                      0.0560486 .  ## season                   0.0011059 ** ## sex:season               0.6687652    ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ## ## Mauchly Tests for Sphericity## ##            Test statistic     p-value## season         0.96807998 0.016419837## sex:season     0.96807998 0.016419837## ## ## Greenhouse-Geisser and Huynh-Feldt Corrections##  for Departure from Sphericity## ##                GG eps Pr(>F[GG])   ## season     0.97951591  0.0012088 **## sex:season 0.97951591  0.6649819   ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1## ##                  HF eps    Pr(>F[HF])## season     0.9870059143 0.00117009467## sex:season 0.9870059143 0.66637435173
+    We meet the overall compound symmetry assumption required to do an omnibus F test looking at the main effects of season.
+    
+    
+    Equality of Variances
+    c$tc_mean<-(c$tc1+c$tc2+c$tc3+c$tc4)/4leveneTest(tc_mean~sex,data=c,center="mean")
+    ## Levene's Test for Homogeneity of Variance (center = "mean")##        Df F value  Pr(>F)## group   1 0.69251 0.40578##       429
+    leveneTest(tc1~sex,data=c,center="mean")
+    ## Levene's Test for Homogeneity of Variance (center = "mean")##        Df F value  Pr(>F)## group   1 0.92679 0.33624##       429
+    leveneTest(tc2~sex,data=c,center="mean")
+    ## Levene's Test for Homogeneity of Variance (center = "mean")##        Df F value  Pr(>F)## group   1 0.56495 0.45269##       429
+    leveneTest(tc3~sex,data=c,center="mean")
+    ## Levene's Test for Homogeneity of Variance (center = "mean")##        Df F value  Pr(>F)## group   1 0.36432 0.54643##       429
+    leveneTest(tc4~sex,data=c,center="mean")
+    ## Levene's Test for Homogeneity of Variance (center = "mean")##        Df F value  Pr(>F)## group   1 0.62042 0.43133##       429
+    multiUS::BoxMTest(X=c[,c(2,3,4,5)],cl=c$sex)
+    ## ------------------------------------------------##       MBox    Chi-sqr          df            P## ------------------------------------------------##    14.2764    14.1332          10       0.1670## ------------------------------------------------## Covariance matrices are not significantly different.
+    According to both Box’s test and Levene’s test, the covariances and variances are the same for both men and women, indicating we can do omnibus tests involving the within-subject factor and simple effects / interaction contrasts.
+    We are doing contrasts because we are pretending we meet the normality assumption.
+    
+    
+    
+    Contrasts
+    Let us use a post-hoc adjustment for all contrasts.
+    
+    Cohen’s dav standardizer
+    To calculate Cohen’s dav, we will use the standardizer of 41.22, the pooled standard deviation that assumes each observation came from a unique person.
+    cl$fakeid<-seq(1:1724)summary(afex::aov_car(chol~sex*season+Error(fakeid),data=cl))
+    ## Contrasts set to contr.sum for the following variables: sex, season
+    ## Anova Table (Type 3 tests)## ## Response: chol##            num Df den Df       MSE        F          ges    Pr(>F)    ## sex             1   1716 1699.1972 13.08368 0.0075668261 0.0003065 ***## season          3   1716 1699.1972  0.78123 0.0013639221 0.5043769    ## sex:season      3   1716 1699.1972  0.07543 0.0001318596 0.9732271    ## ---## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    pooledsd<-sqrt(1699.1972)pooledsd
+    ## [1] 41.22131973
+    
+    
+    Main Effect of Gender
+    H0:αMale=αFemale
+    
+    emmeans
+    em3.sex<-emmeans(m3,~sex)contrast.gender<-list(c(-1,1))contrast(em3.sex,contrast.gender)
+    ##  contrast    estimate          SE  df t.ratio p.value##  c(-1, 1) -7.18361159 3.749569481 429  -1.916  0.0560## ## Results are averaged over the levels of: season
+    
+    
+    Cohen’s d and Post-Hoc Adjustment
+    Since there are only two genders, the Tukey post-hoc adjustment will resolve to a regular t critical value.
+    # Cohen's d7.18/pooledsd
+    ## [1] 0.174181711
+    qtukey(1-.05,2,429)/sqrt(2)
+    ## [1] 1.965509123
+    qt(.05/2,429)
+    ## [1] -1.965509123
+    In the graph we see that men have a higher cholesterol level than women year-round, but this difference is not statistically significant, t(429) = 1.92, p = .06, dav=.17.
+    
+    
+    
+    Main Effect of Season
+    H0:βwinter=βspring
+    H0:βspring=βsummer
+    H0:βsummer=βfall
+    
+    emmeans
+    em3.season<-emmeans(m3,~season)em3.season
+    ##  season      emmean          SE  df    lower.CL    upper.CL##  Winter 220.2380763 2.014475428 429 216.2786064 224.1975461##  Spring 216.0192805 1.940161465 429 212.2058754 219.8326855##  Summer 218.1280267 1.992010747 429 214.2127114 222.0433420##  Fall   218.8064843 1.996558566 429 214.8822302 222.7307383## ## Results are averaged over the levels of: sex ## Confidence level used: 0.95
+    contrasts.season<-list(c(1,-1,0,0),                       c(0,1,-1,0),                       c(0,0,1,-1))contrast(em3.season,contrasts.season)
+    ##  contrast           estimate          SE  df t.ratio p.value##  c(1, -1, 0, 0)  4.218795778 1.002851289 429   4.207 <0.0001##  c(0, 1, -1, 0) -2.108746230 1.018321701 429  -2.071  0.0390##  c(0, 0, 1, -1) -0.678457561 1.070637051 429  -0.634  0.5266## ## Results are averaged over the levels of: sex
+    
+    
+    Cohen’s d & Tukey t
+    # Cohen's d4.22/pooledsd
+    ## [1] 0.102374209
+    2.11/pooledsd
+    ## [1] 0.05118710449
+    .68/pooledsd
+    ## [1] 0.01649631803
+    # Tukey tqtukey(1-.05,4,429)/sqrt(2)
+    ## [1] 2.57912863
+    sqrt(3*qf(1-.05,3,429))
+    ## [1] 2.806616751
+    According to Tukey’s HSD, there is a significant decrease in cholesterol going from winter (M=220) to spring (M=216), t(429)=4.22, Tukey adjusted p<.05, dav =0.10. The increase from spring to summer (M=218) is not statistically significant, t(429) = 2.11, Tukey adjusted p>.05, dav =.05, and there is no change from summer to fall (M=219), t(429)=0.63, Tukey adjusted p>.05, dav=0.02.
+    
+    
+    
+    Spring Slump Effect?
+    Let us test if the dip we see in the spring season on the graph is real.
+    This syntax will test four contrasts:
+    First, a complex contrast looking at the main effect of season (spring vs all other seasons).
+    Second and third, complex contrast looking at the simple effect of season (spring vs all others) for each gender.
+    Finally, an interaction contrast seeing if the “spring slum” effect is the same for both men and women.
+    
+    Spring Slump Main Effect
+    H0:3βspring=1βwinter+1βsummer+1βfall
+    em3.season
+    ##  season      emmean          SE  df    lower.CL    upper.CL##  Winter 220.2380763 2.014475428 429 216.2786064 224.1975461##  Spring 216.0192805 1.940161465 429 212.2058754 219.8326855##  Summer 218.1280267 1.992010747 429 214.2127114 222.0433420##  Fall   218.8064843 1.996558566 429 214.8822302 222.7307383## ## Results are averaged over the levels of: sex ## Confidence level used: 0.95
+    contrast.springslump<-c(1,-3,1,1)contrast.list<-list(contrast.springslump)contrast(em3.season,contrast.list)
+    ##  contrast          estimate          SE  df t.ratio p.value##  c(1, -3, 1, 1) 9.114745799 2.415185867 429   3.774  0.0002## ## Results are averaged over the levels of: sex
+    
+    
+    Spring Slump By Gender
+    em3.cell<-emmeans(m3,~sex*season)em3.cell
+    ##  sex    season      emmean          SE  df    lower.CL    upper.CL##  Male   Winter 224.0590909 2.818996668 429 218.5183272 229.5998546##  Female Winter 216.4170616 2.878489671 429 210.7593639 222.0747593##  Male   Spring 218.8181818 2.715003930 429 213.4818168 224.1545468##  Female Spring 213.2203792 2.772302237 429 207.7713938 218.6693645##  Male   Summer 222.1636364 2.787560265 429 216.6846612 227.6426115##  Female Summer 214.0924171 2.846389824 429 208.4978119 219.6870222##  Male   Fall   222.5181818 2.793924348 429 217.0266980 228.0096656##  Female Fall   215.0947867 2.852888216 429 209.4874089 220.7021645## ## Confidence level used: 0.95
+    contrast.springslump.female<-c(0,1,0,-3,0,1,0,1)contrast.springslump.male<-c(1,0,-3,0,1,0,1,0)contrast.list<-list(contrast.springslump.female,contrast.springslump.male)# First contrast is for women, second for mencontrast(em3.cell, contrast.list)
+    ##  contrast                       estimate          SE  df t.ratio p.value##  c(0, 1, 0, -3, 0, 1, 0, 1)  5.943127962 3.451065956 429   1.722  0.0858##  c(1, 0, -3, 0, 1, 0, 1, 0) 12.286363636 3.379738872 429   3.635  0.0003
+    
+    
+    Spring Slump Interaction
+    em3.cell
+    ##  sex    season      emmean          SE  df    lower.CL    upper.CL##  Male   Winter 224.0590909 2.818996668 429 218.5183272 229.5998546##  Female Winter 216.4170616 2.878489671 429 210.7593639 222.0747593##  Male   Spring 218.8181818 2.715003930 429 213.4818168 224.1545468##  Female Spring 213.2203792 2.772302237 429 207.7713938 218.6693645##  Male   Summer 222.1636364 2.787560265 429 216.6846612 227.6426115##  Female Summer 214.0924171 2.846389824 429 208.4978119 219.6870222##  Male   Fall   222.5181818 2.793924348 429 217.0266980 228.0096656##  Female Fall   215.0947867 2.852888216 429 209.4874089 220.7021645## ## Confidence level used: 0.95
+    contrast.springslump.interaction<-c(1,-1,-3,3,1,-1,1,-1)contrast.list<-list(contrast.springslump.interaction)contrast(em3.cell,contrast.list)
+    ##  contrast                         estimate          SE  df t.ratio p.value##  c(1, -1, -3, 3, 1, -1, 1, -1) 6.343235674 4.830371733 429   1.313  0.1898
+    
+    
+    Cohen’s d and Scheffea djustment
+    # Cohen's d# spring slump main effect# note adjustment for complex contrast--trisecting the contrast value.(9.11*(2/6))/pooledsd 
+    ## [1] 0.07366738103
+    # spring slump female(5.94*(2/6))/pooledsd 
+    ## [1] 0.04803339663
+    # spring slump male(12.29*(2/6))/pooledsd 
+    ## [1] 0.09938222973
+    # Scheffe main effects (first contrast)sqrt(3*qf(1-.05,3,429))
+    ## [1] 2.806616751
+    # Scheffe simple effects (second and third contrast)sqrt(3*qf(1-.05/2,3,429))
+    ## [1] 3.072444006
+    # Scheffe interaction (last contrast; same as for main effects contrast)sqrt(3*qf(1-.05,3,429))
+    ## [1] 2.806616751
+    The “spring slump” in total cholesterol is real in the sample as a whole, t(429) = 3.774, Scheffe-adjusted p<.05, dav=0.07. However, the effect is only significant for men, (t)429=3.64, Scheffe-adjusted p<.05, dav=0.10. The effect is neglibile for women, t(429)=1.72, unadjusted p > 0.05, dav=0.05. While we see a significant slump for men, and a non-significant slump for women, there is no significant gender difference between these slumps, t(429)=1.31, unadjusted p=.19.

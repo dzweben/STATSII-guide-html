@@ -1,0 +1,444 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Exam 3 Study Dashboard</title>
+<style>
+  body { font-family: 'Georgia', serif; margin: 0; background: #f7f7f4; color: #222; }
+  header { background: #0d475c; color: #fff; padding: 24px 32px; }
+  header h1 { margin: 0 0 6px; font-size: 28px; }
+  header p { margin: 0; opacity: 0.9; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 32px 64px; }
+  .nav { background: #fff; border: 1px solid #ddd; padding: 16px; border-radius: 10px; margin-bottom: 24px; }
+  .nav a { display: inline-block; margin: 4px 10px 4px 0; color: #0d475c; text-decoration: none; font-weight: 600; }
+  details { background: #fff; border: 1px solid #ddd; border-radius: 10px; margin: 12px 0; padding: 10px 14px; }
+  summary { font-weight: 700; font-size: 16px; cursor: pointer; }
+  .answer { padding: 10px 6px 6px; }
+  .formula { font-family: 'Cambria Math', 'Times New Roman', serif; background: #eef6f8; padding: 2px 6px; border-radius: 6px; }
+  .panel { border: 1px solid #d7a34a; padding: 12px; border-radius: 8px; margin: 12px 0; background: #fff8e1; }
+  .panel h4 { margin: 0 0 6px; color: #8a5a00; }
+  img { max-width: 100%; height: auto; display: block; margin: 8px 0; border: 1px solid #ccc; }
+  table.tbl { border-collapse: collapse; width: 100%; margin: 8px 0; }
+  table.tbl th, table.tbl td { border: 1px solid #bbb; padding: 6px 8px; }
+  table.tbl th { background: #f0f0f0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Exam 3 Study Dashboard</h1>
+  <p>Expanded, step‑by‑step explanations with formulas, figures, and tables.</p>
+</header>
+<div class="container">
+<div class="nav">
+  <strong>Jump to:</strong>
+
+<a href="#objectives">Study Guide Objectives</a>
+<a href="#equations">Equations on the Test</a>
+<a href="#problems">Problems</a>
+</div>
+
+<section id="objectives">
+<h2>Study Guide Objectives</h2>
+<details>
+<summary>Interpret all figures and tables in the Simmons Nelson, and Simonsohn article.</summary>
+<div class="answer">
+
+<p>This question asks you to interpret the figures and tables from Simmons, Nelson, and Simonsohn (2011). Below, each figure/table is shown as an image, followed immediately by a clear interpretation in words. Read each interpretation as: (1) what is being compared, (2) what the numbers show, and (3) why it matters for false positives.</p>
+
+<div class="panel">
+  <h4>Table 1 Interpretation</h4>
+  <p>Table 1 reports the <em>probability of a false positive</em> under different researcher degrees of freedom. The baseline false‑positive rate of 5% is only true when you run one test one time. When researchers try multiple reasonable analyses, the probability of at least one “significant” result becomes much larger. For example, trying two dependent variables alone raises the false‑positive rate to 9.5%. Combining several common flexibilities pushes it above 60%, meaning false positives are <em>more likely than not</em>.</p>
+  <img src="simmons_table1.jpg" alt="Table 1 from Simmons et al. 2011" />
+</div>
+
+<div class="panel">
+  <h4>Figure 1 Interpretation</h4>
+  <p>Figure 1 shows false‑positive rates when researchers repeatedly test for significance while data are still being collected. The more often you “peek,” the higher the false‑positive rate becomes. Starting with a smaller minimum sample size makes the problem worse. The core lesson: optional stopping inflates false positives even if each test uses p ≤ .05.</p>
+  <img src="simmons_fig1.png" alt="Figure 1 from Simmons et al. 2011" />
+</div>
+
+<div class="panel">
+  <h4>Figure 2 Interpretation</h4>
+  <p>Figure 2 shows an example of p‑values as a researcher adds participants. The p‑value moves up and down as the sample grows. A finding can be “significant” early and then become non‑significant later. This is why optional stopping can create results that look real but are not stable.</p>
+  <img src="simmons_fig2.png" alt="Figure 2 from Simmons et al. 2011" />
+</div>
+
+<div class="panel">
+  <h4>Table 2 Interpretation</h4>
+  <p>Table 2 lists the authors’ solution: transparency and disclosure. Researchers should pre‑specify their stopping rule, report all variables and conditions, and show results with and without exclusions or covariates. Reviewers should enforce these rules and demand robustness checks or exact replications when analytic choices are questionable. The goal is not to ban flexibility, but to make it visible.</p>
+  <img src="simmons_table2.png" alt="Table 2 from Simmons et al. 2011" />
+</div>
+
+<div class="panel">
+  <h4>Table 3 Interpretation</h4>
+  <p>Table 3 rewrites a study using full disclosure. Once all measures, covariates, and stopping decisions are revealed, it becomes clear that the “significant” effect depends on specific choices (for example, including a covariate). Without those choices, the effect disappears. The table shows how transparency can reveal the fragility of results.</p>
+  <img src="simmons_table3.png" alt="Table 3 from Simmons et al. 2011" />
+</div>
+
+</div>
+</details>
+<details>
+<summary>List the different ways researcher discretion (aka “research degrees of freedom”) can increase the chances of getting a false positive</summary>
+<div class="answer">
+
+<p>Researcher degrees of freedom are the many reasonable decisions analysts can make after seeing data. Each decision is a “fork in the road.” If you try several of them and then report only the best result, you are effectively running multiple tests without correcting the p‑value. That raises the chance of at least one false positive far above 5%.</p>
+<p>Common sources of flexibility include: deciding when to stop collecting data (optional stopping), analyzing multiple dependent variables and reporting only the significant one, choosing whether to include or exclude covariates, dropping or combining conditions, removing outliers after seeing the results, trying alternative transformations or coding rules, and searching for subgroup effects.</p>
+<p>The key lesson: the nominal p‑value does not reflect the true false‑positive rate unless choices are pre‑specified or fully disclosed.</p>
+
+</div>
+</details>
+<details>
+<summary>Calculate the “effects” for the general linear model for a two-way between-subjects ANOVA, a single-factor within-subjects ANOVA, a multi-factor within-subjects, and a split-plot ANOVA ( , , , eijk). Do not worry about random effects, like subject effects or subject interactions.</summary>
+<div class="answer">
+
+<p>An <strong>effect</strong> is a deviation from the grand mean. The basic idea is that each factor’s level mean can be expressed as the grand mean plus an effect term. Interaction effects capture the extra deviation beyond the main effects.</p>
+<p><strong>Two‑way between‑subjects model:</strong><br/>
+<span class="formula">α<sub>j</sub> = Ȳ<sub>j</sub> − Ȳ, &nbsp; β<sub>k</sub> = Ȳ<sub>k</sub> − Ȳ, &nbsp; (αβ)<sub>jk</sub> = Ȳ<sub>jk</sub> − Ȳ<sub>j</sub> − Ȳ<sub>k</sub> + Ȳ, &nbsp; ε<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>jk</sub></span>
+</p>
+<p><strong>One‑factor within‑subjects model:</strong><br/>
+<span class="formula">α<sub>j</sub> = Ȳ<sub>j</sub> − Ȳ, &nbsp; ε<sub>ij</sub> = Y<sub>ij</sub> − Ȳ<sub>j</sub> − Ȳ<sub>i</sub> + Ȳ</span>
+<br/>Here the residual subtracts each person’s mean to remove stable individual differences.</p>
+<p><strong>Two‑factor within‑subjects (fixed effects only):</strong><br/>
+Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas above; subject terms are omitted per the prompt.</p>
+<p><strong>Split‑plot (one between‑subjects factor A, one within‑subjects factor B):</strong><br/>
+<span class="formula">α<sub>j</sub>, β<sub>k</sub>, (αβ)<sub>jk</sub> as above; &nbsp; ε<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>ij</sub> − Ȳ<sub>jk</sub> + Ȳ<sub>j</sub></span>
+<br/>This residual reflects within‑person variability, with subjects nested in the between‑subjects factor.</p>
+
+</div>
+</details>
+<details>
+<summary>You will not have to calculate sums of squares, but you should be able to understand what are the sources of error for specific effects in ANOVA (especially pertinent for multi-factor repeated measures ANOVA and split-plot ANOVA)</summary>
+<div class="answer">
+
+<p>Each effect is tested against an error term that represents the variability not explained by that effect. In repeated‑measures and split‑plot designs, the correct error term depends on whether the effect is within‑subjects or between‑subjects.</p>
+<p><strong>Between‑subjects analysis:</strong> The error term is the within‑cell variability among individuals.</p>
+<p><strong>One‑factor within‑subjects analysis:</strong> The error term is the subject × factor interaction. It captures how much each person’s condition effect differs from the average condition effect.</p>
+<p><strong>Two‑factor within‑subjects analysis:</strong> The error for Factor A is A × Subject; the error for Factor B is B × Subject; the error for the A × B interaction is A × B × Subject.</p>
+<p><strong>Split‑plot analysis:</strong> The error for the between‑subjects factor is Subject (nested in the between‑subjects factor). The error for the within‑subjects factor and the interaction is the within‑subjects factor × Subject (nested).</p>
+
+</div>
+</details>
+<details>
+<summary>Relatedly, explain, in a conceptual, intuitive way, the error components in a one-way and two-way within-subject design.</summary>
+<div class="answer">
+
+<p>In a one‑way within‑subjects design, each person provides multiple scores. Subtracting each person’s mean removes stable individual differences. What remains is the person’s fluctuation across conditions. That fluctuation is the subject × condition error term.</p>
+<p>In a two‑way within‑subjects design, the same logic applies to each effect. The error for Factor A is how each person’s A‑effect deviates from the average A‑effect. The error for Factor B is how each person’s B‑effect deviates. The error for the interaction is how each person’s interaction pattern deviates from the average interaction.</p>
+
+</div>
+</details>
+<details>
+<summary>Explain the difference between between-subject ANOVAs and a within-subject ANOVAs in terms of design, ANOVA tables, sums of squares, and F ratios.</summary>
+<div class="answer">
+
+<p><strong>Design:</strong> Between‑subjects designs compare different people in each condition; within‑subjects designs measure the same people across conditions.</p>
+<p><strong>ANOVA table:</strong> Between‑subjects uses one error term (within‑cell variance). Within‑subjects partitions subject variability and uses subject × effect error terms.</p>
+<p><strong>Sums of squares:</strong> Within‑subjects removes subject sums of squares from the error, which usually lowers the error term and increases power. Between‑subjects does not.</p>
+<p><strong>F ratios:</strong> Between‑subjects uses mean square for the effect divided by mean square for within‑cell error. Within‑subjects uses mean square for the effect divided by mean square for subject × effect error (and requires sphericity or corrected degrees of freedom).</p>
+
+</div>
+</details>
+<details>
+<summary>Interpret R output for two-way ANOVA, within-subject ANOVA, multi-factor repeated measures ANOVA, and split-plot ANOVA</summary>
+<div class="answer">
+
+<p>Start by identifying the effect rows (Factor A, Factor B, and the interaction) and their degrees of freedom. Then identify the correct error term used for each effect. In repeated‑measures output, the denominator is often a subject‑interaction term rather than within‑cell variance.</p>
+<p>Next, check sphericity tests (such as Mauchly’s test). If sphericity is violated, use Greenhouse–Geisser or Huynh–Feldt corrected p‑values. Finally, interpret the direction of effects using marginal means or cell means and (if provided) plots.</p>
+
+</div>
+</details>
+<details>
+<summary>In a two-way ANOVA context, conceptually describe main effects and interaction effects. Know what a “consistent main effect” is.</summary>
+<div class="answer">
+
+<p>A <strong>main effect</strong> is the average difference between levels of one factor after collapsing across the other factor. An <strong>interaction</strong> exists when the effect of one factor changes depending on the level of the other factor (non‑parallel lines in a plot).</p>
+<p>A <strong>consistent main effect</strong> means the direction and ordering of the effect are the same at every level of the other factor. If the ordering flips or the direction changes, the main effect is not consistent.</p>
+
+</div>
+</details>
+<details>
+<summary>In a between-subject context, calculate mean differences between groups according to the Type I and Type III methods of calculating sums of squares and explain what a difference between a Type I effect and a Type III effect means</summary>
+<div class="answer">
+
+<p>Type I uses <strong>weighted marginal means</strong> based on the observed cell sizes, so it reflects the actual sample composition. Type III uses <strong>unweighted marginal means</strong>, which treat each cell as equally important and represent a balanced design.</p>
+<p>If Type I and Type III differ, it means the other factor is imbalanced across groups. In that case, the Type I effect is partly driven by that imbalance, while the Type III effect is closer to the “pure” effect of the factor of interest.</p>
+
+</div>
+</details>
+<details>
+<summary>Look at data for a two-way ANOVAs (either between-subjects, within-subjects, or split-plot) and calculate and describe main effect contrasts, simple effect contrasts, and interaction contrasts</summary>
+<div class="answer">
+
+<p>A <strong>main‑effect contrast</strong> compares marginal means across levels of one factor (for example, Factor A level 1 vs level 2). A <strong>simple‑effect contrast</strong> compares levels of one factor within a fixed level of the other factor. An <strong>interaction contrast</strong> compares two simple effects (a difference of differences) to test whether the simple effects differ from each other.</p>
+
+</div>
+</details>
+<details>
+<summary>Apply the post-hoc adjustments to a variety of situations (main effects contrasts, simple effects contrasts, interaction contrasts)</summary>
+<div class="answer">
+
+<p>Use the <strong>Tukey</strong> adjustment for pairwise contrasts and the <strong>Scheffé</strong> adjustment for complex contrasts. Tukey uses the studentized range distribution; Scheffé uses the F distribution with degrees of freedom for the effect.</p>
+<p>When doing simple effects, adjust the significance level by the number of simple‑effect tests (for example, divide α by the number of levels in the other factor). Interactions use the Scheffé adjustment with degrees of freedom equal to (a−1)(b−1).</p>
+
+</div>
+</details>
+</section>
+<section id="equations">
+<h2>Equations on the Test</h2>
+<details>
+<summary>Contrast test statistic (general form)</summary>
+<div class="answer">
+
+<p>The contrast value is <strong>ψ̂ = Σ c<sub>j</sub> Ȳ<sub>j</sub></strong>. The test statistic compares ψ̂ to its standard error:</p>
+<p><span class="formula">t = ψ̂ / √(MSE · Σ(c<sub>j</sub><sup>2</sup>/n<sub>j</sub>))</span></p>
+<p>Use the appropriate mean square error (from the correct error term) and the correct sample size for each level.</p>
+
+</div>
+</details>
+<details>
+<summary>Effects (main and interaction)</summary>
+<div class="answer">
+
+<p><span class="formula">α<sub>j</sub> = Ȳ<sub>j</sub> − Ȳ</span> &nbsp; <span class="formula">β<sub>k</sub> = Ȳ<sub>k</sub> − Ȳ</span></p>
+<p><span class="formula">(αβ)<sub>jk</sub> = Ȳ<sub>jk</sub> − Ȳ<sub>j</sub> − Ȳ<sub>k</sub> + Ȳ</span></p>
+
+</div>
+</details>
+<details>
+<summary>Adjusted critical values for contrasts</summary>
+<div class="answer">
+
+<p><strong>Tukey (pairwise):</strong> <span class="formula">t* = q / √2</span> where q is the studentized range value.</p>
+<p><strong>Scheffé (complex):</strong> <span class="formula">t* = √(df<sub>effect</sub> · F<sub>df<sub>effect</sub>, df<sub>error</sub>, α</sub>)</span></p>
+
+</div>
+</details>
+<details>
+<summary>Denominator degrees of freedom for contrasts</summary>
+<div class="answer">
+
+<table class="tbl">
+  <tr><th>Design</th><th>Denominator degrees of freedom</th></tr>
+  <tr><td>One‑way between‑subjects</td><td>n − a</td></tr>
+  <tr><td>Two‑way between‑subjects</td><td>n − ab</td></tr>
+  <tr><td>One‑way within‑subjects</td><td>n − 1</td></tr>
+  <tr><td>Two‑way within‑subjects</td><td>n − 1</td></tr>
+  <tr><td>Split‑plot</td><td>n − a</td></tr>
+</table>
+
+</div>
+</details>
+</section>
+<section id="problems">
+<h2>Problems</h2>
+<details>
+<summary>Problem 1</summary>
+<div class="answer">
+
+<p><strong>Step 1: Type I (weighted) means.</strong> Compute weighted means using cell sizes.</p>
+<p>Low‑income mean = (−0.24·6668 + 0.30·1437)/(6668+1437) = −0.14.</p>
+<p>High‑income mean = (0.19·1424 + 0.50·2916)/(1424+2916) = 0.40.</p>
+<p><strong>Type I difference</strong> = 0.40 − (−0.14) = 0.54 standard deviations.</p>
+
+<p><strong>Step 2: Type III (unweighted) means.</strong> Average the two cell means for each income group.</p>
+<p>Low‑income mean = (−0.24 + 0.30)/2 = 0.03.</p>
+<p>High‑income mean = (0.19 + 0.50)/2 = 0.35.</p>
+<p><strong>Type III difference</strong> = 0.35 − 0.03 = 0.32 standard deviations.</p>
+
+<p><strong>Interpretation.</strong> The Type I difference is larger because income groups are unevenly distributed across parental education levels. Type III is closer to the “pure” income effect because it balances parental education.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 2a</summary>
+<div class="answer">
+
+<p>The interaction of treatment and political orientation is highly significant, F(2,54)=16.72, p<.001. This means the effect of officer race depends on political orientation.</p>
+<p>The treatment main effect is marginal, F(1,54)=4.01, p=.05. The orientation main effect is not significant, F(2,54)=2.00, p=.15. These main effects are not reliable once the interaction is accounted for.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 2b</summary>
+<div class="answer">
+
+<p>Overall, ratings are higher for white officers (3.29) than black officers (2.61). That looks like a main effect of officer race.</p>
+<p>However, the effect is not consistent. Liberals show the opposite pattern, conservatives show a very large white‑greater‑than‑black pattern, and moderates show almost no difference. The interaction is strong, so the main effect does not generalize across ideologies.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 2c</summary>
+<div class="answer">
+
+<p>Collapsed across officer race, moderates have the highest mean (3.38), conservatives are in the middle (2.94), and liberals are lowest (2.55). That is the overall ordering.</p>
+<p>But this ordering changes when you look within each officer‑race condition. That means the main effect is not consistent; it is driven by the interaction.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 2d</summary>
+<div class="answer">
+
+<p>Liberals: black officer (3.19) > white officer (1.91). Conservatives: white officer (4.62) > black officer (1.25). Moderates: black (3.40) ≈ white (3.35).</p>
+<p>This is a strong cross‑over interaction: the officer‑race effect reverses direction across ideology.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 2e</summary>
+<div class="answer">
+
+<p>Grand mean Ȳ = 2.95.</p>
+<p>α effects: α<sub>black</sub> = 2.61 − 2.95 = −0.34; α<sub>white</sub> = 3.29 − 2.95 = +0.34.</p>
+<p>β effects: β<sub>liberal</sub> = 2.55 − 2.95 = −0.40; β<sub>moderate</sub> = 3.38 − 2.95 = +0.43; β<sub>conservative</sub> = 2.94 − 2.95 = −0.01.</p>
+<p>Interaction effects: (αβ)<sub>black,lib</sub>=0.98; (αβ)<sub>black,mod</sub>=0.36; (αβ)<sub>black,cons</sub>=−1.35; (αβ)<sub>white,lib</sub>=−0.98; (αβ)<sub>white,mod</sub>=−0.37; (αβ)<sub>white,cons</sub>=+1.34.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 2f</summary>
+<div class="answer">
+
+<p>Use ε<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>jk</sub>. The conservative‑black cell mean is 1.25.</p>
+<p>ε = 7 − 1.25 = 5.75. This subject is 5.75 points above his cell mean.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 2g</summary>
+<div class="answer">
+
+<p>Type: simple effect of officer race within conservatives (pairwise).</p>
+<p>ψ̂ = 4.62 − 1.25 = 3.37. Standard error = √(1.73·(1/10 + 1/10)).</p>
+<p>t = 5.73. Tukey critical value t* = 2.471. Because 5.73 > 2.471, reject the null hypothesis.</p>
+<p>Interpretation: conservatives rate double‑jeopardy higher for white officers by about 3.37 points.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 2h</summary>
+<div class="answer">
+
+<p>Type: interaction contrast (difference of simple effects).</p>
+<p>ψ̂ = (4.62 − 1.25) − (1.91 − 3.19) = 4.65. t = 5.58.</p>
+<p>Scheffé critical value t* = 2.517. Because 5.58 > 2.517, reject the null hypothesis.</p>
+<p>Interpretation: the officer‑race effect is much larger for conservatives than for liberals.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 2i</summary>
+<div class="answer">
+
+<p>Type: simple effect of ideology within the white‑officer condition (complex contrast).</p>
+<p>ψ̂ = 4.62 + 3.35 − 2·1.91 = 4.15. t = 4.07.</p>
+<p>Scheffé critical value t* = 2.812. Because 4.07 > 2.812, reject the null hypothesis.</p>
+<p>Interpretation: under white‑officer conditions, conservatives and moderates rate higher than liberals.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 3a</summary>
+<div class="answer">
+
+<p>Grand mean Ȳ = (3.05 + 2.46 + 3.99)/3 = 3.17.</p>
+<p>α<sub>black</sub> = 3.05 − 3.17 = −0.12; α<sub>hispanic</sub> = 2.46 − 3.17 = −0.71; α<sub>white</sub> = 3.99 − 3.17 = +0.82.</p>
+<p>Interpretation: Whites are rated lazier than the grand mean; Hispanics are rated least lazy.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 3b</summary>
+<div class="answer">
+
+<p>Contrast 1: H<sub>0</sub>: μ<sub>black</sub> − μ<sub>hispanic</sub> = 0. Tukey critical value t* = 2.355. Observed t = 6.979, so reject.</p>
+<p>Contrast 2: H<sub>0</sub>: −μ<sub>black</sub> − μ<sub>hispanic</sub> + 2μ<sub>white</sub> = 0. Scheffé critical value t* = 2.460. Observed t = 11.372, so reject.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 4a</summary>
+<div class="answer">
+
+<p>Grand mean Ȳ = (1.679 + 1.421 + 0.971 + 0.886)/4 = 1.24.</p>
+<p>α<sub>face</sub> = +0.44; α<sub>circle</sub> = +0.18; α<sub>newspaper</sub> = −0.27; α<sub>white</sub> = −0.36.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 4b</summary>
+<div class="answer">
+
+<p>Contrast (0,1,−1,0): H<sub>0</sub>: μ<sub>circle</sub> − μ<sub>newspaper</sub> = 0. ψ̂=0.45. Tukey critical value t* = 2.935. Observed t = 2.870 → retain.</p>
+<p>Contrast (1,1,−1,−1): H<sub>0</sub>: μ<sub>face</sub> + μ<sub>circle</sub> − μ<sub>newspaper</sub> − μ<sub>white</sub> = 0. ψ̂=1.24. Scheffé critical value t* = 3.199. Observed t = 4.492 → reject.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 5a</summary>
+<div class="answer">
+
+<p>Group: sum of squares 3494, degrees of freedom 4, mean square 873.5, F = 459.7 (error mean square 1.9).</p>
+<p>Trait: sum of squares 1510, degrees of freedom 5, mean square 302.0, F = 120.8 (error mean square 2.5).</p>
+<p>Group × Trait: sum of squares 955, degrees of freedom 20, mean square 47.8, F = 68.3 (error mean square 0.7).</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 5b</summary>
+<div class="answer">
+
+<p>α<sub>asian</sub> = 3.47 − 3.70 = −0.23. β<sub>unfairness</sub> = 3.87 − 3.70 = +0.17.</p>
+<p>(αβ)<sub>asian,unfairness</sub> = 3.82 − 3.47 − 3.87 + 3.70 = +0.18.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 5c</summary>
+<div class="answer">
+
+<p>C1 Asian vs Jew: Tukey t* = 2.729, t = 10.204 → reject.</p>
+<p>C2 Unfairness vs Antifamily: Tukey t* = 2.851, t = 14.826 → reject.</p>
+<p>C3 Asian vs Jew within Unfairness: Tukey t* = 3.312, t = 4.030 → reject.</p>
+<p>C4 Asian vs Jew within Antifamily: Tukey t* = 3.312, t = 12.088 → reject.</p>
+<p>C5 Interaction contrast: Scheffé t* = 5.606, t = 0.116 → retain.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 6a</summary>
+<div class="answer">
+
+<p>α<sub>right</sub> = 7.61 − 7.48 = +0.13. β<sub>mixed</sub> = 7.11 − 7.48 = −0.37.</p>
+<p>(αβ)<sub>right,mixed</sub> = 7.17 − 7.61 − 7.11 + 7.48 = −0.07.</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 6b</summary>
+<div class="answer">
+
+<p>Damage: mean square 28.50, F = 23.8 (error mean square 1.20).</p>
+<p>Stimuli: mean square 4.50, F = 4.4 (error mean square 1.02).</p>
+<p>Damage × Stimuli: mean square 0.50, F = 0.5 (error mean square 1.02).</p>
+
+</div>
+</details>
+<details>
+<summary>Problem 6c</summary>
+<div class="answer">
+
+<p>1) Damage main effect: ψ̂=3.94, t=6.335, Scheffé t*=2.714 → reject. Left damage worse than right+control.</p>
+<p>2) Stimuli main effect: ψ̂=0.944, t=3.034, Scheffé t*=2.714 → reject. Digits recalled better than mixed.</p>
+<p>3) Simple effect (digits): ψ̂=3.167, t=3.424, Scheffé t*=3.300 → reject.</p>
+<p>4) Simple effect (mixed): ψ̂=3.833, t=3.601, Scheffé t*=3.300 → reject.</p>
+<p>5) Interaction contrast: ψ̂=−0.667, t=−0.505, Scheffé t*=3.496 → retain.</p>
+
+</div>
+</details>
+</section>
+
+</div>
+</body>
+</html>
