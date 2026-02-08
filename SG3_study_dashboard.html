@@ -476,8 +476,33 @@ MSE = 1.73</pre>
     <summary>Problem 2c — Interpret main effects of political views; consistent?</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Interpret the main effects of political views. Are these “consistent” main effects? (just based on the cell means)</p></div>
-      <p>Collapsed across officer race, moderates have the highest mean (3.38), conservatives are in the middle (2.94), and liberals are lowest (2.55). That is the overall ordering.</p>
-      <p>But this ordering changes when you look within each officer‑race condition. That means the main effect is not consistent; it is driven by the interaction.</p>
+
+      <p><strong>Answer:</strong> Collapsing across officer race, the marginal means are: <strong>Moderate</strong> = 3.38 (highest), <strong>Conservative</strong> = 2.94 (middle), <strong>Liberal</strong> = 2.55 (lowest). So the marginal means suggest a main effect of political orientation. But it is <strong>not consistent</strong>, because the ordering changes when you look within each officer-race condition (the interaction is strong).</p>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (checking a “consistent” main effect for orientation)</summary>
+        <div class="answer">
+          <p><strong>1) What the “main effect of orientation” means:</strong> It is the average difference among liberal/moderate/conservative <em>after collapsing across</em> officer race.</p>
+
+          <p><strong>2) Read the marginal means (already given in the table):</strong></p>
+          <ul>
+            <li><span class="formula">\(\bar Y_{lib} = 2.55\)</span></li>
+            <li><span class="formula">\(\bar Y_{mod} = 3.38\)</span></li>
+            <li><span class="formula">\(\bar Y_{cons} = 2.94\)</span></li>
+          </ul>
+          <p>So if you only looked at the marginals, you’d say “moderates rate double-jeopardy highest, liberals lowest.”</p>
+
+          <p><strong>3) What “consistent” means here:</strong> The ordering (e.g., mod &gt; cons &gt; lib) should be the same <em>within each treatment level</em> (within Black officers and within White officers).</p>
+
+          <p><strong>4) Check the orientation pattern within each officer-race condition (cell means):</strong></p>
+          <ul>
+            <li><strong>Black officers row:</strong> Liberal 3.19, Moderate 3.40, Conservative 1.25 → ordering is <strong>Moderate &gt; Liberal &gt; Conservative</strong>.</li>
+            <li><strong>White officers row:</strong> Liberal 1.91, Moderate 3.35, Conservative 4.62 → ordering is <strong>Conservative &gt; Moderate &gt; Liberal</strong>.</li>
+          </ul>
+
+          <p><strong>5) Conclusion:</strong> The ordering is not stable across the treatment levels (it flips), so the main effect of orientation is <em>not consistent</em>. That inconsistency is exactly what the significant treatment × orientation interaction is capturing.</p>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -485,8 +510,37 @@ MSE = 1.73</pre>
     <summary>Problem 2d — Describe how officer-race effect varies by political views</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Interpret how the effect of the officer race factor varies by levels of political views. (just based on the cell means)</p></div>
-      <p>Liberals: black officer (3.19) &gt; white officer (1.91). Conservatives: white officer (4.62) &gt; black officer (1.25). Moderates: black (3.40) ≈ white (3.35).</p>
-      <p>This is a strong cross‑over interaction: the officer‑race effect reverses direction across ideology.</p>
+
+      <p><strong>Answer (cell-mean pattern):</strong></p>
+      <ul>
+        <li><strong>Liberals:</strong> black (3.19) &gt; white (1.91) → race effect favors “black officer”</li>
+        <li><strong>Moderates:</strong> black (3.40) ≈ white (3.35) → ~no race effect</li>
+        <li><strong>Conservatives:</strong> white (4.62) &gt; black (1.25) → huge race effect favors “white officer”</li>
+      </ul>
+      <p>This is a <strong>cross-over interaction</strong>: the sign of the treatment effect flips across ideology.</p>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (compute the simple treatment effects)</summary>
+        <div class="answer">
+          <p><strong>Goal:</strong> Describe how the <em>treatment effect</em> (white vs black officer) changes across the three orientation levels. That means compute the <strong>simple effect of treatment</strong> within each orientation.</p>
+
+          <p><strong>Define the simple effect (white − black):</strong></p>
+          <ul>
+            <li><strong>Liberals:</strong> <span class="formula">\(1.91 - 3.19 = -1.28\)</span></li>
+            <li><strong>Moderates:</strong> <span class="formula">\(3.35 - 3.40 = -0.05\)</span></li>
+            <li><strong>Conservatives:</strong> <span class="formula">\(4.62 - 1.25 = +3.37\)</span></li>
+          </ul>
+
+          <p><strong>Interpretation:</strong></p>
+          <ul>
+            <li>For liberals the treatment effect is negative (black &gt; white).</li>
+            <li>For moderates it’s ~0.</li>
+            <li>For conservatives it’s strongly positive (white &gt; black).</li>
+          </ul>
+
+          <p>That is exactly what an interaction means: <em>the treatment effect is not constant across ideology</em>.</p>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -494,10 +548,53 @@ MSE = 1.73</pre>
     <summary>Problem 2e — Compute all α, β, αβ</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Calculate all α<sub>j</sub>, β<sub>k</sub>, αβ<sub>jk</sub>.</p></div>
-      <p>Grand mean Ȳ = 2.95.</p>
-      <p>α effects: α<sub>black</sub> = 2.61 − 2.95 = −0.34; α<sub>white</sub> = 3.29 − 2.95 = +0.34.</p>
-      <p>β effects: β<sub>liberal</sub> = 2.55 − 2.95 = −0.40; β<sub>moderate</sub> = 3.38 − 2.95 = +0.43; β<sub>conservative</sub> = 2.94 − 2.95 = −0.01.</p>
-      <p>Interaction effects: (αβ)<sub>black,lib</sub>=0.98; (αβ)<sub>black,mod</sub>=0.36; (αβ)<sub>black,cons</sub>=−1.35; (αβ)<sub>white,lib</sub>=−0.98; (αβ)<sub>white,mod</sub>=−0.37; (αβ)<sub>white,cons</sub>=+1.34.</p>
+
+      <p><strong>Answer (effects):</strong></p>
+      <p>Grand mean <span class="formula">\(\bar Y=2.95\)</span>.</p>
+      <ul>
+        <li><strong>α (treatment) effects:</strong> α<sub>black</sub> = 2.61 − 2.95 = −0.34; α<sub>white</sub> = 3.29 − 2.95 = +0.34.</li>
+        <li><strong>β (orientation) effects:</strong> β<sub>lib</sub> = 2.55 − 2.95 = −0.40; β<sub>mod</sub> = 3.38 − 2.95 = +0.43; β<sub>cons</sub> = 2.94 − 2.95 = −0.01.</li>
+        <li><strong>αβ (interaction) effects:</strong>
+          (αβ)<sub>black,lib</sub>=+0.98; (αβ)<sub>black,mod</sub>=+0.36; (αβ)<sub>black,cons</sub>=−1.35;
+          (αβ)<sub>white,lib</sub>=−0.98; (αβ)<sub>white,mod</sub>=−0.37; (αβ)<sub>white,cons</sub>=+1.34.</li>
+      </ul>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (how α, β, αβ are computed from the means table)</summary>
+        <div class="answer">
+          <p><strong>Model reminder (Objective 3):</strong> In a two-way between-subjects fixed-effects ANOVA, the cell mean is decomposed as:</p>
+          <p class="formula">\(\bar Y_{jk} = \bar Y + \alpha_j + \beta_k + (\alpha\beta)_{jk}\)</p>
+          <p>where:</p>
+          <ul>
+            <li><span class="formula">\(\alpha_j = \bar Y_{j\cdot} - \bar Y\)</span> (row mean minus grand mean)</li>
+            <li><span class="formula">\(\beta_k = \bar Y_{\cdot k} - \bar Y\)</span> (column mean minus grand mean)</li>
+            <li><span class="formula">\((\alpha\beta)_{jk} = \bar Y_{jk} - \bar Y_{j\cdot} - \bar Y_{\cdot k} + \bar Y\)</span></li>
+          </ul>
+
+          <p><strong>Step 1: Grand mean.</strong> The table gives <span class="formula">\(\bar Y=2.95\)</span>.</p>
+
+          <p><strong>Step 2: α (treatment) from row means.</strong></p>
+          <ul>
+            <li>Black row mean = 2.61 → α<sub>black</sub> = 2.61 − 2.95 = −0.34</li>
+            <li>White row mean = 3.29 → α<sub>white</sub> = 3.29 − 2.95 = +0.34</li>
+          </ul>
+          <p>Check: α’s should sum to 0 (−0.34 + 0.34 = 0).</p>
+
+          <p><strong>Step 3: β (orientation) from column means.</strong></p>
+          <ul>
+            <li>β<sub>lib</sub> = 2.55 − 2.95 = −0.40</li>
+            <li>β<sub>mod</sub> = 3.38 − 2.95 = +0.43</li>
+            <li>β<sub>cons</sub> = 2.94 − 2.95 = −0.01</li>
+          </ul>
+          <p>Check: β’s sum to ~0 (rounding makes it slightly off).</p>
+
+          <p><strong>Step 4: αβ from each cell.</strong> Example (black, liberal):</p>
+          <p class="formula">\((\alpha\beta)_{black,lib}=3.19-2.61-2.55+2.95=0.98\)</p>
+          <p>Do the same subtraction for each of the 6 cells.</p>
+
+          <p><strong>Interpretation note:</strong> Large positive/negative αβ values indicate where the cell mean is much higher/lower than what you’d predict from adding the main effects alone — i.e., the interaction pattern.</p>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -505,8 +602,22 @@ MSE = 1.73</pre>
     <summary>Problem 2f — Compute e<sub>ijk</sub></summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>A subject is a conservative in the black officer condition. He gives a rating of 7. What is his e<sub>ijk</sub>?</p></div>
-      <p>Use e<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>jk</sub>. The conservative‑black cell mean is 1.25.</p>
-      <p>e = 7 − 1.25 = 5.75. This subject is 5.75 points above his cell mean.</p>
+
+      <p><strong>Answer:</strong> The conservative–black cell mean is <span class="formula">\(\bar Y_{jk}=1.25\)</span>, so</p>
+      <p class="formula">\(e_{ijk} = Y_{ijk} - \bar Y_{jk} = 7 - 1.25 = 5.75\).</p>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (what the residual e<sub>ijk</sub> means)</summary>
+        <div class="answer">
+          <p><strong>Definition (Objective 3):</strong> In a fixed-effects two-way ANOVA, the residual for person <em>i</em> in cell (j,k) is:</p>
+          <p class="formula">\(e_{ijk} = Y_{ijk} - \bar Y_{jk}\)</p>
+          <p>It is “how far that person’s score is from their cell mean.”</p>
+
+          <p><strong>Here:</strong> (j,k) = (black officer, conservative). The cell mean from the table is 1.25. The person’s observed rating is 7. So the residual is 7 − 1.25 = 5.75.</p>
+
+          <p><strong>Interpretation:</strong> This is a very large positive residual: this person rated “double jeopardy” much higher than the average conservative in the black-officer condition. In the ANOVA, the collection of these residuals contributes to the <span class="formula">SS_{error}</span> and therefore the <span class="formula">MSE</span> used in the F tests.</p>
+        </div>
+      </details>
     </div>
   </details>
 
