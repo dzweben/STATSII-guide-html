@@ -77,6 +77,9 @@
 </div>
 
 </div>
+
+<p><strong>Used in:</strong> <em>Standalone objective (not directly tested in the SG3 problem set)</em></p>
+
 </details>
 <details id="obj2">
 <summary>Objective 2 — List ways researcher discretion (“degrees of freedom”) increase false positives</summary>
@@ -87,9 +90,12 @@
 <p>The key lesson: the nominal p‑value does not reflect the true false‑positive rate unless choices are pre‑specified or fully disclosed.</p>
 
 </div>
+
+<p><strong>Used in:</strong> <em>Standalone objective (not directly tested in the SG3 problem set)</em></p>
+
 </details>
 <details id="obj3">
-<summary>Objective 3 — Calculate the fixed “effects” (α, β, αβ, ε) for GLM / ANOVA designs</summary>
+<summary>Objective 3 — Calculate the fixed “effects” (α, β, αβ, e) for GLM / ANOVA designs</summary>
 <div class="answer">
 
 <p><strong>Used in:</strong> <a href="#p2e">P2e</a>, <a href="#p2f">P2f</a>, <a href="#p3a">P3a</a>, <a href="#p4a">P4a</a>, <a href="#p5b">P5b</a>, <a href="#p6a">P6a</a></p>
@@ -97,15 +103,15 @@
 
 <p>An <strong>effect</strong> is a deviation from the grand mean. The basic idea is that each factor’s level mean can be expressed as the grand mean plus an effect term. Interaction effects capture the extra deviation beyond the main effects.</p>
 <p><strong>Two‑way between‑subjects model:</strong><br/>
-<span class="formula">α<sub>j</sub> = Ȳ<sub>j</sub> − Ȳ, &nbsp; β<sub>k</sub> = Ȳ<sub>k</sub> − Ȳ, &nbsp; (αβ)<sub>jk</sub> = Ȳ<sub>jk</sub> − Ȳ<sub>j</sub> − Ȳ<sub>k</sub> + Ȳ, &nbsp; ε<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>jk</sub></span>
+<span class="formula">α<sub>j</sub> = Ȳ<sub>j</sub> − Ȳ, &nbsp; β<sub>k</sub> = Ȳ<sub>k</sub> − Ȳ, &nbsp; (αβ)<sub>jk</sub> = Ȳ<sub>jk</sub> − Ȳ<sub>j</sub> − Ȳ<sub>k</sub> + Ȳ, &nbsp; e<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>jk</sub></span>
 </p>
 <p><strong>One‑factor within‑subjects model:</strong><br/>
-<span class="formula">α<sub>j</sub> = Ȳ<sub>j</sub> − Ȳ, &nbsp; ε<sub>ij</sub> = Y<sub>ij</sub> − Ȳ<sub>j</sub> − Ȳ<sub>i</sub> + Ȳ</span>
+<span class="formula">α<sub>j</sub> = Ȳ<sub>j</sub> − Ȳ, &nbsp; e<sub>ij</sub> = Y<sub>ij</sub> − Ȳ<sub>j</sub> − Ȳ<sub>i</sub> + Ȳ</span>
 <br/>Here the residual subtracts each person’s mean to remove stable individual differences.</p>
 <p><strong>Two‑factor within‑subjects (fixed effects only):</strong><br/>
 Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas above; subject terms are omitted per the prompt.</p>
 <p><strong>Split‑plot (one between‑subjects factor A, one within‑subjects factor B):</strong><br/>
-<span class="formula">α<sub>j</sub>, β<sub>k</sub>, (αβ)<sub>jk</sub> as above; &nbsp; ε<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>ij</sub> − Ȳ<sub>jk</sub> + Ȳ<sub>j</sub></span>
+<span class="formula">α<sub>j</sub>, β<sub>k</sub>, (αβ)<sub>jk</sub> as above; &nbsp; e<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>ij</sub> − Ȳ<sub>jk</sub> + Ȳ<sub>j</sub></span>
 <br/>This residual reflects within‑person variability, with subjects nested in the between‑subjects factor.</p>
 
 </div>
@@ -129,6 +135,8 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 5 — Explain error components conceptually (one-way and two-way within-subject)</summary>
 <div class="answer">
 
+<p><strong>Used in:</strong> <a href="#p5a">P5a</a>, <a href="#p6b">P6b</a> <em>(conceptual background)</em></p>
+
 <p>In a one‑way within‑subjects design, each person provides multiple scores. Subtracting each person’s mean removes stable individual differences. What remains is the person’s fluctuation across conditions. That fluctuation is the subject × condition error term.</p>
 <p>In a two‑way within‑subjects design, the same logic applies to each effect. The error for Factor A is how each person’s A‑effect deviates from the average A‑effect. The error for Factor B is how each person’s B‑effect deviates. The error for the interaction is how each person’s interaction pattern deviates from the average interaction.</p>
 
@@ -137,6 +145,8 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <details id="obj6">
 <summary>Objective 6 — Between-subject vs within-subject ANOVA (design, ANOVA table, SS, F)</summary>
 <div class="answer">
+
+<p><strong>Used in:</strong> <a href="#p5a">P5a</a>, <a href="#p6b">P6b</a> <em>(design/ANOVA-table framing)</em></p>
 
 <p><strong>Design:</strong> Between‑subjects designs compare different people in each condition; within‑subjects designs measure the same people across conditions.</p>
 <p><strong>ANOVA table:</strong> Between‑subjects uses one error term (within‑cell variance). Within‑subjects partitions subject variability and uses subject × effect error terms.</p>
@@ -148,6 +158,8 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <details id="obj7">
 <summary>Objective 7 — Interpret R output for ANOVA designs (two-way, RM, split-plot)</summary>
 <div class="answer">
+
+<p><strong>Used in:</strong> <em>Standalone skill (helps you read R output; not directly required by the SG3 problems)</em></p>
 
 <p>Start by identifying the effect rows (Factor A, Factor B, and the interaction) and their degrees of freedom. Then identify the correct error term used for each effect. In repeated‑measures output, the denominator is often a subject‑interaction term rather than within‑cell variance.</p>
 <p>Next, check sphericity tests (such as Mauchly’s test). If sphericity is violated, use Greenhouse–Geisser or Huynh–Feldt corrected p‑values. Finally, interpret the direction of effects using marginal means or cell means and (if provided) plots.</p>
@@ -227,8 +239,17 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Adjusted critical values for contrasts</summary>
 <div class="answer">
 
-<p><strong>Tukey (pairwise):</strong> <span class="formula">t* = q / √2</span> where q is the studentized range value.</p>
-<p><strong>Scheffé (complex):</strong> <span class="formula">t* = √(df<sub>effect</sub> · F<sub>df<sub>effect</sub>, df<sub>error</sub>, α</sub>)</span></p>
+<p><strong>Tukey (pairwise):</strong> <span class="formula">t* = q<sub>k, df<sub>error</sub>, α′</sub> / √2</span></p>
+<ul>
+  <li><strong>k</strong> = number of means being compared (the “a” in SG3’s notation; e.g., k=4 in Problem 4).</li>
+  <li><strong>α′</strong> is whatever adjusted alpha SG3 uses for that family of tests (sometimes α, sometimes α/2, α/6, etc. depending on how many comparisons/tests are being controlled).</li>
+</ul>
+
+<p><strong>Scheffé (complex):</strong> <span class="formula">t* = √(df<sub>effect</sub> · F<sub>df<sub>effect</sub>, df<sub>error</sub>, α′</sub>)</span></p>
+<ul>
+  <li>For a main-effect contrast across a factor with <strong>a</strong> levels, <strong>df<sub>effect</sub> = a−1</strong>.</li>
+  <li>For an interaction contrast in a two-way (a×b), <strong>df<sub>effect</sub> = (a−1)(b−1)</strong> (matches SG3’s “√(2·F…)” and similar patterns).</li>
+</ul>
 
 </div>
 </details>
@@ -362,8 +383,8 @@ MSE = 1.73
     <summary>Problem 2f — Compute e<sub>ijk</sub></summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>A subject is a conservative in the black officer condition. He gives a rating of 7. What is his e<sub>ijk</sub>?</p></div>
-      <p>Use ε<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>jk</sub>. The conservative‑black cell mean is 1.25.</p>
-      <p>ε = 7 − 1.25 = 5.75. This subject is 5.75 points above his cell mean.</p>
+      <p>Use e<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>jk</sub>. The conservative‑black cell mean is 1.25.</p>
+      <p>e = 7 − 1.25 = 5.75. This subject is 5.75 points above his cell mean.</p>
     </div>
   </details>
 
