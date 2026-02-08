@@ -21,6 +21,30 @@
   table.tbl { border-collapse: collapse; width: 100%; margin: 8px 0; }
   table.tbl th, table.tbl td { border: 1px solid #bbb; padding: 6px 8px; }
   table.tbl th { background: #f0f0f0; }
+
+  /* Pills (collapsed by default via <details>) */
+  details.pill { border: 0; padding: 0; background: transparent; }
+  details.pill > summary {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0d475c;
+    background: #eef6f8;
+    border: 1px solid #cfe3ea;
+    border-radius: 999px;
+    padding: 6px 10px;
+    margin: 6px 0 0;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+  }
+  details.pill > summary::-webkit-details-marker { display:none; }
+  details.pill[open] > summary { background: #e3f1f5; }
+  details.pill .answer { padding: 10px 6px 6px; border: 1px dashed #cfe3ea; border-radius: 10px; margin-top: 8px; background: #fcfeff; }
+
+  /* R output styling */
+  pre.rout, pre code.rout, pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+  pre.rout { background: #f6f6f6; border: 1px solid #ddd; border-radius: 10px; padding: 10px 12px; overflow-x: auto; }
 </style>
 </head>
 <body>
@@ -289,17 +313,29 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
   </div>
   <p><strong>Skills tested:</strong> <a href="#obj9">Objective: Type I vs Type III</a></p>
 
-  <p><strong>Step 1: Type I (weighted) means.</strong> Compute weighted means using cell sizes.</p>
-  <p>Low‑income mean = (−0.24·6668 + 0.30·1437)/(6668+1437) = −0.14.</p>
-  <p>High‑income mean = (0.19·1424 + 0.50·2916)/(1424+2916) = 0.40.</p>
-  <p><strong>Type I difference</strong> = 0.40 − (−0.14) = 0.54 standard deviations.</p>
+  <p><strong>Answer (computed):</strong></p>
+  <ul>
+    <li><strong>Type I (weighted) income difference:</strong> <strong>0.54</strong> SD (high − low)</li>
+    <li><strong>Type III (unweighted) income difference:</strong> <strong>0.32</strong> SD (high − low)</li>
+  </ul>
+  <p><strong>Conclusion:</strong> The <strong>Type I</strong> effect is <em>not</em> a “pure” income effect here because the income groups have very different mixes of parental education (the cells are imbalanced). The <strong>Type III</strong> effect is closer to the “pure” income effect because it balances education across income by using unweighted marginal means.</p>
 
-  <p><strong>Step 2: Type III (unweighted) means.</strong> Average the two cell means for each income group.</p>
-  <p>Low‑income mean = (−0.24 + 0.30)/2 = 0.03.</p>
-  <p>High‑income mean = (0.19 + 0.50)/2 = 0.35.</p>
-  <p><strong>Type III difference</strong> = 0.35 − 0.03 = 0.32 standard deviations.</p>
+  <details class="pill">
+    <summary>Show solution walkthrough (how Type I vs Type III were computed)</summary>
+    <div class="answer">
+      <p><strong>Step 1: Type I (weighted) means.</strong> Compute weighted means using the cell sizes.</p>
+      <p class="formula">\(\bar Y_{\text{low}} = \dfrac{(-0.24)(6668) + (0.30)(1437)}{6668+1437} = -0.14\)</p>
+      <p class="formula">\(\bar Y_{\text{high}} = \dfrac{(0.19)(1424) + (0.50)(2916)}{1424+2916} = 0.40\)</p>
+      <p><strong>Type I difference</strong> = 0.40 − (−0.14) = <strong>0.54</strong>.</p>
 
-  <p><strong>Interpretation.</strong> The Type I difference is larger because income groups are unevenly distributed across parental education levels. Type III is closer to the “pure” income effect because it balances parental education.</p>
+      <p><strong>Step 2: Type III (unweighted) means.</strong> Average the two cell means for each income group (treat the design as if it were balanced across education).</p>
+      <p class="formula">\(\bar Y_{\text{low}} = \dfrac{-0.24 + 0.30}{2} = 0.03\)</p>
+      <p class="formula">\(\bar Y_{\text{high}} = \dfrac{0.19 + 0.50}{2} = 0.35\)</p>
+      <p><strong>Type III difference</strong> = 0.35 − 0.03 = <strong>0.32</strong>.</p>
+
+      <p><strong>Why they differ (the “pure effect” idea):</strong> Type I uses the <em>observed</em> cell sizes, so the low‑income mean is pulled toward the “Less than BA” cell (huge n), while the high‑income mean is pulled toward the “BA+” cell (larger n). That means the income contrast is partly picking up education composition. Type III forces a 50/50 balance across education levels, so it isolates income more cleanly.</p>
+    </div>
+  </details>
 </div>
 </details>
 
@@ -318,12 +354,14 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
       <tr><td>Mean</td><td>2.55</td><td>3.38</td><td>2.94</td><td>2.95</td></tr>
     </table>
 
-    <pre><code>Type III ANOVA (given)
+    <details class="pill">
+      <summary>Show R output (given)</summary>
+      <pre class="rout">Type III ANOVA (given)
 - treatment: F(1,54)=4.01, p=.05
 - orientation: F(2,54)=2.00, p=.15
 - treatment:orientation: F(2,54)=16.72, p&lt;.001
-MSE = 1.73
-</code></pre>
+MSE = 1.73</pre>
+    </details>
   </div>
 
   <p><strong>Skills tested:</strong></p>
@@ -332,12 +370,71 @@ MSE = 1.73
   <p><a href="#obj11">Post-hoc Adjustments (Tukey/Scheffé)</a></p>
   <p><a href="#obj3">Compute Fixed Effects (α, β, αβ)</a></p>
 
+  <details class="pill">
+    <summary>Show big-picture walkthrough (how to read the ANOVA output + what it implies)</summary>
+    <div class="answer">
+      <p><strong>What the R output is:</strong> This is a <em>two-way between-subjects ANOVA</em> (2 treatment levels × 3 orientation levels, with n=10 per cell → total n=60). R is reporting <strong>Type III</strong> tests for:</p>
+      <ul>
+        <li><strong>Main effect of treatment</strong> (officer race)</li>
+        <li><strong>Main effect of orientation</strong> (lib/mod/cons)</li>
+        <li><strong>Interaction</strong> treatment × orientation</li>
+      </ul>
+
+      <p><strong>How to read each line:</strong> <span class="formula">F(df_1, df_2)=...</span></p>
+      <ul>
+        <li><strong>df<sub>1</sub></strong> (numerator df) = df for the effect: treatment has 2 levels → 1; orientation has 3 levels → 2; interaction → (2−1)(3−1)=2.</li>
+        <li><strong>df<sub>2</sub></strong> (denominator df) = df for the error term. Here it’s 54 because in a two-way between-subjects ANOVA: <span class="formula">df_{error}=N-ab=60-6=54</span>.</li>
+        <li><strong>MSE</strong> is the <em>mean square error</em>, i.e., the denominator of every F test in this between-subjects design.</li>
+        <li><strong>F</strong> is a ratio: <span class="formula">F = MS_{effect} / MSE</span>. So you can back out <span class="formula">MS_{effect} = F \times MSE</span> if you want.</li>
+      </ul>
+
+      <p><strong>Most important modeling takeaway:</strong> The interaction is <em>very</em> significant (<span class="formula">p&lt;.001</span>). That means the effect of officer race <em>depends on</em> political orientation (the simple effect changes across ideology). When the interaction is strong, you generally interpret <strong>simple effects</strong> (and plots/cell means) rather than leaning on main effects.</p>
+
+      <p><strong>What you do next (workflow):</strong></p>
+      <ol>
+        <li>Use the <strong>cell means</strong> table to describe the pattern (cross-over, near-zero effects for some groups, etc.).</li>
+        <li>Then compute the requested <strong>α, β, αβ</strong> effects (Problem 2e) and residuals (2f).</li>
+        <li>Then test targeted contrasts/simple effects (2g+), using MSE as the error term and applying the correct adjustment (Tukey/Scheffé) per the prompt.</li>
+      </ol>
+    </div>
+  </details>
+
   <details id="p2a">
     <summary>Problem 2a — Interpret the omnibus F-statistics</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Interpret the omnibus F-statistics in this table.</p></div>
-      <p>The interaction of treatment and political orientation is highly significant, F(2,54)=16.72, p&lt;.001. This means the effect of officer race depends on political orientation.</p>
-      <p>The treatment main effect is right at the α=.05 threshold, F(1,54)=4.01, p=.05. The orientation main effect is not significant, F(2,54)=2.00, p=.15. These main effects are not reliable once the interaction is accounted for.</p>
+
+      <p><strong>Answer (interpretation):</strong></p>
+      <ul>
+        <li><strong>Interaction:</strong> treatment × orientation is highly significant, <span class="formula">F(2,54)=16.72, p&lt;.001</span> → the effect of officer race <em>depends on</em> political orientation.</li>
+        <li><strong>Main effects:</strong> treatment is borderline, <span class="formula">F(1,54)=4.01, p=.05</span>; orientation is not significant, <span class="formula">F(2,54)=2.00, p=.15</span>.</li>
+      </ul>
+      <p>Because the interaction is strong, you don’t treat either main effect as a single “one-size-fits-all” summary; you move to <strong>simple effects</strong> and the pattern of the cell means.</p>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (exactly what each F test is doing)</summary>
+        <div class="answer">
+          <p><strong>1) What an omnibus F test is:</strong> Each line is testing whether a set of population means are equal <em>after accounting for the other terms</em> in the model (Type III ANOVA).</p>
+
+          <p><strong>2) Degrees of freedom:</strong></p>
+          <ul>
+            <li>Treatment has 2 levels → <span class="formula">df_1 = 2-1 = 1</span></li>
+            <li>Orientation has 3 levels → <span class="formula">df_1 = 3-1 = 2</span></li>
+            <li>Interaction has <span class="formula">(2-1)(3-1)=2</span> numerator df</li>
+            <li>Error df is <span class="formula">df_2 = N - ab = 60 - 6 = 54</span> (two-way between-subjects)</li>
+          </ul>
+
+          <p><strong>3) What the F ratio compares:</strong> In a between-subjects ANOVA, the denominator is the same error term for all effects: <span class="formula">MSE</span>. Formally:</p>
+          <p class="formula">\(F = \dfrac{MS_{effect}}{MSE}\)</p>
+          <p>So with <span class="formula">MSE=1.73</span> you can recover (if you want) the mean-square for each effect, e.g.:</p>
+          <ul>
+            <li><span class="formula">MS_{treatment} = 4.01\times 1.73 \approx 6.94</span></li>
+            <li><span class="formula">MS_{interaction} = 16.72\times 1.73 \approx 28.93</span></li>
+          </ul>
+
+          <p><strong>4) How to interpret “interaction significant”:</strong> It means the treatment difference is <em>not constant</em> across ideology. The next step is to look at the cell means (and/or compute simple effects/contrasts), not to summarize with one main effect.</p>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -345,8 +442,33 @@ MSE = 1.73
     <summary>Problem 2b — Interpret main effect of officer race; is it consistent?</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Interpret the main effect of the officer race factor. Is this a “consistent” main effect? (just based on the cell means)</p></div>
-      <p>Overall, ratings are higher for white officers (3.29) than black officers (2.61). That looks like a main effect of officer race.</p>
-      <p>However, the effect is not consistent. Liberals show the opposite pattern, conservatives show a very large white‑greater‑than‑black pattern, and moderates show almost no difference. The interaction is strong, so the main effect does not generalize across ideologies.</p>
+
+      <p><strong>Answer:</strong> Collapsing across political orientation, ratings are higher for <strong>white officers</strong> (3.29) than <strong>black officers</strong> (2.61), so the <em>marginal means</em> suggest a main effect of officer race. But it is <strong>not a consistent main effect</strong>: the direction/magnitude of the race effect changes across ideology (it even reverses for liberals), which is exactly what the significant interaction indicates.</p>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (how “consistent main effect” is checked from the cell means)</summary>
+        <div class="answer">
+          <p><strong>1) What the “main effect of officer race” means:</strong> A main effect of treatment is the average difference between “White officer” and “Black officer” <em>after collapsing across</em> political orientation.</p>
+
+          <p><strong>2) Compute the marginal (collapsed) means:</strong> These are already provided in the table:</p>
+          <ul>
+            <li><span class="formula">\(\bar Y_{\text{black}} = 2.61\)</span></li>
+            <li><span class="formula">\(\bar Y_{\text{white}} = 3.29\)</span></li>
+            <li>So the marginal difference is <span class="formula">\(3.29 - 2.61 = 0.68\)</span> points on the 1–7 scale.</li>
+          </ul>
+
+          <p><strong>3) What “consistent” means (Objective 8):</strong> The direction/order of the effect must be the same at <em>every level</em> of the other factor. Here: “white &gt; black” would need to hold for liberals, moderates, and conservatives.</p>
+
+          <p><strong>4) Check the simple race effects within each ideology (from the cell means):</strong></p>
+          <ul>
+            <li><strong>Liberals:</strong> white − black = <span class="formula">\(1.91 - 3.19 = -1.28\)</span> (black &gt; white)</li>
+            <li><strong>Moderates:</strong> white − black = <span class="formula">\(3.35 - 3.40 = -0.05\)</span> (≈ no effect)</li>
+            <li><strong>Conservatives:</strong> white − black = <span class="formula">\(4.62 - 1.25 = +3.37\)</span> (white &gt; black, huge)</li>
+          </ul>
+
+          <p><strong>5) Conclusion:</strong> Because the simple effects differ dramatically (including a sign flip), the treatment main effect is <em>not consistent</em>. This matches the ANOVA result in the R output: treatment × orientation is highly significant, so you interpret the interaction/simple effects rather than the single overall main effect.</p>
+        </div>
+      </details>
     </div>
   </details>
 
