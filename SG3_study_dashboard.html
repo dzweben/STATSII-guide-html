@@ -39,7 +39,7 @@
 
 <section id="objectives">
 <h2>Study Guide Objectives</h2>
-<p>Each objective links to the problems that actually test it (crosswalk). The goal is learning what the exam will demand, anchored to Josh’s notes.</p>
+<p>Objectives are the target skills; problems later in the dashboard are practice. When we mention a problem under an objective, treat it as an <em>example</em> of where that skill shows up (not an exclusive or forced mapping). The goal is learning what the exam will demand, anchored to Josh’s notes.</p>
 <details id="obj1">
 <summary>Objective 1 — Interpret all figures and tables in the Simmons, Nelson, and Simonsohn article.</summary>
 <div class="answer">
@@ -78,7 +78,7 @@
 
 </div>
 
-<p><strong>Used in:</strong> <em>Standalone objective (not directly tested in the SG3 problem set)</em></p>
+<p><strong>Example practice in this dashboard:</strong> <em>Standalone objective (not directly tested in the SG3 problem set)</em></p>
 
 </details>
 <details id="obj2">
@@ -91,14 +91,14 @@
 
 </div>
 
-<p><strong>Used in:</strong> <em>Standalone objective (not directly tested in the SG3 problem set)</em></p>
+<p><strong>Example practice in this dashboard:</strong> <em>Standalone objective (not directly tested in the SG3 problem set)</em></p>
 
 </details>
 <details id="obj3">
 <summary>Objective 3 — Calculate the fixed “effects” (α, β, αβ, e) for GLM / ANOVA designs</summary>
 <div class="answer">
 
-<p><strong>Used in:</strong> <a href="#p2e">P2e</a>, <a href="#p2f">P2f</a>, <a href="#p3a">P3a</a>, <a href="#p4a">P4a</a>, <a href="#p5b">P5b</a>, <a href="#p6a">P6a</a></p>
+<p><strong>Example practice in this dashboard:</strong> <a href="#p2e">P2e</a>, <a href="#p2f">P2f</a>, <a href="#p3a">P3a</a>, <a href="#p4a">P4a</a>, <a href="#p5b">P5b</a>, <a href="#p6a">P6a</a></p>
 
 
 <p>An <strong>effect</strong> is a deviation from the grand mean. The basic idea is that each factor’s level mean can be expressed as the grand mean plus an effect term. Interaction effects capture the extra deviation beyond the main effects.</p>
@@ -120,7 +120,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 4 — Identify the correct error term for specific effects (RM ANOVA, split-plot)</summary>
 <div class="answer">
 
-<p><strong>Used in:</strong> <a href="#p5a">P5a</a>, <a href="#p6b">P6b</a></p>
+<p><strong>Example practice in this dashboard:</strong> <a href="#p5a">P5a</a>, <a href="#p6b">P6b</a></p>
 
 
 <p>Each effect is tested against an error term that represents the variability not explained by that effect. In repeated‑measures and split‑plot designs, the correct error term depends on whether the effect is within‑subjects or between‑subjects.</p>
@@ -135,7 +135,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 5 — Explain error components conceptually (one-way and two-way within-subject)</summary>
 <div class="answer">
 
-<p><strong>Used in:</strong> <a href="#p5a">P5a</a>, <a href="#p6b">P6b</a> <em>(conceptual background)</em></p>
+<p><strong>Example practice in this dashboard:</strong> <a href="#p5a">P5a</a>, <a href="#p6b">P6b</a> <em>(conceptual background)</em></p>
 
 <p>In a one‑way within‑subjects design, each person provides multiple scores. Subtracting each person’s mean removes stable individual differences. What remains is the person’s fluctuation across conditions. That fluctuation is the subject × condition error term.</p>
 <p>In a two‑way within‑subjects design, the same logic applies to each effect. The error for Factor A is how each person’s A‑effect deviates from the average A‑effect. The error for Factor B is how each person’s B‑effect deviates. The error for the interaction is how each person’s interaction pattern deviates from the average interaction.</p>
@@ -146,7 +146,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 6 — Between-subject vs within-subject ANOVA (design, ANOVA table, SS, F)</summary>
 <div class="answer">
 
-<p><strong>Used in:</strong> <a href="#p5a">P5a</a>, <a href="#p6b">P6b</a> <em>(design/ANOVA-table framing)</em></p>
+<p><strong>Example practice in this dashboard:</strong> <a href="#p5a">P5a</a>, <a href="#p6b">P6b</a> <em>(design/ANOVA-table framing)</em></p>
 
 <p><strong>Design:</strong> Between‑subjects designs compare different people in each condition; within‑subjects designs measure the same people across conditions.</p>
 <p><strong>ANOVA table:</strong> Between‑subjects uses one error term (within‑cell variance). Within‑subjects partitions subject variability and uses subject × effect error terms.</p>
@@ -159,7 +159,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 7 — Interpret R output for ANOVA designs (two-way, RM, split-plot)</summary>
 <div class="answer">
 
-<p><strong>Used in:</strong> <em>Standalone skill (helps you read R output; not directly required by the SG3 problems)</em></p>
+<p><strong>Example practice in this dashboard:</strong> <em>Standalone skill (helps you read R output; not directly required by the SG3 problems)</em></p>
 
 <p>Start by identifying the effect rows (Factor A, Factor B, and the interaction) and their degrees of freedom. Then identify the correct error term used for each effect. In repeated‑measures output, the denominator is often a subject‑interaction term rather than within‑cell variance.</p>
 <p>Next, check sphericity tests (such as Mauchly’s test). If sphericity is violated, use Greenhouse–Geisser or Huynh–Feldt corrected p‑values. Finally, interpret the direction of effects using marginal means or cell means and (if provided) plots.</p>
@@ -170,7 +170,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 8 — Main effects vs interaction effects; what “consistent main effect” means</summary>
 <div class="answer">
 
-<p><strong>Used in:</strong> <a href="#p2a">P2a</a>, <a href="#p2b">P2b</a>, <a href="#p2c">P2c</a>, <a href="#p2d">P2d</a></p>
+<p><strong>Example practice in this dashboard:</strong> <a href="#p2a">P2a</a>, <a href="#p2b">P2b</a>, <a href="#p2c">P2c</a>, <a href="#p2d">P2d</a></p>
 
 
 <p>A <strong>main effect</strong> is the average difference between levels of one factor after collapsing across the other factor. An <strong>interaction</strong> exists when the effect of one factor changes depending on the level of the other factor (non‑parallel lines in a plot).</p>
@@ -182,7 +182,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 9 — Type I vs Type III (weighted vs unweighted marginal means) and what differences mean</summary>
 <div class="answer">
 
-<p><strong>Used in:</strong> <a href="#p1">P1</a></p>
+<p><strong>Example practice in this dashboard:</strong> <a href="#p1">P1</a></p>
 
 
 <p>Type I uses <strong>weighted marginal means</strong> based on the observed cell sizes, so it reflects the actual sample composition. Type III uses <strong>unweighted marginal means</strong>, which treat each cell as equally important and represent a balanced design.</p>
@@ -194,7 +194,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 10 — Compute/describe contrasts (main, simple, interaction) from ANOVA data</summary>
 <div class="answer">
 
-<p><strong>Used in:</strong> <a href="#p2g">P2g</a>, <a href="#p2h">P2h</a>, <a href="#p2i">P2i</a>, <a href="#p3b">P3b</a>, <a href="#p4b">P4b</a>, <a href="#p5c">P5c</a>, <a href="#p6c">P6c</a></p>
+<p><strong>Example practice in this dashboard:</strong> <a href="#p2g">P2g</a>, <a href="#p2h">P2h</a>, <a href="#p2i">P2i</a>, <a href="#p3b">P3b</a>, <a href="#p4b">P4b</a>, <a href="#p5c">P5c</a>, <a href="#p6c">P6c</a></p>
 
 
 <p>A <strong>main‑effect contrast</strong> compares marginal means across levels of one factor (for example, Factor A level 1 vs level 2). A <strong>simple‑effect contrast</strong> compares levels of one factor within a fixed level of the other factor. An <strong>interaction contrast</strong> compares two simple effects (a difference of differences) to test whether the simple effects differ from each other.</p>
@@ -205,7 +205,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 11 — Apply post-hoc adjustments (Tukey vs Scheffé) across contrast types</summary>
 <div class="answer">
 
-<p><strong>Used in:</strong> <a href="#p2g">P2g</a>, <a href="#p2h">P2h</a>, <a href="#p2i">P2i</a>, <a href="#p3b">P3b</a>, <a href="#p4b">P4b</a>, <a href="#p5c">P5c</a>, <a href="#p6c">P6c</a></p>
+<p><strong>Example practice in this dashboard:</strong> <a href="#p2g">P2g</a>, <a href="#p2h">P2h</a>, <a href="#p2i">P2i</a>, <a href="#p3b">P3b</a>, <a href="#p4b">P4b</a>, <a href="#p5c">P5c</a>, <a href="#p6c">P6c</a></p>
 
 
 <p>Use the <strong>Tukey</strong> adjustment for pairwise contrasts and the <strong>Scheffé</strong> adjustment for complex contrasts. Tukey uses the studentized range distribution; Scheffé uses the F distribution with degrees of freedom for the effect.</p>
@@ -452,9 +452,9 @@ MSE = 1.73
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>For each contrast, write the null hypothesis, the equation for the post-hoc-adjusted t critical value, find the adjusted t-critical value, and determine significance.</p></div>
       <p>Contrast 1 (c = [1, −1, 0]): H<sub>0</sub>: 1·μ<sub>black</sub> + (−1)·μ<sub>hispanic</sub> + 0·μ<sub>white</sub> = 0.</p>
-      <p>Adjusted critical value (match SG3): <span class="formula">t* = q / √2</span> (Tukey), here <strong>t* ≈ 2.47</strong>. Observed t = 6.979 → reject.</p>
+      <p>Adjusted critical value (Tukey; k=3 groups, df=302): <span class="formula">t* = q / √2</span>, here <strong>t* ≈ 2.36</strong>. Observed t = 6.979 → reject.</p>
       <p>Contrast 2 (c = [−1, −1, 2]): H<sub>0</sub>: (−1)·μ<sub>black</sub> + (−1)·μ<sub>hispanic</sub> + 2·μ<sub>white</sub> = 0.</p>
-      <p>Adjusted critical value (match SG3): <span class="formula">t* = q / √2</span> (Tukey), here <strong>t* ≈ 2.47</strong>. Observed t = 11.372 → reject.</p>
+      <p>Adjusted critical value (Tukey; k=3 groups, df=302): <span class="formula">t* = q / √2</span>, here <strong>t* ≈ 2.36</strong>. Observed t = 11.372 → reject.</p>
     </div>
   </details>
 </div>
@@ -590,7 +590,7 @@ MSE = 1.73
       <div class="panel"><h4>Prompt</h4><p>For each contrast: (a) identify the type; (b) write the null hypothesis; (c) calculate the posthoc-adjusted critical value; and (d) interpret directionality. (Use Tukey for pairwise; Scheffé for complex.)</p></div>
 
       <p>1) Damage main effect (between-subject; complex): ψ̂=3.94, t=6.335, Scheffé t*=2.714 → reject. Left damage worse than right+control.</p>
-      <p>2) Stimuli main effect (within-subject; pairwise): contrast c = [1, 0, −1] (digits − mixed). ψ̂=0.944, t=3.034, Scheffé t*=2.714 → reject. Digits recalled better than mixed.</p>
+      <p>2) Stimuli main effect (within-subject; pairwise): contrast c = [1, 0, −1] (digits − mixed). ψ̂=0.944, t=3.034, Tukey t*≈2.60 (k=3, df=15) → reject. Digits recalled better than mixed.</p>
       <p>3) Simple effect (digits): ψ̂=3.167, t=3.424, Scheffé t*=3.300 → reject.</p>
       <p>4) Simple effect (mixed): ψ̂=3.833, t=3.601, Scheffé t*=3.300 → reject.</p>
       <p>5) Interaction contrast: ψ̂=−0.667, t=−0.505, Scheffé t*=3.496 → retain.</p>
