@@ -92,6 +92,9 @@
 <summary>Objective 3 — Calculate the fixed “effects” (α, β, αβ, ε) for GLM / ANOVA designs</summary>
 <div class="answer">
 
+<p><strong>Used in:</strong> <a href="#p2e">P2e</a>, <a href="#p2f">P2f</a>, <a href="#p3a">P3a</a>, <a href="#p4a">P4a</a>, <a href="#p5b">P5b</a>, <a href="#p6a">P6a</a></p>
+
+
 <p>An <strong>effect</strong> is a deviation from the grand mean. The basic idea is that each factor’s level mean can be expressed as the grand mean plus an effect term. Interaction effects capture the extra deviation beyond the main effects.</p>
 <p><strong>Two‑way between‑subjects model:</strong><br/>
 <span class="formula">α<sub>j</sub> = Ȳ<sub>j</sub> − Ȳ, &nbsp; β<sub>k</sub> = Ȳ<sub>k</sub> − Ȳ, &nbsp; (αβ)<sub>jk</sub> = Ȳ<sub>jk</sub> − Ȳ<sub>j</sub> − Ȳ<sub>k</sub> + Ȳ, &nbsp; ε<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>jk</sub></span>
@@ -110,6 +113,9 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <details id="obj4">
 <summary>Objective 4 — Identify the correct error term for specific effects (RM ANOVA, split-plot)</summary>
 <div class="answer">
+
+<p><strong>Used in:</strong> <a href="#p5a">P5a</a>, <a href="#p6b">P6b</a></p>
+
 
 <p>Each effect is tested against an error term that represents the variability not explained by that effect. In repeated‑measures and split‑plot designs, the correct error term depends on whether the effect is within‑subjects or between‑subjects.</p>
 <p><strong>Between‑subjects analysis:</strong> The error term is the within‑cell variability among individuals.</p>
@@ -152,6 +158,9 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 8 — Main effects vs interaction effects; what “consistent main effect” means</summary>
 <div class="answer">
 
+<p><strong>Used in:</strong> <a href="#p2a">P2a</a>, <a href="#p2b">P2b</a>, <a href="#p2c">P2c</a>, <a href="#p2d">P2d</a></p>
+
+
 <p>A <strong>main effect</strong> is the average difference between levels of one factor after collapsing across the other factor. An <strong>interaction</strong> exists when the effect of one factor changes depending on the level of the other factor (non‑parallel lines in a plot).</p>
 <p>A <strong>consistent main effect</strong> means the direction and ordering of the effect are the same at every level of the other factor. If the ordering flips or the direction changes, the main effect is not consistent.</p>
 
@@ -160,6 +169,9 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <details id="obj9">
 <summary>Objective 9 — Type I vs Type III (weighted vs unweighted marginal means) and what differences mean</summary>
 <div class="answer">
+
+<p><strong>Used in:</strong> <a href="#p1">P1</a></p>
+
 
 <p>Type I uses <strong>weighted marginal means</strong> based on the observed cell sizes, so it reflects the actual sample composition. Type III uses <strong>unweighted marginal means</strong>, which treat each cell as equally important and represent a balanced design.</p>
 <p>If Type I and Type III differ, it means the other factor is imbalanced across groups. In that case, the Type I effect is partly driven by that imbalance, while the Type III effect is closer to the “pure” effect of the factor of interest.</p>
@@ -170,6 +182,9 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 10 — Compute/describe contrasts (main, simple, interaction) from ANOVA data</summary>
 <div class="answer">
 
+<p><strong>Used in:</strong> <a href="#p2g">P2g</a>, <a href="#p2h">P2h</a>, <a href="#p2i">P2i</a>, <a href="#p3b">P3b</a>, <a href="#p4b">P4b</a>, <a href="#p5c">P5c</a>, <a href="#p6c">P6c</a></p>
+
+
 <p>A <strong>main‑effect contrast</strong> compares marginal means across levels of one factor (for example, Factor A level 1 vs level 2). A <strong>simple‑effect contrast</strong> compares levels of one factor within a fixed level of the other factor. An <strong>interaction contrast</strong> compares two simple effects (a difference of differences) to test whether the simple effects differ from each other.</p>
 
 </div>
@@ -177,6 +192,9 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <details id="obj11">
 <summary>Objective 11 — Apply post-hoc adjustments (Tukey vs Scheffé) across contrast types</summary>
 <div class="answer">
+
+<p><strong>Used in:</strong> <a href="#p2g">P2g</a>, <a href="#p2h">P2h</a>, <a href="#p2i">P2i</a>, <a href="#p3b">P3b</a>, <a href="#p4b">P4b</a>, <a href="#p5c">P5c</a>, <a href="#p6c">P6c</a></p>
+
 
 <p>Use the <strong>Tukey</strong> adjustment for pairwise contrasts and the <strong>Scheffé</strong> adjustment for complex contrasts. Tukey uses the studentized range distribution; Scheffé uses the F distribution with degrees of freedom for the effect.</p>
 <p>When doing simple effects, adjust the significance level by the number of simple‑effect tests (for example, divide α by the number of levels in the other factor). Interactions use the Scheffé adjustment with degrees of freedom equal to (a−1)(b−1).</p>
