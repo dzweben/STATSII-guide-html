@@ -78,20 +78,20 @@
 
 </div>
 
-<p><strong>Example practice in this dashboard:</strong> <em>Standalone objective (not directly tested in the SG3 problem set)</em></p>
-
 </details>
 <details id="obj2">
 <summary>Objective 2 — List ways researcher discretion (“degrees of freedom”) increase false positives</summary>
 <div class="answer">
 
-<p>Researcher degrees of freedom are the many reasonable decisions analysts can make after seeing data. Each decision is a “fork in the road.” If you try several of them and then report only the best result, you are effectively running multiple tests without correcting the p‑value. That raises the chance of at least one false positive far above 5%.</p>
-<p>Common sources of flexibility include: deciding when to stop collecting data (optional stopping), analyzing multiple dependent variables and reporting only the significant one, choosing whether to include or exclude covariates, dropping or combining conditions, removing outliers after seeing the results, trying alternative transformations or coding rules, and searching for subgroup effects.</p>
-<p>The key lesson: the nominal p‑value does not reflect the true false‑positive rate unless choices are pre‑specified or fully disclosed.</p>
+<p>Researcher degrees of freedom are the many reasonable decisions analysts can make <em>after</em> seeing the data (which outcome to emphasize, which covariates to include, when to stop, etc.). Each decision is a “fork in the road.” The crucial mechanism is: <strong>more forks = more chances for random noise to look “significant.”</strong></p>
+
+<p>Concretely, if the null hypothesis is actually true and you try <em>k</em> reasonable analyses but only report the one with <span class="formula">p&lt;.05</span>, then you have effectively run a small <em>family</em> of tests. The probability of at least one false positive is approximately <span class="formula">1-(1-0.05)^k</span>. So with <span class="formula">k=10</span> forks, the chance of at least one “significant” result is about <span class="formula">1-0.95^{10}\approx 0.40</span> (40%)—even though each individual test used the same 5% threshold.</p>
+
+<p>Common sources of flexibility (each adds forks) include: optional stopping (peek and stop when p crosses .05), analyzing multiple DVs and reporting only the significant one, trying different covariate sets, dropping/combining conditions, removing outliers after seeing results, trying alternative transformations/coding rules, and searching for subgroups/interactions.</p>
+
+<p><strong>Why this is sometimes described as “dishonesty”:</strong> the false positive rate increases when the workflow selectively reports the best‑looking path while hiding the number of paths tried. Even when each step sounds defensible in isolation, the <em>selection</em> is what breaks the “p&lt;.05 → 5% false positive” calibration. Pre‑specifying choices (or transparently disclosing all choices tried) is what prevents that inflation.</p>
 
 </div>
-
-<p><strong>Example practice in this dashboard:</strong> <em>Standalone objective (not directly tested in the SG3 problem set)</em></p>
 
 </details>
 <details id="obj3">
