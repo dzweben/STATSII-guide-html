@@ -654,7 +654,7 @@ MSE = 1.73</pre>
   <details id="p2h">
     <summary>Problem 2h — Interaction contrast (difference-in-differences; Scheffé)</summary>
     <div class="answer">
-      <div class="panel"><h4>Prompt</h4><p>H<sub>0</sub>: 1·μ<sub>conservative,white</sub> + −1·μ<sub>conservative,black</sub> + 1·μ<sub>liberal,white</sub> + −1·μ<sub>liberal,black</sub> = 0</p></div>
+      <div class="panel"><h4>Prompt</h4><p>H<sub>0</sub>: 1·μ<sub>conservative,white</sub> + −1·μ<sub>conservative,black</sub> + −1·μ<sub>liberal,white</sub> + 1·μ<sub>liberal,black</sub> = 0</p></div>
 
       <p><strong>Answer:</strong> This is an <strong>interaction (difference-in-differences) contrast</strong>. The estimate is <span class="formula">\(\hat\psi=(4.62-1.25) - (1.91-3.19)=4.65\)</span> with <span class="formula">t\approx 5.58\)</span>, exceeding the Scheffé critical value (<span class="formula">t^*=2.517\)</span>) → <strong>reject H<sub>0</sub></strong>.</p>
 
@@ -822,7 +822,7 @@ MSE = 1.73</pre>
         <li>α<sub>face</sub> = 1.679 − 1.23925 = +0.43975 ≈ +0.44</li>
         <li>α<sub>circle</sub> = 1.421 − 1.23925 = +0.18175 ≈ +0.18</li>
         <li>α<sub>newspaper</sub> = 0.971 − 1.23925 = −0.26825 ≈ −0.27</li>
-        <li>α<sub>white circle</sub> = 0.886 − 1.23925 = −0.35325 ≈ −0.36</li>
+        <li>α<sub>white circle</sub> = 0.886 − 1.23925 = −0.35325 ≈ −0.35</li>
       </ul>
 
       <details class="pill">
@@ -904,11 +904,11 @@ MSE = 1.73</pre>
       <p><strong>Answer (completed table):</strong></p>
       <table class="tbl">
         <tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr>
-        <tr><td>Racial group</td><td>3494</td><td>4</td><td>873.5</td><td>459.7</td></tr>
+        <tr><td>Racial group</td><td>3494</td><td>4</td><td>873.5</td><td>449.1</td></tr>
         <tr><td>Error (group×subject)</td><td>5641</td><td>725×4 = 2900</td><td>1.9</td><td>N/A</td></tr>
         <tr><td>Trait</td><td>1510</td><td>5</td><td>302.0</td><td>120.8</td></tr>
         <tr><td>Error (trait×subject)</td><td>9063</td><td>725×5 = 3625</td><td>2.5</td><td>N/A</td></tr>
-        <tr><td>Group×Trait</td><td>955</td><td>20</td><td>47.8</td><td>68.3</td></tr>
+        <tr><td>Group×Trait</td><td>955</td><td>20</td><td>47.75</td><td>73.3</td></tr>
         <tr><td>Error (group×trait×subject)</td><td>9444</td><td>725×20 = 14500</td><td>0.7</td><td>N/A</td></tr>
       </table>
 
@@ -1011,7 +1011,7 @@ MSE = 1.73</pre>
 
           <p><strong>C5 (interaction contrast; complex):</strong> This tests whether the Asian–Jew difference changes from one trait (Unfairness) to another (Anti-family). That’s a difference of two pairwise gaps → a complex contrast → Scheffé. The observed t≈0.116 is tiny relative to Scheffé’s large cutoff, so retain (no evidence the Asian–Jew gap differs across those two traits).</p>
 
-          <p><strong>Interpretation caution:</strong> Because this is a two-way repeated-measures / mixed design, “main effect vs simple effect vs interaction contrast” is about <em>which dimension you’re collapsing over</em> (groups, traits, or both). The adjustment choice depends on whether the contrast is pairwise or complex, not on whether it’s a main or simple effect.</p>
+          <p><strong>Interpretation caution:</strong> Because this is a two-way repeated-measures (within-within) design, “main effect vs simple effect vs interaction contrast” is about <em>which dimension you’re collapsing over</em> (groups, traits, or both). The adjustment choice depends on whether the contrast is pairwise or complex, not on whether it’s a main or simple effect.</p>
         </div>
       </details>
     </div>
@@ -1071,8 +1071,8 @@ MSE = 1.73</pre>
       <p><strong>Answer (completed table):</strong></p>
       <table class="tbl">
         <tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr>
-        <tr><td>Damage group</td><td>57.0</td><td>2</td><td>28.50</td><td>23.8</td></tr>
-        <tr><td>Error (subjects within damage)</td><td>17.4</td><td>15</td><td>1.20</td><td>N/A</td></tr>
+        <tr><td>Damage group</td><td>57.0</td><td>2</td><td>28.50</td><td>24.6</td></tr>
+        <tr><td>Error (subjects within damage)</td><td>17.4</td><td>15</td><td>1.16</td><td>N/A</td></tr>
         <tr><td>Stimuli</td><td>9.0</td><td>2</td><td>4.50</td><td>4.4</td></tr>
         <tr><td>Error (stimuli×subject)</td><td>30.6</td><td>30</td><td>1.02</td><td>N/A</td></tr>
         <tr><td>Damage×Stimuli</td><td>2.0</td><td>4</td><td>0.50</td><td>0.5</td></tr>
