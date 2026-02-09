@@ -124,7 +124,7 @@
 
 <p>Researcher degrees of freedom are the many reasonable decisions analysts can make <em>after</em> seeing the data (which outcome to emphasize, which covariates to include, when to stop, etc.). Each decision is a “fork in the road.” The crucial mechanism is: <strong>more forks = more chances for random noise to look “significant.”</strong></p>
 
-<p>Concretely, if the null hypothesis is actually true and you try <em>k</em> reasonable analyses but only report the one with <span class="formula">p&lt;.05</span>, then you have effectively run a small <em>family</em> of tests. The probability of at least one false positive is approximately <span class="formula">1-(1-0.05)^k</span>. So with <span class="formula">k=10</span> forks, the chance of at least one “significant” result is about <span class="formula">1-0.95^{10}\approx 0.40</span> (40%)—even though each individual test used the same 5% threshold.</p>
+<p>Concretely, if the null hypothesis is actually true and you try <em>k</em> reasonable analyses but only report the one with <span class="formula">p&lt;.05</span>, then you have effectively run a small <em>family</em> of tests. The probability of at least one false positive is approximately <span class="formula">\(1-(1-0.05)^k\)</span>. So with <span class="formula">k=10</span> forks, the chance of at least one “significant” result is about <span class="formula">\(1-0.95^{10}\approx 0.40\)</span> (40%)—even though each individual test used the same 5% threshold.</p>
 
 <p>Common sources of flexibility (each adds forks) include: optional stopping (peek and stop when p crosses .05), analyzing multiple DVs and reporting only the significant one, trying different covariate sets, dropping/combining conditions, removing outliers after seeing results, trying alternative transformations/coding rules, and searching for subgroups/interactions.</p>
 
@@ -151,7 +151,7 @@
 Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas above; subject terms are omitted per the prompt.</p>
 <p><strong>Split‑plot (one between‑subjects factor A, one within‑subjects factor B):</strong><br/>
 <span class="formula">α<sub>j</sub>, β<sub>k</sub>, (αβ)<sub>jk</sub> as above; &nbsp; βπ<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>ij</sub> − Ȳ<sub>jk</sub> + Ȳ<sub>j</sub></span>
-<br/>In LN11’s notation, this <span class="formula">βπ_{ijk}</span> term is the <strong>B×Subject(A)</strong> interaction: it is the within‑person deviation after removing (i) the person’s mean within their A‑group and (ii) the A×B cell mean. This is the <em>error term</em> used to test the within‑subjects factor B and the A×B interaction in a split‑plot ANOVA.</p>
+<br/>In LN11’s notation, this <span class="formula">\(βπ_{ijk}\)</span> term is the <strong>B×Subject(A)</strong> interaction: it is the within‑person deviation after removing (i) the person’s mean within their A‑group and (ii) the A×B cell mean. This is the <em>error term</em> used to test the within‑subjects factor B and the A×B interaction in a split‑plot ANOVA.</p>
 
 </div>
 </details>
@@ -209,7 +209,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 </ul>
 </p>
 
-<p><strong>Step 3: connect F back to MS.</strong> Use <span class="formula">F=MS_{effect}/MS_{error}</span>. If MSE/MS(error) is printed, you can back‑compute <span class="formula">MS_{effect}=F\times MS_{error}</span>.</p>
+<p><strong>Step 3: connect F back to MS.</strong> Use <span class="formula">\(F=MS_{effect}/MS_{error}\)</span>. If MSE/MS(error) is printed, you can back‑compute <span class="formula">\(MS_{effect}=F\times MS_{error}\)</span>.</p>
 
 <p><strong>Step 4: interpret direction using means/emmeans.</strong> A significant row only tells you “there is a difference.” The cell means (or marginal means + contrasts) tell you <em>which</em> levels differ and in what direction.</p>
 
@@ -261,9 +261,9 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 
 <p>Use the <strong>Tukey</strong> adjustment for <strong>pairwise</strong> comparisons within a family of means (it’s built for all pairwise differences). Use the <strong>Scheffé</strong> adjustment for <strong>non‑pairwise / complex</strong> contrasts (anything that isn’t a simple pairwise difference), since Scheffé controls the familywise error rate across <em>all</em> linear contrasts among those means.</p>
 
-<p><strong>Simple effects:</strong> if you test the same simple effect at multiple levels of the other factor (e.g., test A within each level of B), those multiple tests form a family. Unless SG3 specifies a different rule, control the familywise error across those tests (a common default is Bonferroni: <span class="formula">\alpha' = \alpha / m</span> where <span class="formula">m</span> is the number of simple‑effect tests you’re running).</p>
+<p><strong>Simple effects:</strong> if you test the same simple effect at multiple levels of the other factor (e.g., test A within each level of B), those multiple tests form a family. Unless SG3 specifies a different rule, control the familywise error across those tests (a common default is Bonferroni: <span class="formula">\(\alpha' = \alpha / m\)</span> where <span class="formula">m</span> is the number of simple‑effect tests you’re running).</p>
 
-<p><strong>Interaction contrasts (difference‑in‑differences):</strong> these are typically treated as <em>complex</em> contrasts and match the Scheffé framework with <span class="formula">df_{effect}=(a−1)(b−1)</span> for an <span class="formula">a\times b</span> design.</p>
+<p><strong>Interaction contrasts (difference‑in‑differences):</strong> these are typically treated as <em>complex</em> contrasts and match the Scheffé framework with <span class="formula">\(df_{effect}=(a−1)(b−1)\)</span> for an <span class="formula">\(a\times b\)</span> design.</p>
 
 </div>
 </details>
@@ -322,7 +322,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
   <tr><td>Split‑plot (A between, B within)</td><td>Factor B (within‑subjects) or A×B (interaction) contrasts</td><td>(n − a)(b − 1)</td></tr>
 </table>
 
-<p class="note">For RM/split‑plot omnibus ANOVA F tests you will often see larger denominator df (e.g., <span class="formula">(n−1)(a−1)</span> for a main effect in a within‑subjects factor, or <span class="formula">(n−a)(b−1)</span> for split‑plot within/interaction effects). For <strong>pairwise</strong> RM comparisons, SG3 sometimes treats the contrast as a paired‑difference t test with <span class="formula">df=n−1</span>. Bottom line: don’t memorize one df per design—use the df of the <em>error term your contrast is actually using</em> (and if R prints it, follow the output).</p>
+<p class="note">For RM/split‑plot omnibus ANOVA F tests you will often see larger denominator df (e.g., <span class="formula">(n−1)(a−1)</span> for a main effect in a within‑subjects factor, or <span class="formula">(n−a)(b−1)</span> for split‑plot within/interaction effects). For <strong>pairwise</strong> RM comparisons, SG3 sometimes treats the contrast as a paired‑difference t test with <span class="formula">\(df=n−1\)</span>. Bottom line: don’t memorize one df per design—use the df of the <em>error term your contrast is actually using</em> (and if R prints it, follow the output).</p>
 
 </div>
 </details>
@@ -432,12 +432,12 @@ m2$Anova
         <li><strong>Interaction</strong> treatment × orientation</li>
       </ul>
 
-      <p><strong>How to read each line:</strong> <span class="formula">F(df_1, df_2)=...</span></p>
+      <p><strong>How to read each line:</strong> <span class="formula">\(F(df_1, df_2)=...\)</span></p>
       <ul>
         <li><strong>df<sub>1</sub></strong> (numerator df) = df for the effect: treatment has 2 levels → 1; orientation has 3 levels → 2; interaction → (2−1)(3−1)=2.</li>
-        <li><strong>df<sub>2</sub></strong> (denominator df) = df for the error term. Here it’s 54 because in a two-way between-subjects ANOVA: <span class="formula">df_{error}=N-ab=60-6=54</span>.</li>
+        <li><strong>df<sub>2</sub></strong> (denominator df) = df for the error term. Here it’s 54 because in a two-way between-subjects ANOVA: <span class="formula">\(df_{error}=N-ab=60-6=54\)</span>.</li>
         <li><strong>MSE</strong> is the <em>mean square error</em>, i.e., the denominator of every F test in this between-subjects design.</li>
-        <li><strong>F</strong> is a ratio: <span class="formula">F = MS_{effect} / MSE</span>. So you can back out <span class="formula">MS_{effect} = F \times MSE</span> if you want.</li>
+        <li><strong>F</strong> is a ratio: <span class="formula">\(F = MS_{effect} / MSE\)</span>. So you can back out <span class="formula">\(MS_{effect} = F \times MSE\)</span> if you want.</li>
       </ul>
 
       <p><strong>Most important modeling takeaway:</strong> The interaction is <em>very</em> significant (<span class="formula">p&lt;.001</span>). That means the effect of officer race <em>depends on</em> political orientation (the simple effect changes across ideology). When the interaction is strong, you generally interpret <strong>simple effects</strong> (and plots/cell means) rather than leaning on main effects.</p>
@@ -470,18 +470,18 @@ m2$Anova
 
           <p><strong>2) Degrees of freedom:</strong></p>
           <ul>
-            <li>Treatment has 2 levels → <span class="formula">df_1 = 2-1 = 1</span></li>
-            <li>Orientation has 3 levels → <span class="formula">df_1 = 3-1 = 2</span></li>
+            <li>Treatment has 2 levels → <span class="formula">\(df_1 = 2-1 = 1\)</span></li>
+            <li>Orientation has 3 levels → <span class="formula">\(df_1 = 3-1 = 2\)</span></li>
             <li>Interaction has <span class="formula">(2-1)(3-1)=2</span> numerator df</li>
-            <li>Error df is <span class="formula">df_2 = N - ab = 60 - 6 = 54</span> (two-way between-subjects)</li>
+            <li>Error df is <span class="formula">\(df_2 = N - ab = 60 - 6 = 54\)</span> (two-way between-subjects)</li>
           </ul>
 
           <p><strong>3) What the F ratio compares:</strong> In a between-subjects ANOVA, the denominator is the same error term for all effects: <span class="formula">MSE</span>. Formally:</p>
           <p class="formula">\(F = \dfrac{MS_{effect}}{MSE}\)</p>
           <p>So with <span class="formula">MSE=1.73</span> you can recover (if you want) the mean-square for each effect, e.g.:</p>
           <ul>
-            <li><span class="formula">MS_{treatment} = 4.01\times 1.73 \approx 6.94</span></li>
-            <li><span class="formula">MS_{interaction} = 16.72\times 1.73 \approx 28.93</span></li>
+            <li><span class="formula">\(MS_{treatment} = 4.01\times 1.73 \approx 6.94\)</span></li>
+            <li><span class="formula">\(MS_{interaction} = 16.72\times 1.73 \approx 28.93\)</span></li>
           </ul>
 
           <p><strong>4) How to interpret “interaction significant”:</strong> It means the treatment difference is <em>not constant</em> across ideology. The next step is to look at the cell means (and/or compute simple effects/contrasts), not to summarize with one main effect.</p>
@@ -667,7 +667,7 @@ m2$Anova
 
           <p><strong>Here:</strong> (j,k) = (black officer, conservative). The cell mean from the table is 1.25. The person’s observed rating is 7. So the residual is 7 − 1.25 = 5.75.</p>
 
-          <p><strong>Interpretation:</strong> This is a very large positive residual: this person rated “double jeopardy” much higher than the average conservative in the black-officer condition. In the ANOVA, the collection of these residuals contributes to the <span class="formula">SS_{error}</span> and therefore the <span class="formula">MSE</span> used in the F tests.</p>
+          <p><strong>Interpretation:</strong> This is a very large positive residual: this person rated “double jeopardy” much higher than the average conservative in the black-officer condition. In the ANOVA, the collection of these residuals contributes to the <span class="formula">\(SS_{error}\)</span> and therefore the <span class="formula">MSE</span> used in the F tests.</p>
         </div>
       </details>
     </div>
@@ -693,7 +693,7 @@ m2$Anova
 
           <p><strong>4) Test statistic:</strong></p>
           <p class="formula">\(t=\hat\psi/SE\approx 3.37/0.588\approx 5.73\)</p>
-          <p>Use <span class="formula">df=54</span> (from the ANOVA table / R output).</p>
+          <p>Use <span class="formula">\(df=54\)</span> (from the ANOVA table / R output).</p>
 
           <p><strong>5) Why Tukey here:</strong> This is a <em>pairwise</em> comparison. The study guide’s rule is: <strong>Tukey for pairwise contrasts</strong>, Scheffé for complex (multi-mean) contrasts. Also, we conceptually have a <em>family</em> of up to 3 treatment simple effects (one within each ideology), so the prompt applies a familywise adjustment (here implemented as α/3 → reflected in the critical value they provide).</p>
 
@@ -724,7 +724,7 @@ m2$Anova
           <p><strong>3) Difference-in-differences (the contrast estimate):</strong></p>
           <p class="formula">\(\hat\psi = 3.37 - (-1.28) = 4.65\)</p>
 
-          <p><strong>4) Standard error idea:</strong> This uses multiple cell means, so you compute <span class="formula">SE(\hat\psi)</span> from <span class="formula">MSE</span> and the contrast weights. (The study guide provides the resulting t = 5.58.) The df is still 54 because the error term is the same MSE from the between-subjects ANOVA.</p>
+          <p><strong>4) Standard error idea:</strong> This uses multiple cell means, so you compute <span class="formula">\(SE(\hat\psi)\)</span> from <span class="formula">MSE</span> and the contrast weights. (The study guide provides the resulting t = 5.58.) The df is still 54 because the error term is the same MSE from the between-subjects ANOVA.</p>
 
           <p><strong>5) Why Scheffé:</strong> This is not a single pairwise comparison; it’s a <em>complex</em> contrast involving 4 means (a “difference of differences”). The study guide rule is <strong>Scheffé for complex contrasts</strong> because it controls error for <em>any</em> contrast in the family.</p>
 
@@ -751,7 +751,7 @@ m2$Anova
           <p><strong>3) Compute the contrast estimate from the white-officer row means:</strong></p>
           <p class="formula">\(\hat\psi = 1\cdot 4.62 + 1\cdot 3.35 + (-2)\cdot 1.91 = 4.15\)</p>
 
-          <p><strong>4) Test statistic and df:</strong> The contrast t is given as 4.07. The denominator uses the same <span class="formula">MSE</span> from the ANOVA and <span class="formula">df=54</span> (between-subjects error df).</p>
+          <p><strong>4) Test statistic and df:</strong> The contrast t is given as 4.07. The denominator uses the same <span class="formula">MSE</span> from the ANOVA and <span class="formula">\(df=54\)</span> (between-subjects error df).</p>
 
           <p><strong>5) Scheffé decision rule:</strong> Compare |t| to the Scheffé-adjusted critical value. Since 4.07 &gt; 2.812, reject H<sub>0</sub>. Under the white-officer condition, liberals differ strongly from the combined conservative/moderate level.</p>
         </div>
@@ -836,9 +836,9 @@ m2$Anova
 
           <p><strong>2) Why Tukey here:</strong> The study guide rule is “Tukey for pairwise contrasts.” With k=3 conditions, the typical post-hoc family is “all pairwise comparisons among 3 means.” Tukey controls the familywise error rate across that set.</p>
 
-          <p><strong>3) What the adjusted critical value is:</strong> Tukey uses the studentized range critical value <span class="formula">q^*</span>, which can be converted to a t-style cutoff via:</p>
+          <p><strong>3) What the adjusted critical value is:</strong> Tukey uses the studentized range critical value <span class="formula">\(q^*\)</span>, which can be converted to a t-style cutoff via:</p>
           <p class="formula">\(t^* = q^*/\sqrt{2}\)</p>
-          <p>The prompt gives the numeric value: <span class="formula">t^*\approx 2.36</span> for k=3 and df=302.</p>
+          <p>The prompt gives the numeric value: <span class="formula">\(t^*\approx 2.36\)</span> for k=3 and df=302.</p>
 
           <p><strong>4) Decision rule:</strong> Reject when <span class="formula">\(|t_{obs}| &gt; t^*\)</span>. Since 6.979 and 11.372 are both much larger than 2.36, both contrasts are significant after Tukey adjustment.</p>
         </div>
@@ -902,8 +902,8 @@ m2$Anova
 
       <p><strong>Answer (decisions):</strong></p>
       <ul>
-        <li><strong>Contrast (0, 1, −1, 0)</strong> (circle − newspaper): observed <span class="formula">t=2.870</span> vs Tukey <span class="formula">t^*=2.935</span> → <strong>retain H<sub>0</sub></strong>.</li>
-        <li><strong>Contrast (1, 1, −1, −1)</strong> (face+circle − newspaper−white): observed <span class="formula">t=4.492</span> vs Scheffé <span class="formula">t^*=3.199</span> → <strong>reject H<sub>0</sub></strong>.</li>
+        <li><strong>Contrast (0, 1, −1, 0)</strong> (circle − newspaper): observed <span class="formula">t=2.870</span> vs Tukey <span class="formula">\(t^*=2.935\)</span> → <strong>retain H<sub>0</sub></strong>.</li>
+        <li><strong>Contrast (1, 1, −1, −1)</strong> (face+circle − newspaper−white): observed <span class="formula">t=4.492</span> vs Scheffé <span class="formula">\(t^*=3.199\)</span> → <strong>reject H<sub>0</sub></strong>.</li>
       </ul>
 
       <details class="pill">
@@ -975,23 +975,23 @@ m2$Anova
 
           <p><strong>Key rule (Objective 4):</strong> In a within-within design, each effect is tested against its <em>subject interaction</em> error term:</p>
           <ul>
-            <li><strong>Group</strong> is tested against <span class="formula">Group×Subject</span>.</li>
-            <li><strong>Trait</strong> is tested against <span class="formula">Trait×Subject</span>.</li>
-            <li><strong>Group×Trait</strong> is tested against <span class="formula">Group×Trait×Subject</span>.</li>
+            <li><strong>Group</strong> is tested against <span class="formula">\(Group×Subject\)</span>.</li>
+            <li><strong>Trait</strong> is tested against <span class="formula">\(Trait×Subject\)</span>.</li>
+            <li><strong>Group×Trait</strong> is tested against <span class="formula">\(Group×Trait×Subject\)</span>.</li>
           </ul>
 
           <p><strong>Degrees of freedom:</strong> n=726 subjects, a=5 group levels, b=6 trait levels.</p>
           <ul>
-            <li><span class="formula">df_{Group}=a-1=5-1=4</span></li>
-            <li><span class="formula">df_{Trait}=b-1=6-1=5</span></li>
-            <li><span class="formula">df_{Group×Trait}=(a-1)(b-1)=4×5=20</span></li>
-            <li><span class="formula">df_{Group×Subject}=(n-1)(a-1)=725×4=2900</span></li>
-            <li><span class="formula">df_{Trait×Subject}=(n-1)(b-1)=725×5=3625</span></li>
-            <li><span class="formula">df_{Group×Trait×Subject}=(n-1)(a-1)(b-1)=725×4×5=14500</span></li>
+            <li><span class="formula">\(df_{Group}=a-1=5-1=4\)</span></li>
+            <li><span class="formula">\(df_{Trait}=b-1=6-1=5\)</span></li>
+            <li><span class="formula">\(df_{Group×Trait}=(a-1)(b-1)=4×5=20\)</span></li>
+            <li><span class="formula">\(df_{Group×Subject}=(n-1)(a-1)=725×4=2900\)</span></li>
+            <li><span class="formula">\(df_{Trait×Subject}=(n-1)(b-1)=725×5=3625\)</span></li>
+            <li><span class="formula">\(df_{Group×Trait×Subject}=(n-1)(a-1)(b-1)=725×4×5=14500\)</span></li>
           </ul>
 
-          <p><strong>Mean squares:</strong> <span class="formula">MS = SS/df</span>. Example: <span class="formula">MS_{Group}=3494/4=873.5</span>.</p>
-          <p><strong>F ratios:</strong> <span class="formula">F=MS_{effect}/MS_{error(term)}</span>. Example: <span class="formula">F_{Group}=873.5/(5641/2900)\approx 449.1</span>.</p>
+          <p><strong>Mean squares:</strong> <span class="formula">\(MS = SS/df\)</span>. Example: <span class="formula">\(MS_{Group}=3494/4=873.5\)</span>.</p>
+          <p><strong>F ratios:</strong> <span class="formula">\(F=MS_{effect}/MS_{error(term)}\)</span>. Example: <span class="formula">\(F_{Group}=873.5/(5641/2900)\approx 449.1\)</span>.</p>
         </div>
       </details>
     </div>
@@ -1137,26 +1137,26 @@ m2$Anova
 
           <p><strong>Degrees of freedom:</strong></p>
           <ul>
-            <li>Damage: <span class="formula">df_A=a-1=3-1=2</span></li>
-            <li>Subjects (nested in A): <span class="formula">df_{S(A)} = n-a = 18-3 = 15</span></li>
-            <li>Stimuli: <span class="formula">df_B=b-1=3-1=2</span></li>
-            <li>B×S(A) error: <span class="formula">df_{B×S(A)}=(n-a)(b-1)=15×2=30</span></li>
-            <li>Interaction A×B: <span class="formula">df_{AB}=(a-1)(b-1)=2×2=4</span></li>
+            <li>Damage: <span class="formula">\(df_A=a-1=3-1=2\)</span></li>
+            <li>Subjects (nested in A): <span class="formula">\(df_{S(A)} = n-a = 18-3 = 15\)</span></li>
+            <li>Stimuli: <span class="formula">\(df_B=b-1=3-1=2\)</span></li>
+            <li>B×S(A) error: <span class="formula">\(df_{B×S(A)}=(n-a)(b-1)=15×2=30\)</span></li>
+            <li>Interaction A×B: <span class="formula">\(df_{AB}=(a-1)(b-1)=2×2=4\)</span></li>
           </ul>
 
-          <p><strong>Mean squares:</strong> <span class="formula">MS = SS/df</span>.</p>
+          <p><strong>Mean squares:</strong> <span class="formula">\(MS = SS/df\)</span>.</p>
           <ul>
-            <li><span class="formula">MS_A=57/2=28.50</span></li>
-            <li><span class="formula">MS_{S(A)}=17.4/15=1.16\approx 1.20</span> (rounding)</li>
-            <li><span class="formula">MS_B=9/2=4.50</span></li>
-            <li><span class="formula">MS_{B×S(A)}=30.6/30=1.02</span></li>
-            <li><span class="formula">MS_{AB}=2/4=0.50</span></li>
+            <li><span class="formula">\(MS_A=57/2=28.50\)</span></li>
+            <li><span class="formula">\(MS_{S(A)}=17.4/15=1.16\approx 1.20\)</span> (rounding)</li>
+            <li><span class="formula">\(MS_B=9/2=4.50\)</span></li>
+            <li><span class="formula">\(MS_{B×S(A)}=30.6/30=1.02\)</span></li>
+            <li><span class="formula">\(MS_{AB}=2/4=0.50\)</span></li>
           </ul>
 
           <p><strong>Correct F denominators (Objective 4):</strong></p>
           <ul>
-            <li>Test Damage (A) using <span class="formula">MS_{S(A)}</span>: <span class="formula">F_A = MS_A/MS_{S(A)}\approx 28.5/1.2\approx 23.8</span></li>
-            <li>Test Stimuli (B) and A×B using <span class="formula">MS_{B×S(A)}</span>: <span class="formula">F_B = 4.5/1.02\approx 4.4</span>, <span class="formula">F_{AB}=0.5/1.02\approx 0.5</span></li>
+            <li>Test Damage (A) using <span class="formula">\(MS_{S(A)}\)</span>: <span class="formula">\(F_A = MS_A/MS_{S(A)}\approx 28.5/1.2\approx 23.8\)</span></li>
+            <li>Test Stimuli (B) and A×B using <span class="formula">\(MS_{B×S(A)}\)</span>: <span class="formula">\(F_B = 4.5/1.02\approx 4.4\)</span>, <span class="formula">\(F_{AB}=0.5/1.02\approx 0.5\)</span></li>
           </ul>
         </div>
       </details>
