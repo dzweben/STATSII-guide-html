@@ -915,21 +915,25 @@ MSE = 1.73</pre>
       <details class="pill">
         <summary>Show solution walkthrough (df logic + correct error terms in two-way RM ANOVA)</summary>
         <div class="answer">
-          <p><strong>Design:</strong> Group is a <em>between-subjects</em> factor with 5 levels (racial groups). Trait is a <em>within-subjects</em> factor with 6 levels (traits). This is a two-way repeated-measures / mixed model where subjects are nested in group.</p>
-
-          <p><strong>Key rule (Objective 4):</strong> Each effect is tested against the variability that matches its structure:</p>
+          <p><strong>Design:</strong> This is a <strong>two-way within-subjects (repeated-measures) ANOVA</strong>: each of the 726 respondents rates <em>each racial group</em> on <em>each trait</em>. So both factors are within-subject:</p>
           <ul>
-            <li><strong>Between-subjects Group:</strong> denominator is <span class="formula">Group×Subject</span> (subjects nested within group).</li>
-            <li><strong>Within-subjects Trait:</strong> denominator is <span class="formula">Trait×Subject</span>.</li>
-            <li><strong>Interaction Group×Trait:</strong> denominator is <span class="formula">Group×Trait×Subject</span>.</li>
+            <li><strong>Group</strong> (the target group being rated): 5 levels (Asian, Black, Hispanic, Jew, White)</li>
+            <li><strong>Trait</strong>: 6 levels (Anti-family, Unfairness, Lazy, Unintelligent, Violent, Poor)</li>
           </ul>
 
-          <p><strong>Degrees of freedom:</strong> n=726 subjects, a=5 groups, b=6 traits.</p>
+          <p><strong>Key rule (Objective 4):</strong> In a within-within design, each effect is tested against its <em>subject interaction</em> error term:</p>
+          <ul>
+            <li><strong>Group</strong> is tested against <span class="formula">Group×Subject</span>.</li>
+            <li><strong>Trait</strong> is tested against <span class="formula">Trait×Subject</span>.</li>
+            <li><strong>Group×Trait</strong> is tested against <span class="formula">Group×Trait×Subject</span>.</li>
+          </ul>
+
+          <p><strong>Degrees of freedom:</strong> n=726 subjects, a=5 group levels, b=6 trait levels.</p>
           <ul>
             <li><span class="formula">df_{Group}=a-1=5-1=4</span></li>
             <li><span class="formula">df_{Trait}=b-1=6-1=5</span></li>
             <li><span class="formula">df_{Group×Trait}=(a-1)(b-1)=4×5=20</span></li>
-            <li><span class="formula">df_{Group×Subject}=(n-a)=726-5=721</span> and then multiplied by (a?) is shown in the prompt’s format as 725×4=2900 because they’re expressing it as (n−1)(a−1) with n=726 → (725)(4)=2900.</li>
+            <li><span class="formula">df_{Group×Subject}=(n-1)(a-1)=725×4=2900</span></li>
             <li><span class="formula">df_{Trait×Subject}=(n-1)(b-1)=725×5=3625</span></li>
             <li><span class="formula">df_{Group×Trait×Subject}=(n-1)(a-1)(b-1)=725×4×5=14500</span></li>
           </ul>
