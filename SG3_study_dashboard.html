@@ -625,10 +625,29 @@ MSE = 1.73</pre>
     <summary>Problem 2g — Simple effect of treatment within conservatives (pairwise; Tukey)</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>H<sub>0</sub>: 1·μ<sub>conservative,white</sub> + −1·μ<sub>conservative,black</sub> = 0</p></div>
-      <p>Type: simple effect of officer race within conservatives (pairwise).</p>
-      <p>ψ̂ = 4.62 − 1.25 = 3.37. Standard error = √(1.73·(1/10 + 1/10)).</p>
-      <p>t = 5.73. Tukey critical value t* = 2.471 (uses α/3 here because we could test the treatment simple effect separately for liberals, moderates, and conservatives and we want familywise control). Because 5.73 &gt; 2.471, reject the null hypothesis.</p>
-      <p>Interpretation: conservatives rate double‑jeopardy higher for white officers by about 3.37 points.</p>
+
+      <p><strong>Answer:</strong> This is a <strong>pairwise simple effect</strong> (white vs black) <em>within conservatives</em>. The estimated simple effect is <span class="formula">\(\hat\psi = 4.62 - 1.25 = 3.37\)</span>. Using <span class="formula">MSE=1.73</span> and n=10 per cell gives <span class="formula">t\approx 5.73\)</span>, which exceeds the Tukey-adjusted critical value (<span class="formula">t^*=2.471\)</span>) → <strong>reject H<sub>0</sub></strong>.</p>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (how the contrast uses MSE and why Tukey)</summary>
+        <div class="answer">
+          <p><strong>1) Classify the contrast:</strong> It compares two means (white vs black) <em>within one ideology group</em> (conservatives). That is a <strong>simple effect of treatment</strong> and it is <strong>pairwise</strong>.</p>
+
+          <p><strong>2) Compute the contrast estimate:</strong></p>
+          <p class="formula">\(\hat\psi = 1\cdot \bar Y_{cons,white} + (-1)\cdot \bar Y_{cons,black} = 4.62 - 1.25 = 3.37\)</p>
+
+          <p><strong>3) Standard error from the ANOVA MSE:</strong> In this balanced between-subjects design, the error term for contrasts is the same <span class="formula">MSE</span> reported in the ANOVA output.</p>
+          <p class="formula">\(SE(\hat\psi)=\sqrt{MSE\left(\frac{1}{n_{cons,white}}+\frac{1}{n_{cons,black}}\right)}=\sqrt{1.73\left(\frac{1}{10}+\frac{1}{10}\right)}\approx 0.588\)</p>
+
+          <p><strong>4) Test statistic:</strong></p>
+          <p class="formula">\(t=\hat\psi/SE\approx 3.37/0.588\approx 5.73\)</p>
+          <p>Use <span class="formula">df=54</span> (from the ANOVA table / R output).</p>
+
+          <p><strong>5) Why Tukey here:</strong> This is a <em>pairwise</em> comparison. The study guide’s rule is: <strong>Tukey for pairwise contrasts</strong>, Scheffé for complex (multi-mean) contrasts. Also, we conceptually have a <em>family</em> of up to 3 treatment simple effects (one within each ideology), so the prompt applies a familywise adjustment (here implemented as α/3 → reflected in the critical value they provide).</p>
+
+          <p><strong>6) Decision:</strong> Since 5.73 &gt; 2.471, reject H<sub>0</sub>. Conservatives rate “double jeopardy” much higher for white officers than black officers.</p>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -636,10 +655,30 @@ MSE = 1.73</pre>
     <summary>Problem 2h — Interaction contrast (difference-in-differences; Scheffé)</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>H<sub>0</sub>: 1·μ<sub>conservative,white</sub> + −1·μ<sub>conservative,black</sub> + 1·μ<sub>liberal,white</sub> + −1·μ<sub>liberal,black</sub> = 0</p></div>
-      <p>Type: interaction contrast (difference of simple effects).</p>
-      <p>ψ̂ = (4.62 − 1.25) − (1.91 − 3.19) = 4.65. t = 5.58.</p>
-      <p>Scheffé critical value t* = 2.517. Because 5.58 &gt; 2.517, reject the null hypothesis.</p>
-      <p>Interpretation: the officer‑race effect is much larger for conservatives than for liberals.</p>
+
+      <p><strong>Answer:</strong> This is an <strong>interaction (difference-in-differences) contrast</strong>. The estimate is <span class="formula">\(\hat\psi=(4.62-1.25) - (1.91-3.19)=4.65\)</span> with <span class="formula">t\approx 5.58\)</span>, exceeding the Scheffé critical value (<span class="formula">t^*=2.517\)</span>) → <strong>reject H<sub>0</sub></strong>.</p>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (difference-of-simple-effects + why Scheffé)</summary>
+        <div class="answer">
+          <p><strong>1) What the null says:</strong> It compares two simple treatment effects (white−black) across ideologies (conservative vs liberal). That is literally an interaction test at the contrast level.</p>
+
+          <p><strong>2) Compute each simple effect from the cell means:</strong></p>
+          <ul>
+            <li>Conservative simple effect: <span class="formula">\(4.62-1.25=3.37\)</span></li>
+            <li>Liberal simple effect: <span class="formula">\(1.91-3.19=-1.28\)</span></li>
+          </ul>
+
+          <p><strong>3) Difference-in-differences (the contrast estimate):</strong></p>
+          <p class="formula">\(\hat\psi = 3.37 - (-1.28) = 4.65\)</p>
+
+          <p><strong>4) Standard error idea:</strong> This uses multiple cell means, so you compute <span class="formula">SE(\hat\psi)</span> from <span class="formula">MSE</span> and the contrast weights. (The study guide provides the resulting t = 5.58.) The df is still 54 because the error term is the same MSE from the between-subjects ANOVA.</p>
+
+          <p><strong>5) Why Scheffé:</strong> This is not a single pairwise comparison; it’s a <em>complex</em> contrast involving 4 means (a “difference of differences”). The study guide rule is <strong>Scheffé for complex contrasts</strong> because it controls error for <em>any</em> contrast in the family.</p>
+
+          <p><strong>6) Decision:</strong> 5.58 &gt; 2.517 → reject. The officer-race effect differs dramatically between conservatives and liberals.</p>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -647,10 +686,24 @@ MSE = 1.73</pre>
     <summary>Problem 2i — Simple effect of ideology within white-officer condition (complex; Scheffé)</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>H<sub>0</sub>: 1·μ<sub>conservative,white</sub> + 1·μ<sub>moderate,white</sub> + −2·μ<sub>liberal,white</sub> = 0</p></div>
-      <p>Type: simple effect of ideology within the white‑officer condition (complex contrast).</p>
-      <p>ψ̂ = 4.62 + 3.35 − 2·1.91 = 4.15. t = 4.07.</p>
-      <p>Scheffé critical value t* = 2.812. Because 4.07 &gt; 2.812, reject the null hypothesis.</p>
-      <p>Interpretation: under white‑officer conditions, conservatives and moderates rate higher than liberals.</p>
+
+      <p><strong>Answer:</strong> This is a <strong>complex simple effect</strong> within the white-officer condition. The estimate is <span class="formula">\(\hat\psi=4.62+3.35-2(1.91)=4.15\)</span> with <span class="formula">t\approx 4.07\)</span>, exceeding Scheffé’s critical value (<span class="formula">t^*=2.812\)</span>) → <strong>reject H<sub>0</sub></strong>.</p>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (compute ψ̂ + why this is Scheffé, not Tukey)</summary>
+        <div class="answer">
+          <p><strong>1) Classify the contrast:</strong> We are comparing ideology means <em>holding treatment fixed</em> (white officer condition). That’s a <strong>simple effect of orientation</strong> within one treatment level.</p>
+
+          <p><strong>2) Why it’s “complex”:</strong> The weights are [1, 1, −2] across (cons, mod, lib). That is not a single pairwise comparison; it’s a comparison of <em>one group vs the average of two groups</em> (or equivalently the average of cons+mod vs lib). That’s a complex contrast → Scheffé.</p>
+
+          <p><strong>3) Compute the contrast estimate from the white-officer row means:</strong></p>
+          <p class="formula">\(\hat\psi = 1\cdot 4.62 + 1\cdot 3.35 + (-2)\cdot 1.91 = 4.15\)</p>
+
+          <p><strong>4) Test statistic and df:</strong> The contrast t is given as 4.07. The denominator uses the same <span class="formula">MSE</span> from the ANOVA and <span class="formula">df=54</span> (between-subjects error df).</p>
+
+          <p><strong>5) Scheffé decision rule:</strong> Compare |t| to the Scheffé-adjusted critical value. Since 4.07 &gt; 2.812, reject H<sub>0</sub>. Under the white-officer condition, liberals differ strongly from the combined conservative/moderate level.</p>
+        </div>
+      </details>
     </div>
   </details>
 </div>
@@ -674,9 +727,34 @@ MSE = 1.73</pre>
     <summary>Problem 3a — Calculate all fixed effects</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Calculate all fixed effects (effects not related to the subject).</p></div>
-      <p>Grand mean Ȳ = (3.05 + 2.46 + 3.99)/3 = 3.17.</p>
-      <p>α<sub>black</sub> = 3.05 − 3.17 = −0.12; α<sub>hispanic</sub> = 2.46 − 3.17 = −0.71; α<sub>white</sub> = 3.99 − 3.17 = +0.82.</p>
-      <p>Interpretation: Whites are rated lazier than the grand mean; Hispanics are rated least lazy.</p>
+
+      <p><strong>Answer (fixed effects):</strong></p>
+      <p>Grand mean <span class="formula">\(\bar Y = (3.05 + 2.46 + 3.99)/3 = 3.17\)</span>.</p>
+      <ul>
+        <li>α<sub>black</sub> = 3.05 − 3.17 = −0.12</li>
+        <li>α<sub>hispanic</sub> = 2.46 − 3.17 = −0.71</li>
+        <li>α<sub>white</sub> = 3.99 − 3.17 = +0.82</li>
+      </ul>
+      <p><strong>Interpretation:</strong> White targets are rated lazier than the grand mean; Hispanic targets are rated least lazy.</p>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (one-way fixed effects for a within-subject set of means)</summary>
+        <div class="answer">
+          <p><strong>What “fixed effects” means here (Objective 3):</strong> You’re being asked for the condition effects α<sub>j</sub> (not subject effects). Even though the design conceptually is within-subject (same respondents rate multiple groups), the prompt gives only the <em>estimated condition means</em>, so the fixed-effects computation is the same: effect = condition mean − grand mean.</p>
+
+          <p><strong>Step 1: Grand mean.</strong></p>
+          <p class="formula">\(\bar Y = \dfrac{3.05+2.46+3.99}{3} = 3.17\)</p>
+
+          <p><strong>Step 2: Each fixed effect α.</strong></p>
+          <ul>
+            <li><span class="formula">\(\alpha_{black}=3.05-3.17=-0.12\)</span></li>
+            <li><span class="formula">\(\alpha_{hispanic}=2.46-3.17=-0.71\)</span></li>
+            <li><span class="formula">\(\alpha_{white}=3.99-3.17=+0.82\)</span></li>
+          </ul>
+
+          <p><strong>Sanity check:</strong> Fixed effects sum to ~0 (−0.12 −0.71 +0.82 ≈ −0.01), with tiny discrepancy due to rounding the grand mean.</p>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -684,10 +762,35 @@ MSE = 1.73</pre>
     <summary>Problem 3b — For each contrast: null, adjusted t*, significance</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>For each contrast, write the null hypothesis, the equation for the post-hoc-adjusted t critical value, find the adjusted t-critical value, and determine significance.</p></div>
-      <p>Contrast 1 (c = [1, −1, 0]): H<sub>0</sub>: 1·μ<sub>black</sub> + (−1)·μ<sub>hispanic</sub> + 0·μ<sub>white</sub> = 0.</p>
-      <p>Adjusted critical value (Tukey; k=3 groups, df=302): <span class="formula">t* = q / √2</span>, here <strong>t* ≈ 2.36</strong>. Observed t = 6.979 → reject.</p>
-      <p>Contrast 2 (c = [−1, −1, 2]): H<sub>0</sub>: (−1)·μ<sub>black</sub> + (−1)·μ<sub>hispanic</sub> + 2·μ<sub>white</sub> = 0.</p>
-      <p>Adjusted critical value (Tukey; k=3 groups, df=302): <span class="formula">t* = q / √2</span>, here <strong>t* ≈ 2.36</strong>. Observed t = 11.372 → reject.</p>
+
+      <p><strong>Answer (significance decisions):</strong> Using Tukey adjustment for <span class="formula">k=3</span> groups (df=302), the adjusted critical value is given as <strong>t* ≈ 2.36</strong>. Both contrasts are significant because their observed t values exceed 2.36.</p>
+      <ul>
+        <li><strong>Contrast 1</strong> (c = [1, −1, 0]): observed <span class="formula">t=6.979</span> → reject H<sub>0</sub>.</li>
+        <li><strong>Contrast 2</strong> (c = [−1, −1, 2]): observed <span class="formula">t=11.372</span> → reject H<sub>0</sub>.</li>
+      </ul>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (null hypotheses + why Tukey + what t* means)</summary>
+        <div class="answer">
+          <p><strong>1) Write each null hypothesis:</strong> A contrast null is always “the weighted sum of population means equals 0.”</p>
+
+          <p><strong>Contrast 1:</strong> c = [1, −1, 0]</p>
+          <p class="formula">\(H_0: 1\mu_{black} + (-1)\mu_{hispanic} + 0\mu_{white} = 0\)</p>
+          <p>This is essentially a pairwise comparison: black vs hispanic.</p>
+
+          <p><strong>Contrast 2:</strong> c = [−1, −1, 2]</p>
+          <p class="formula">\(H_0: (-1)\mu_{black} + (-1)\mu_{hispanic} + 2\mu_{white} = 0\)</p>
+          <p>This tests whether white differs from the average of (black and hispanic).</p>
+
+          <p><strong>2) Why Tukey here:</strong> The study guide rule is “Tukey for pairwise contrasts.” With k=3 conditions, the typical post-hoc family is “all pairwise comparisons among 3 means.” Tukey controls the familywise error rate across that set.</p>
+
+          <p><strong>3) What the adjusted critical value is:</strong> Tukey uses the studentized range critical value <span class="formula">q^*</span>, which can be converted to a t-style cutoff via:</p>
+          <p class="formula">\(t^* = q^*/\sqrt{2}\)</p>
+          <p>The prompt gives the numeric value: <span class="formula">t^*\approx 2.36</span> for k=3 and df=302.</p>
+
+          <p><strong>4) Decision rule:</strong> Reject when <span class="formula">|t_{obs}| &gt; t^*\)</span>. Since 6.979 and 11.372 are both much larger than 2.36, both contrasts are significant after Tukey adjustment.</p>
+        </div>
+      </details>
     </div>
   </details>
 </div>
