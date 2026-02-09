@@ -135,8 +135,8 @@
 <p><strong>Two‑factor within‑subjects (fixed effects only):</strong><br/>
 Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas above; subject terms are omitted per the prompt.</p>
 <p><strong>Split‑plot (one between‑subjects factor A, one within‑subjects factor B):</strong><br/>
-<span class="formula">α<sub>j</sub>, β<sub>k</sub>, (αβ)<sub>jk</sub> as above; &nbsp; e<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>ij</sub> − Ȳ<sub>jk</sub> + Ȳ<sub>j</sub></span>
-<br/>This residual reflects within‑person variability, with subjects nested in the between‑subjects factor.</p>
+<span class="formula">α<sub>j</sub>, β<sub>k</sub>, (αβ)<sub>jk</sub> as above; &nbsp; βπ<sub>ijk</sub> = Y<sub>ijk</sub> − Ȳ<sub>ij</sub> − Ȳ<sub>jk</sub> + Ȳ<sub>j</sub></span>
+<br/>In LN11’s notation, this <span class="formula">βπ_{ijk}</span> term is the <strong>B×Subject(A)</strong> interaction: it is the within‑person deviation after removing (i) the person’s mean within their A‑group and (ii) the A×B cell mean. This is the <em>error term</em> used to test the within‑subjects factor B and the A×B interaction in a split‑plot ANOVA.</p>
 
 </div>
 </details>
@@ -183,10 +183,22 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Objective 7 — Interpret R output for ANOVA designs (two-way, RM, split-plot)</summary>
 <div class="answer">
 
-<p><strong>Example practice in this dashboard:</strong> <em>Standalone skill (helps you read R output; not directly required by the SG3 problems)</em></p>
+<p><strong>Example practice in this dashboard:</strong> <a href="#p2">P2</a> (has a given Type III ANOVA table)</p>
 
-<p>Start by identifying the effect rows (Factor A, Factor B, and the interaction) and their degrees of freedom. Then identify the correct error term used for each effect. In repeated‑measures output, the denominator is often a subject‑interaction term rather than within‑cell variance.</p>
-<p>Next, check sphericity tests (such as Mauchly’s test). If sphericity is violated, use Greenhouse–Geisser or Huynh–Feldt corrected p‑values. Finally, interpret the direction of effects using marginal means or cell means and (if provided) plots.</p>
+<p><strong>Step 1: identify the model/design.</strong> Is it between‑subjects, RM, or split‑plot? That tells you what the denominator (error term) should be.</p>
+
+<p><strong>Step 2: read the effect rows and dfs.</strong> For each row (Factor A, Factor B, A×B):
+<ul>
+  <li><strong>numerator df</strong> comes from the number of levels (e.g., a−1, b−1, (a−1)(b−1)).</li>
+  <li><strong>denominator df</strong> comes from the <em>matching error term</em> (e.g., for between‑subjects designs it’s usually <span class="formula">N−ab</span>; for RM/split‑plot it’s a subject‑interaction df like <span class="formula">(n−1)(a−1)</span> or <span class="formula">(n−a)(b−1)</span> depending on the effect).</li>
+</ul>
+</p>
+
+<p><strong>Step 3: connect F back to MS.</strong> Use <span class="formula">F=MS_{effect}/MS_{error}</span>. If MSE/MS(error) is printed, you can back‑compute <span class="formula">MS_{effect}=F\times MS_{error}</span>.</p>
+
+<p><strong>Step 4: interpret direction using means/emmeans.</strong> A significant row only tells you “there is a difference.” The cell means (or marginal means + contrasts) tell you <em>which</em> levels differ and in what direction.</p>
+
+<p class="note">Sphericity checks (Mauchly; GG/HF corrections) matter for RM factors with &gt;2 levels. If an output includes corrected dfs/p‑values, report the corrected result.</p>
 
 </div>
 </details>
@@ -232,8 +244,11 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <p><strong>Example practice in this dashboard:</strong> <a href="#p2g">P2g</a>, <a href="#p2h">P2h</a>, <a href="#p2i">P2i</a>, <a href="#p3b">P3b</a>, <a href="#p4b">P4b</a>, <a href="#p5c">P5c</a>, <a href="#p6c">P6c</a></p>
 
 
-<p>Use the <strong>Tukey</strong> adjustment for pairwise contrasts and the <strong>Scheffé</strong> adjustment for complex contrasts. Tukey uses the studentized range distribution; Scheffé uses the F distribution with degrees of freedom for the effect.</p>
-<p>When doing simple effects, adjust the significance level by the number of simple‑effect tests (for example, divide α by the number of levels in the other factor). Interactions use the Scheffé adjustment with degrees of freedom equal to (a−1)(b−1).</p>
+<p>Use the <strong>Tukey</strong> adjustment for <strong>pairwise</strong> comparisons within a family of means (it’s built for all pairwise differences). Use the <strong>Scheffé</strong> adjustment for <strong>non‑pairwise / complex</strong> contrasts (anything that isn’t a simple pairwise difference), since Scheffé controls the familywise error rate across <em>all</em> linear contrasts among those means.</p>
+
+<p><strong>Simple effects:</strong> if you test the same simple effect at multiple levels of the other factor (e.g., test A within each level of B), those multiple tests form a family. Unless SG3 specifies a different rule, control the familywise error across those tests (a common default is Bonferroni: <span class="formula">\alpha' = \alpha / m</span> where <span class="formula">m</span> is the number of simple‑effect tests you’re running).</p>
+
+<p><strong>Interaction contrasts (difference‑in‑differences):</strong> these are typically treated as <em>complex</em> contrasts and match the Scheffé framework with <span class="formula">df_{effect}=(a−1)(b−1)</span> for an <span class="formula">a\times b</span> design.</p>
 
 </div>
 </details>
@@ -246,7 +261,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 
 <p>The contrast value is <strong>ψ̂ = Σ c<sub>j</sub> Ȳ<sub>j</sub></strong>. The test statistic compares ψ̂ to its standard error:</p>
 <p><span class="formula">t = ψ̂ / √(MSE · Σ(c<sub>j</sub><sup>2</sup>/n<sub>j</sub>))</span></p>
-<p>Use the appropriate mean square error (from the correct error term) and the correct sample size for each level.</p>
+<p>Use the appropriate mean square error (from the correct error term) and the correct sample size for each level. In RM and split‑plot designs, that “MSE” is usually a <strong>subject‑interaction</strong> mean square (e.g., A×Subject, B×Subject(A), or A×B×Subject), not the between‑subjects residual.</p>
 
 </div>
 </details>
@@ -292,7 +307,7 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
   <tr><td>Split‑plot (A between, B within)</td><td>Factor B (within‑subjects) or A×B (interaction) contrasts</td><td>(n − a)(b − 1)</td></tr>
 </table>
 
-<p class="note">For RM/split‑plot omnibus ANOVA F tests you will often see larger denominator df (e.g., <span class="formula">(n−1)(a−1)</span> or <span class="formula">(n−a)(b−1)</span>). SG3’s contrast work frequently uses t‑style contrasts with the corresponding subject‑interaction error term df (e.g., n−1 for pairwise RM contrasts), so follow the specific df shown/used in the output for the problem you’re working.</p>
+<p class="note">For RM/split‑plot omnibus ANOVA F tests you will often see larger denominator df (e.g., <span class="formula">(n−1)(a−1)</span> for a main effect in a within‑subjects factor, or <span class="formula">(n−a)(b−1)</span> for split‑plot within/interaction effects). For <strong>pairwise</strong> RM comparisons, SG3 sometimes treats the contrast as a paired‑difference t test with <span class="formula">df=n−1</span>. Bottom line: don’t memorize one df per design—use the df of the <em>error term your contrast is actually using</em> (and if R prints it, follow the output).</p>
 
 </div>
 </details>
