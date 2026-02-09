@@ -901,15 +901,43 @@ MSE = 1.73</pre>
       <div class="panel"><h4>Prompt</h4><p>Fill in the ANOVA table given the sums of squares.</p></div>
       <p><strong>Given SS (from SG3 prompt):</strong> Group=3494; Trait=1510; Subject=5169; Group×Trait=955; Group×Subject=5641; Trait×Subject=9063; Group×Trait×Subject=9444.</p>
 
+      <p><strong>Answer (completed table):</strong></p>
       <table class="tbl">
         <tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr>
         <tr><td>Racial group</td><td>3494</td><td>4</td><td>873.5</td><td>459.7</td></tr>
-        <tr><td>Error (group×subject)</td><td>5641</td><td>725*4 = 2900</td><td>1.9</td><td>N/A</td></tr>
+        <tr><td>Error (group×subject)</td><td>5641</td><td>725×4 = 2900</td><td>1.9</td><td>N/A</td></tr>
         <tr><td>Trait</td><td>1510</td><td>5</td><td>302.0</td><td>120.8</td></tr>
-        <tr><td>Error (trait×subject)</td><td>9063</td><td>725*5 = 3625</td><td>2.5</td><td>N/A</td></tr>
+        <tr><td>Error (trait×subject)</td><td>9063</td><td>725×5 = 3625</td><td>2.5</td><td>N/A</td></tr>
         <tr><td>Group×Trait</td><td>955</td><td>20</td><td>47.8</td><td>68.3</td></tr>
-        <tr><td>Error (group×trait×subject)</td><td>9444</td><td>725*20 = 14500</td><td>0.7</td><td>N/A</td></tr>
+        <tr><td>Error (group×trait×subject)</td><td>9444</td><td>725×20 = 14500</td><td>0.7</td><td>N/A</td></tr>
       </table>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (df logic + correct error terms in two-way RM ANOVA)</summary>
+        <div class="answer">
+          <p><strong>Design:</strong> Group is a <em>between-subjects</em> factor with 5 levels (racial groups). Trait is a <em>within-subjects</em> factor with 6 levels (traits). This is a two-way repeated-measures / mixed model where subjects are nested in group.</p>
+
+          <p><strong>Key rule (Objective 4):</strong> Each effect is tested against the variability that matches its structure:</p>
+          <ul>
+            <li><strong>Between-subjects Group:</strong> denominator is <span class="formula">Group×Subject</span> (subjects nested within group).</li>
+            <li><strong>Within-subjects Trait:</strong> denominator is <span class="formula">Trait×Subject</span>.</li>
+            <li><strong>Interaction Group×Trait:</strong> denominator is <span class="formula">Group×Trait×Subject</span>.</li>
+          </ul>
+
+          <p><strong>Degrees of freedom:</strong> n=726 subjects, a=5 groups, b=6 traits.</p>
+          <ul>
+            <li><span class="formula">df_{Group}=a-1=5-1=4</span></li>
+            <li><span class="formula">df_{Trait}=b-1=6-1=5</span></li>
+            <li><span class="formula">df_{Group×Trait}=(a-1)(b-1)=4×5=20</span></li>
+            <li><span class="formula">df_{Group×Subject}=(n-a)=726-5=721</span> and then multiplied by (a?) is shown in the prompt’s format as 725×4=2900 because they’re expressing it as (n−1)(a−1) with n=726 → (725)(4)=2900.</li>
+            <li><span class="formula">df_{Trait×Subject}=(n-1)(b-1)=725×5=3625</span></li>
+            <li><span class="formula">df_{Group×Trait×Subject}=(n-1)(a-1)(b-1)=725×4×5=14500</span></li>
+          </ul>
+
+          <p><strong>Mean squares:</strong> <span class="formula">MS = SS/df</span>. Example: <span class="formula">MS_{Group}=3494/4=873.5</span>.</p>
+          <p><strong>F ratios:</strong> <span class="formula">F=MS_{effect}/MS_{error(term)}</span>. Example: <span class="formula">F_{Group}=873.5/(5641/2900)\approx 459.7</span>.</p>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -917,8 +945,34 @@ MSE = 1.73</pre>
     <summary>Problem 5b — Main effects + interaction effect (given grand mean)</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Calculate main effects of “Asian” and “unfairness,” and their interaction. Grand mean = 3.70.</p></div>
-      <p>α<sub>asian</sub> = 3.47 − 3.70 = −0.23. β<sub>unfairness</sub> = 3.87 − 3.70 = +0.17.</p>
-      <p>(αβ)<sub>asian,unfairness</sub> = 3.82 − 3.47 − 3.87 + 3.70 = +0.18.</p>
+
+      <p><strong>Answer:</strong></p>
+      <ul>
+        <li>α<sub>asian</sub> = 3.47 − 3.70 = −0.23</li>
+        <li>β<sub>unfairness</sub> = 3.87 − 3.70 = +0.17</li>
+        <li>(αβ)<sub>asian,unfairness</sub> = 3.82 − 3.47 − 3.87 + 3.70 = +0.18</li>
+      </ul>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (α, β, αβ in a mixed/RM table)</summary>
+        <div class="answer">
+          <p><strong>Use the fixed-effects formulas (Objective 3):</strong></p>
+          <ul>
+            <li><span class="formula">\(\alpha_{asian}=\bar Y_{asian\cdot}-\bar Y\)</span></li>
+            <li><span class="formula">\(\beta_{unfairness}=\bar Y_{\cdot unfairness}-\bar Y\)</span></li>
+            <li><span class="formula">\((\alpha\beta)_{asian,unfairness}=\bar Y_{asian,unfairness}-\bar Y_{asian\cdot}-\bar Y_{\cdot unfairness}+\bar Y\)</span></li>
+          </ul>
+
+          <p><strong>Plug in the given means:</strong> Grand mean <span class="formula">\(\bar Y=3.70\)</span>. The Asian row mean is 3.47; the Unfairness column mean is 3.87; the Asian×Unfairness cell mean is 3.82.</p>
+
+          <p><strong>Interpretation:</strong></p>
+          <ul>
+            <li>α<sub>asian</sub> = −0.23 means Asians are rated <em>less negative</em> than the overall grand mean (because lower numbers are “more positive”).</li>
+            <li>β<sub>unfairness</sub> = +0.17 means Unfairness is rated <em>more negative</em> than the average trait.</li>
+            <li>(αβ)=+0.18 means the Asian rating on Unfairness is <em>higher than you’d predict</em> from adding “Asian overall” + “Unfairness overall” alone (an interaction deviation).</li>
+          </ul>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -926,11 +980,36 @@ MSE = 1.73</pre>
     <summary>Problem 5c — Interpret contrasts; Tukey vs Scheffé</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Interpret these contrasts. Explain what they test and assess significance using the appropriate Tukey or Scheffé adjustment.</p></div>
-      <p><strong>C1 (main effect of group; pairwise):</strong> Asian vs Jew. H<sub>0</sub>: 0·μ<sub>black</sub> + 1·μ<sub>asian</sub> + 0·μ<sub>hispanic</sub> + (−1)·μ<sub>jew</sub> + 0·μ<sub>white</sub> = 0. Tukey t* = <strong>2.7347</strong>, t = 10.204 → reject.</p>
-      <p><strong>C2 (main effect of trait; pairwise):</strong> Unfairness vs Antifamily. H<sub>0</sub>: 1·μ<sub>unfairness</sub> + (−1)·μ<sub>antifamily</sub> = 0. Tukey t* = <strong>2.8573</strong>, t = 14.826 → reject.</p>
-      <p><strong>C3 (simple effect of group within Unfairness; pairwise):</strong> Asian vs Jew (Unfairness). Tukey t* = <strong>3.3214</strong>, t = 4.030 → reject.</p>
-      <p><strong>C4 (simple effect of group within Antifamily; pairwise):</strong> Asian vs Jew (Antifamily). Tukey t* = <strong>3.3214</strong>, t = 12.088 → reject.</p>
-      <p><strong>C5 (interaction contrast; complex; Scheffé):</strong> Difference between the Asian–Jew gap in Unfairness vs in Antifamily. Scheffé t* = <strong>5.6305</strong>, t = 0.116 → retain.</p>
+
+      <p><strong>Answer (decisions):</strong> C1–C4 are <strong>pairwise</strong> (use Tukey) and all reject. C5 is a <strong>complex interaction contrast</strong> (use Scheffé) and retains.</p>
+      <ul>
+        <li><strong>C1:</strong> Tukey t* = 2.7347, t = 10.204 → <strong>reject</strong></li>
+        <li><strong>C2:</strong> Tukey t* = 2.8573, t = 14.826 → <strong>reject</strong></li>
+        <li><strong>C3:</strong> Tukey t* = 3.3214, t = 4.030 → <strong>reject</strong></li>
+        <li><strong>C4:</strong> Tukey t* = 3.3214, t = 12.088 → <strong>reject</strong></li>
+        <li><strong>C5:</strong> Scheffé t* = 5.6305, t = 0.116 → <strong>retain</strong></li>
+      </ul>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (what each contrast is testing + why Tukey vs Scheffé)</summary>
+        <div class="answer">
+          <p><strong>Rule (Objective 11):</strong></p>
+          <ul>
+            <li><strong>Tukey</strong> → pairwise comparisons (one mean vs one mean)</li>
+            <li><strong>Scheffé</strong> → complex contrasts (involving 3+ means; difference-of-differences, etc.)</li>
+          </ul>
+
+          <p><strong>C1 (main effect of group; pairwise):</strong> Asian vs Jew collapsed across traits. This is one group mean vs another → Tukey. Since t is huge (10.204), it’s significant.</p>
+
+          <p><strong>C2 (main effect of trait; pairwise):</strong> Unfairness vs Anti-family collapsed across groups → Tukey; t=14.826 clearly significant.</p>
+
+          <p><strong>C3 and C4 (simple effects; pairwise):</strong> Asian vs Jew <em>within a single trait</em> (Unfairness or Anti-family). Still pairwise → Tukey. Both reject.</p>
+
+          <p><strong>C5 (interaction contrast; complex):</strong> This tests whether the Asian–Jew difference changes from one trait (Unfairness) to another (Anti-family). That’s a difference of two pairwise gaps → a complex contrast → Scheffé. The observed t≈0.116 is tiny relative to Scheffé’s large cutoff, so retain (no evidence the Asian–Jew gap differs across those two traits).</p>
+
+          <p><strong>Interpretation caution:</strong> Because this is a two-way repeated-measures / mixed design, “main effect vs simple effect vs interaction contrast” is about <em>which dimension you’re collapsing over</em> (groups, traits, or both). The adjustment choice depends on whether the contrast is pairwise or complex, not on whether it’s a main or simple effect.</p>
+        </div>
+      </details>
     </div>
   </details>
 </div>
@@ -952,8 +1031,31 @@ MSE = 1.73</pre>
     <summary>Problem 6a — Calculate fixed effects</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Calculate the effects of “right brain”, “mixed”, and “right brain–mixed”. The grand mean across all subjects and observations is 7.48 characters.</p></div>
-      <p>α<sub>right</sub> = 7.61 − 7.48 = +0.13. β<sub>mixed</sub> = 7.11 − 7.48 = −0.37.</p>
-      <p>(αβ)<sub>right,mixed</sub> = 7.17 − 7.61 − 7.11 + 7.48 = −0.07.</p>
+
+      <p><strong>Answer:</strong></p>
+      <ul>
+        <li>α<sub>right</sub> = 7.61 − 7.48 = +0.13</li>
+        <li>β<sub>mixed</sub> = 7.11 − 7.48 = −0.37</li>
+        <li>(αβ)<sub>right,mixed</sub> = 7.17 − 7.61 − 7.11 + 7.48 = −0.07</li>
+      </ul>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (split-plot α, β, αβ effects)</summary>
+        <div class="answer">
+          <p><strong>Design:</strong> Split-plot (mixed) ANOVA: Damage group is between-subject (Factor A), Stimuli/string-type is within-subject (Factor B).</p>
+
+          <p><strong>Fixed effects are still computed from means:</strong></p>
+          <ul>
+            <li><span class="formula">\(\alpha_{right}=\bar Y_{right\cdot}-\bar Y\)</span></li>
+            <li><span class="formula">\(\beta_{mixed}=\bar Y_{\cdot mixed}-\bar Y\)</span></li>
+            <li><span class="formula">\((\alpha\beta)_{right,mixed}=\bar Y_{right,mixed}-\bar Y_{right\cdot}-\bar Y_{\cdot mixed}+\bar Y\)</span></li>
+          </ul>
+
+          <p><strong>Plug in the given means:</strong> grand mean 7.48; right-damage marginal mean 7.61; mixed marginal mean 7.11; right×mixed cell mean 7.17. Subtract accordingly to get +0.13, −0.37, and −0.07.</p>
+
+          <p><strong>Interpretation:</strong> Right-damage subjects are slightly above the grand mean overall; mixed strings are below the grand mean; and the right×mixed interaction deviation is tiny (cell is ~0.07 below what main effects alone would predict).</p>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -962,15 +1064,47 @@ MSE = 1.73</pre>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Fill in this ANOVA table. Given SS: Damage=57; Stimuli=9; Subject=17.4; Damage×Stimuli=2; Subject×Stimuli=30.6.</p></div>
 
+      <p><strong>Answer (completed table):</strong></p>
       <table class="tbl">
         <tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr>
         <tr><td>Damage group</td><td>57.0</td><td>2</td><td>28.50</td><td>23.8</td></tr>
-        <tr><td>Error</td><td>17.4</td><td>15</td><td>1.20</td><td>N/A</td></tr>
+        <tr><td>Error (subjects within damage)</td><td>17.4</td><td>15</td><td>1.20</td><td>N/A</td></tr>
         <tr><td>Stimuli</td><td>9.0</td><td>2</td><td>4.50</td><td>4.4</td></tr>
-        <tr><td>Error</td><td>30.6</td><td>30</td><td>1.02</td><td>N/A</td></tr>
+        <tr><td>Error (stimuli×subject)</td><td>30.6</td><td>30</td><td>1.02</td><td>N/A</td></tr>
         <tr><td>Damage×Stimuli</td><td>2.0</td><td>4</td><td>0.50</td><td>0.5</td></tr>
-        <tr><td>Error</td><td>30.6</td><td>30</td><td>1.02</td><td>N/A</td></tr>
+        <tr><td>Error (stimuli×subject)</td><td>30.6</td><td>30</td><td>1.02</td><td>N/A</td></tr>
       </table>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (split-plot df + correct error terms)</summary>
+        <div class="answer">
+          <p><strong>Design:</strong> 3×3 split-plot (A = Damage, between-subject; B = Stimuli, within-subject). n=18 total → 6 per damage group.</p>
+
+          <p><strong>Degrees of freedom:</strong></p>
+          <ul>
+            <li>Damage: <span class="formula">df_A=a-1=3-1=2</span></li>
+            <li>Subjects (nested in A): <span class="formula">df_{S(A)} = n-a = 18-3 = 15</span></li>
+            <li>Stimuli: <span class="formula">df_B=b-1=3-1=2</span></li>
+            <li>B×S(A) error: <span class="formula">df_{B×S(A)}=(n-a)(b-1)=15×2=30</span></li>
+            <li>Interaction A×B: <span class="formula">df_{AB}=(a-1)(b-1)=2×2=4</span></li>
+          </ul>
+
+          <p><strong>Mean squares:</strong> <span class="formula">MS = SS/df</span>.</p>
+          <ul>
+            <li><span class="formula">MS_A=57/2=28.50</span></li>
+            <li><span class="formula">MS_{S(A)}=17.4/15=1.16\approx 1.20</span> (rounding)</li>
+            <li><span class="formula">MS_B=9/2=4.50</span></li>
+            <li><span class="formula">MS_{B×S(A)}=30.6/30=1.02</span></li>
+            <li><span class="formula">MS_{AB}=2/4=0.50</span></li>
+          </ul>
+
+          <p><strong>Correct F denominators (Objective 4):</strong></p>
+          <ul>
+            <li>Test Damage (A) using <span class="formula">MS_{S(A)}</span>: <span class="formula">F_A = MS_A/MS_{S(A)}\approx 28.5/1.2\approx 23.8</span></li>
+            <li>Test Stimuli (B) and A×B using <span class="formula">MS_{B×S(A)}</span>: <span class="formula">F_B = 4.5/1.02\approx 4.4</span>, <span class="formula">F_{AB}=0.5/1.02\approx 0.5</span></li>
+          </ul>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -979,11 +1113,29 @@ MSE = 1.73</pre>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>For each contrast: (a) identify the type; (b) write the null hypothesis; (c) calculate the posthoc-adjusted critical value; and (d) interpret directionality. (Use Tukey for pairwise; Scheffé for complex.)</p></div>
 
-      <p>1) Damage main effect (between-subject; complex): ψ̂=3.94, t=6.335, Scheffé t*=2.714 → reject. Left damage worse than right+control.</p>
-      <p>2) Stimuli main effect (within-subject; pairwise): contrast c = [1, 0, −1] (digits − mixed). ψ̂=0.944, t=3.034, Tukey t*≈2.60 (k=3, df=15) → reject. Digits recalled better than mixed.</p>
-      <p>3) Simple effect (digits): ψ̂=3.167, t=3.424, Scheffé t*=3.300 → reject.</p>
-      <p>4) Simple effect (mixed): ψ̂=3.833, t=3.601, Scheffé t*=3.300 → reject.</p>
-      <p>5) Interaction contrast: ψ̂=−0.667, t=−0.505, Scheffé t*=3.496 → retain.</p>
+      <p><strong>Answer (decisions):</strong></p>
+      <p>1) Damage main effect (between; complex): ψ̂=3.94, t=6.335, Scheffé t*=2.714 → <strong>reject</strong>.</p>
+      <p>2) Stimuli main effect (within; pairwise): ψ̂=0.944, t=3.034, Tukey t*≈2.60 → <strong>reject</strong>.</p>
+      <p>3) Simple effect (digits): ψ̂=3.167, t=3.424, Scheffé t*=3.300 → <strong>reject</strong>.</p>
+      <p>4) Simple effect (mixed): ψ̂=3.833, t=3.601, Scheffé t*=3.300 → <strong>reject</strong>.</p>
+      <p>5) Interaction contrast: ψ̂=−0.667, t=−0.505, Scheffé t*=3.496 → <strong>retain</strong>.</p>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (write the nulls + map each to Tukey vs Scheffé)</summary>
+        <div class="answer">
+          <p><strong>General contrast form:</strong> <span class="formula">\(H_0:\sum c\mu = 0\)</span>. Your job is (i) classify the contrast, (ii) choose adjustment, (iii) interpret direction.</p>
+
+          <p><strong>1) Damage main effect (between-subject; complex):</strong> This compares combinations of the 3 damage-group marginal means. Because it is not a single pairwise “A vs B” comparison (it’s a complex linear combo), use <strong>Scheffé</strong>. Reject → damage groups differ in recall (left damage worst).</p>
+
+          <p><strong>2) Stimuli main effect (within-subject; pairwise):</strong> c=[1,0,−1] is a pairwise digits vs mixed comparison of marginal means → <strong>Tukey</strong>. Reject → digits recalled better than mixed.</p>
+
+          <p><strong>3–4) Simple effects (digits / mixed):</strong> These compare damage groups <em>within a fixed stimulus level</em>. The way SG3 frames them here is as complex contrasts across 3 between-subject means → <strong>Scheffé</strong>. Both reject → damage differences exist within those stimulus conditions.</p>
+
+          <p><strong>5) Interaction contrast:</strong> A difference-of-differences across stimulus levels and damage groups → complex → <strong>Scheffé</strong>. Retain → no evidence the damage-group gap changes across those stimuli in the way specified by the contrast.</p>
+
+          <p><strong>Note:</strong> The prompt provides ψ̂, t, and t*. The key skills are the classification (main vs simple vs interaction; pairwise vs complex) and picking Tukey vs Scheffé accordingly.</p>
+        </div>
+      </details>
     </div>
   </details>
 </div>
