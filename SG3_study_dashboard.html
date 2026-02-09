@@ -815,8 +815,31 @@ MSE = 1.73</pre>
     <summary>Problem 4a — Calculate all fixed effects</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Calculate all fixed effects.</p></div>
-      <p>Grand mean Ȳ = (1.679 + 1.421 + 0.971 + 0.886)/4 = 1.24.</p>
-      <p>α<sub>face</sub> = +0.44; α<sub>circle</sub> = +0.18; α<sub>newspaper</sub> = −0.27; α<sub>white</sub> = −0.36.</p>
+
+      <p><strong>Answer (fixed effects):</strong></p>
+      <p>Grand mean <span class="formula">\(\bar Y = (1.679 + 1.421 + 0.971 + 0.886)/4 = 1.23925\approx 1.24\)</span>.</p>
+      <ul>
+        <li>α<sub>face</sub> = 1.679 − 1.23925 = +0.43975 ≈ +0.44</li>
+        <li>α<sub>circle</sub> = 1.421 − 1.23925 = +0.18175 ≈ +0.18</li>
+        <li>α<sub>newspaper</sub> = 0.971 − 1.23925 = −0.26825 ≈ −0.27</li>
+        <li>α<sub>white circle</sub> = 0.886 − 1.23925 = −0.35325 ≈ −0.36</li>
+      </ul>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (one-way repeated-measures fixed effects)</summary>
+        <div class="answer">
+          <p><strong>What “fixed effects” means (Objective 3):</strong> For a one-factor design, the fixed effect for condition j is simply:</p>
+          <p class="formula">\(\alpha_j = \bar Y_j - \bar Y\)</p>
+          <p>Even though this is repeated-measures (within-subject), the prompt asks only for the fixed effects (not subject terms), and it gives you the estimated condition means. So you just subtract the grand mean.</p>
+
+          <p><strong>Step 1: Compute the grand mean.</strong></p>
+          <p class="formula">\(\bar Y = (1.679 + 1.421 + 0.971 + 0.886)/4 = 1.23925\)</p>
+
+          <p><strong>Step 2: Subtract the grand mean from each condition mean.</strong> That produces the α’s above. Positive α means “above the grand mean” gaze time; negative α means “below the grand mean.”</p>
+
+          <p><strong>Sanity check:</strong> The α’s should sum to ~0 (small differences come from rounding 1.23925 to 1.24).</p>
+        </div>
+      </details>
     </div>
   </details>
 
@@ -824,8 +847,39 @@ MSE = 1.73</pre>
     <summary>Problem 4b — Interpret contrasts + Tukey/Scheffé critical values</summary>
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>For each contrast: null hypothesis, interpret ψ̂, compute adjusted critical value (Tukey for pairwise; Scheffé for complex), and decide reject/retain.</p></div>
-      <p>Contrast (0,1,−1,0): H<sub>0</sub>: μ<sub>circle</sub> − μ<sub>newspaper</sub> = 0. ψ̂=0.45. Tukey critical value t* = 2.935. Observed t = 2.870 → retain.</p>
-      <p>Contrast (1,1,−1,−1): H<sub>0</sub>: μ<sub>face</sub> + μ<sub>circle</sub> − μ<sub>newspaper</sub> − μ<sub>white</sub> = 0. ψ̂=1.24. Scheffé critical value t* = 3.199. Observed t = 4.492 → reject.</p>
+
+      <p><strong>Answer (decisions):</strong></p>
+      <ul>
+        <li><strong>Contrast (0, 1, −1, 0)</strong> (circle − newspaper): observed <span class="formula">t=2.870</span> vs Tukey <span class="formula">t^*=2.935</span> → <strong>retain H<sub>0</sub></strong>.</li>
+        <li><strong>Contrast (1, 1, −1, −1)</strong> (face+circle − newspaper−white): observed <span class="formula">t=4.492</span> vs Scheffé <span class="formula">t^*=3.199</span> → <strong>reject H<sub>0</sub></strong>.</li>
+      </ul>
+
+      <details class="pill">
+        <summary>Show solution walkthrough (what each contrast tests + why Tukey vs Scheffé)</summary>
+        <div class="answer">
+          <p><strong>Setup:</strong> There are 4 within-subject conditions. A contrast is a weighted sum of the condition means: <span class="formula">\(\psi=\sum c_j\mu_j\)</span>. The null hypothesis is always <span class="formula">\(H_0: \psi=0\)</span>.</p>
+
+          <p><strong>Contrast 1: (0, 1, −1, 0).</strong></p>
+          <ul>
+            <li><strong>Null:</strong> <span class="formula">\(H_0: 0\mu_{face}+1\mu_{circle}-1\mu_{newspaper}+0\mu_{white}=0\)</span></li>
+            <li><strong>Interpretation:</strong> This is a <em>pairwise</em> comparison of circle vs newspaper (all other conditions drop out).</li>
+            <li><strong>Estimate:</strong> <span class="formula">\(\hat\psi=\bar Y_{circle}-\bar Y_{newspaper}=1.421-0.971=0.450\)</span>.</li>
+            <li><strong>Adjustment choice:</strong> Pairwise → <strong>Tukey</strong> (per Objective 11).</li>
+            <li><strong>Decision rule:</strong> compare |t| to Tukey t*. Since 2.870 &lt; 2.935, do not reject.</li>
+          </ul>
+
+          <p><strong>Contrast 2: (1, 1, −1, −1).</strong></p>
+          <ul>
+            <li><strong>Null:</strong> <span class="formula">\(H_0: \mu_{face}+\mu_{circle}-\mu_{newspaper}-\mu_{white}=0\)</span></li>
+            <li><strong>Interpretation:</strong> This compares the <em>average</em> of (face,circle) to the <em>average</em> of (newspaper,white). It’s a <strong>complex contrast</strong> (4 means).</li>
+            <li><strong>Estimate:</strong> <span class="formula">\(\hat\psi=1.679+1.421-0.971-0.886=1.243\approx 1.24\)</span>.</li>
+            <li><strong>Adjustment choice:</strong> Complex → <strong>Scheffé</strong>.</li>
+            <li><strong>Decision:</strong> 4.492 &gt; 3.199 → reject. The “face/circle” set yields longer gaze than “newspaper/white”.</li>
+          </ul>
+
+          <p><strong>Note:</strong> The prompt supplies the observed t’s and the adjusted critical values; the key skill here is mapping “pairwise vs complex” to the correct adjustment and interpreting the contrast.</p>
+        </div>
+      </details>
     </div>
   </details>
 </div>
