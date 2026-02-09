@@ -46,6 +46,21 @@
   pre.rout, pre code.rout, pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
   pre.rout { background: #f6f6f6; border: 1px solid #ddd; border-radius: 10px; padding: 10px 12px; overflow-x: auto; }
 </style>
+
+<!-- Math rendering (LaTeX inside \( ... \) and \[ ... \]) -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(','\\)'], ['$', '$']],
+      displayMath: [['\\[','\\]'], ['$$', '$$']],
+      processEscapes: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 <header>
@@ -663,7 +678,7 @@ m2$Anova
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>H<sub>0</sub>: 1·μ<sub>conservative,white</sub> + −1·μ<sub>conservative,black</sub> = 0</p></div>
 
-      <p><strong>Answer:</strong> This is a <strong>pairwise simple effect</strong> (white vs black) <em>within conservatives</em>. The estimated simple effect is <span class="formula">\(\hat\psi = 4.62 - 1.25 = 3.37\)</span>. Using <span class="formula">MSE=1.73</span> and n=10 per cell gives <span class="formula">t\approx 5.73\)</span>, which exceeds the Tukey-adjusted critical value (<span class="formula">t^*=2.471\)</span>) → <strong>reject H<sub>0</sub></strong>.</p>
+      <p><strong>Answer:</strong> This is a <strong>pairwise simple effect</strong> (white vs black) <em>within conservatives</em>. The estimated simple effect is <span class="formula">\(\hat\psi = 4.62 - 1.25 = 3.37\)</span>. Using <span class="formula">MSE=1.73</span> and n=10 per cell gives <span class="formula">\(t\approx 5.73\)</span>, which exceeds the Tukey-adjusted critical value (<span class="formula">\(t^*=2.471\)</span>) → <strong>reject H<sub>0</sub></strong>.</p>
 
       <details class="pill">
         <summary>Show solution walkthrough (how the contrast uses MSE and why Tukey)</summary>
@@ -693,7 +708,7 @@ m2$Anova
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>H<sub>0</sub>: 1·μ<sub>conservative,white</sub> + −1·μ<sub>conservative,black</sub> + −1·μ<sub>liberal,white</sub> + 1·μ<sub>liberal,black</sub> = 0</p></div>
 
-      <p><strong>Answer:</strong> This is an <strong>interaction (difference-in-differences) contrast</strong>. The estimate is <span class="formula">\(\hat\psi=(4.62-1.25) - (1.91-3.19)=4.65\)</span> with <span class="formula">t\approx 5.58\)</span>, exceeding the Scheffé critical value (<span class="formula">t^*=2.517\)</span>) → <strong>reject H<sub>0</sub></strong>.</p>
+      <p><strong>Answer:</strong> This is an <strong>interaction (difference-in-differences) contrast</strong>. The estimate is <span class="formula">\(\hat\psi=(4.62-1.25) - (1.91-3.19)=4.65\)</span> with <span class="formula">\(t\approx 5.58\)</span>, exceeding the Scheffé critical value (<span class="formula">\(t^*=2.517\)</span>) → <strong>reject H<sub>0</sub></strong>.</p>
 
       <details class="pill">
         <summary>Show solution walkthrough (difference-of-simple-effects + why Scheffé)</summary>
@@ -724,7 +739,7 @@ m2$Anova
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>H<sub>0</sub>: 1·μ<sub>conservative,white</sub> + 1·μ<sub>moderate,white</sub> + −2·μ<sub>liberal,white</sub> = 0</p></div>
 
-      <p><strong>Answer:</strong> This is a <strong>complex simple effect</strong> within the white-officer condition. The estimate is <span class="formula">\(\hat\psi=4.62+3.35-2(1.91)=4.15\)</span> with <span class="formula">t\approx 4.07\)</span>, exceeding Scheffé’s critical value (<span class="formula">t^*=2.812\)</span>) → <strong>reject H<sub>0</sub></strong>.</p>
+      <p><strong>Answer:</strong> This is a <strong>complex simple effect</strong> within the white-officer condition. The estimate is <span class="formula">\(\hat\psi=4.62+3.35-2(1.91)=4.15\)</span> with <span class="formula">\(t\approx 4.07\)</span>, exceeding Scheffé’s critical value (<span class="formula">\(t^*=2.812\)</span>) → <strong>reject H<sub>0</sub></strong>.</p>
 
       <details class="pill">
         <summary>Show solution walkthrough (compute ψ̂ + why this is Scheffé, not Tukey)</summary>
@@ -825,7 +840,7 @@ m2$Anova
           <p class="formula">\(t^* = q^*/\sqrt{2}\)</p>
           <p>The prompt gives the numeric value: <span class="formula">t^*\approx 2.36</span> for k=3 and df=302.</p>
 
-          <p><strong>4) Decision rule:</strong> Reject when <span class="formula">|t_{obs}| &gt; t^*\)</span>. Since 6.979 and 11.372 are both much larger than 2.36, both contrasts are significant after Tukey adjustment.</p>
+          <p><strong>4) Decision rule:</strong> Reject when <span class="formula">\(|t_{obs}| &gt; t^*\)</span>. Since 6.979 and 11.372 are both much larger than 2.36, both contrasts are significant after Tukey adjustment.</p>
         </div>
       </details>
     </div>
