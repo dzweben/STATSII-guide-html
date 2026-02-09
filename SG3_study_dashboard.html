@@ -281,14 +281,18 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 <summary>Denominator degrees of freedom for contrasts</summary>
 <div class="answer">
 
+<p><strong>Important:</strong> the denominator df for a contrast depends on <em>which effect’s</em> error term you are using (between vs within vs interaction), not just the overall “design label.” Use the df from the ANOVA error term that matches your contrast.</p>
+
 <table class="tbl">
-  <tr><th>Design</th><th>Denominator degrees of freedom</th></tr>
-  <tr><td>One‑way between‑subjects</td><td>n − a</td></tr>
-  <tr><td>Two‑way between‑subjects</td><td>n − ab</td></tr>
-  <tr><td>One‑way within‑subjects</td><td>n − 1</td></tr>
-  <tr><td>Two‑way within‑subjects</td><td>n − 1</td></tr>
-  <tr><td>Split‑plot</td><td>n − a</td></tr>
+  <tr><th>Design</th><th>Contrast is testing…</th><th>Use this denominator df</th></tr>
+  <tr><td>One‑way between‑subjects</td><td>any group contrast</td><td>n − a</td></tr>
+  <tr><td>Two‑way between‑subjects</td><td>any contrast using MSE (same error term)</td><td>n − ab</td></tr>
+  <tr><td>One‑way within‑subjects (RM)</td><td>pairwise/contrast t tests among condition means</td><td>n − 1</td></tr>
+  <tr><td>Split‑plot (A between, B within)</td><td>Factor A (between‑subjects) contrasts</td><td>n − a</td></tr>
+  <tr><td>Split‑plot (A between, B within)</td><td>Factor B (within‑subjects) or A×B (interaction) contrasts</td><td>(n − a)(b − 1)</td></tr>
 </table>
+
+<p class="note">For RM/split‑plot omnibus ANOVA F tests you will often see larger denominator df (e.g., <span class="formula">(n−1)(a−1)</span> or <span class="formula">(n−a)(b−1)</span>). SG3’s contrast work frequently uses t‑style contrasts with the corresponding subject‑interaction error term df (e.g., n−1 for pairwise RM contrasts), so follow the specific df shown/used in the output for the problem you’re working.</p>
 
 </div>
 </details>
@@ -356,11 +360,29 @@ Use the same α<sub>j</sub>, β<sub>k</sub>, and (αβ)<sub>jk</sub> formulas ab
 
     <details class="pill">
       <summary>Show R output (given)</summary>
-      <pre class="rout">Type III ANOVA (given)
-- treatment: F(1,54)=4.01, p=.05
-- orientation: F(2,54)=2.00, p=.15
-- treatment:orientation: F(2,54)=16.72, p&lt;.001
-MSE = 1.73</pre>
+      <pre class="rout">summary(m2)
+## Anova Table (Type 3 tests)
+## 
+## Response: dj
+##                       num Df den Df  MSE     F   ges  Pr(&gt;F)
+## treatment                  1     54 1.73  4.01 0.069    0.05 .
+## orientation                2     54 1.73  2.00 0.069    0.15
+## treatment:orientation      2     54 1.73 16.72 0.382 2.2e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+m2$Anova
+## Anova Table (Type III tests)
+## 
+## Response: dv
+##                       Sum Sq Df F value  Pr(&gt;F)
+## (Intercept)              523  1  301.64 &lt; 2e-16 ***
+## treatment                  7  1    4.01    0.05 .
+## orientation                7  2    2.00    0.15
+## treatment:orientation     58  2   16.72 2.2e-06 ***
+## Residuals                 94 54
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</pre>
     </details>
   </div>
 
@@ -939,7 +961,7 @@ MSE = 1.73</pre>
           </ul>
 
           <p><strong>Mean squares:</strong> <span class="formula">MS = SS/df</span>. Example: <span class="formula">MS_{Group}=3494/4=873.5</span>.</p>
-          <p><strong>F ratios:</strong> <span class="formula">F=MS_{effect}/MS_{error(term)}</span>. Example: <span class="formula">F_{Group}=873.5/(5641/2900)\approx 459.7</span>.</p>
+          <p><strong>F ratios:</strong> <span class="formula">F=MS_{effect}/MS_{error(term)}</span>. Example: <span class="formula">F_{Group}=873.5/(5641/2900)\approx 449.1</span>.</p>
         </div>
       </details>
     </div>
@@ -1076,7 +1098,6 @@ MSE = 1.73</pre>
         <tr><td>Stimuli</td><td>9.0</td><td>2</td><td>4.50</td><td>4.4</td></tr>
         <tr><td>Error (stimuli×subject)</td><td>30.6</td><td>30</td><td>1.02</td><td>N/A</td></tr>
         <tr><td>Damage×Stimuli</td><td>2.0</td><td>4</td><td>0.50</td><td>0.5</td></tr>
-        <tr><td>Error (stimuli×subject)</td><td>30.6</td><td>30</td><td>1.02</td><td>N/A</td></tr>
       </table>
 
       <details class="pill">
