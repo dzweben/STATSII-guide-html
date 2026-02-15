@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>SG3 Problem 6 — Interactive Lesson (Split-Plot ANOVA + Contrasts)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{
+    --ink:#1b1b1b;
+    --muted:#5b5b5b;
+    --bg:#f7f7f4;
+    --card:#ffffff;
+    --teal:#0d475c;
+    --teal2:#eef6f8;
+    --warn:#fff8e1;
+    --warn-border:#d7a34a;
+    --line:#dcdcdc;
+  }
+  body{font-family: Georgia, serif; margin:0; background:var(--bg); color:var(--ink);}
+  header{background:var(--teal); color:#fff; padding:24px 28px;}
+  header h1{margin:0 0 6px; font-size:24px;}
+  header p{margin:0; opacity:.92; max-width:1000px;}
+  .container{max-width:1100px; margin:0 auto; padding:22px 28px 60px;}
+  .meta{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px;}
+  .meta strong{color:var(--teal);}
+  .grid{display:grid; grid-template-columns:1fr; gap:14px;}
+  @media (min-width: 980px){ .grid.two{grid-template-columns: 1.1fr .9fr;} }
+  h2{margin:18px 0 10px;}
+  h3{margin:14px 0 8px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px;}
+  .panel{border:1px solid var(--warn-border); background:var(--warn); border-radius:10px; padding:12px 14px; margin:10px 0;}
+  .panel h4{margin:0 0 6px; color:#8a5a00;}
+  .muted{color:var(--muted);} 
+  .kpi{display:flex; gap:10px; flex-wrap:wrap;}
+  .kpi .pill{background:var(--teal2); border:1px solid #cfe3ea; border-radius:999px; padding:6px 10px; font-weight:700; color:var(--teal);}
+
+  details{background:var(--card); border:1px solid var(--line); border-radius:12px; margin:10px 0; padding:10px 12px;}
+  summary{font-weight:800; cursor:pointer;}
+
+  /* Collapsed “pill toggles” */
+  details.pill{border:0; padding:0; background:transparent;}
+  details.pill > summary{
+    display:inline-block; font-size:14px; font-weight:800; color:var(--teal);
+    background:var(--teal2); border:1px solid #cfe3ea; border-radius:999px;
+    padding:6px 10px; margin:6px 0 0; list-style:none;
+  }
+  details.pill > summary::-webkit-details-marker{display:none;}
+  details.pill .answer{padding:10px 8px; border:1px dashed #cfe3ea; border-radius:10px; margin-top:8px; background:#fcfeff;}
+
+  .answer{padding:10px 0 0;}
+  .step{border-left:4px solid #cfe3ea; padding:8px 12px; margin:10px 0; background:#fbfeff; border-radius:8px;}
+
+  pre.rout{background:#f6f6f6; border:1px solid #ddd; border-radius:10px; padding:10px 12px; overflow-x:auto;}
+  pre,code{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 13px;}
+
+  table.tbl{border-collapse:collapse; width:100%; margin:8px 0;}
+  table.tbl th, table.tbl td{border:1px solid #bbb; padding:6px 8px;}
+  table.tbl th{background:#f0f0f0;}
+
+  .formula{font-family:'Cambria Math','Times New Roman',serif; background:var(--teal2); padding:2px 6px; border-radius:6px;}
+</style>
+
+<!-- MathJax -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(','\\)'], ['$', '$']],
+      displayMath: [['\\[','\\]'], ['$$', '$$']],
+      processEscapes: true
+    },
+    options: {
+      skipHtmlTags: ['script','noscript','style','textarea','pre','code']
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header>
+  <h1>SG3 Problem 6 — Interactive Lesson</h1>
+  <p>Split-plot (mixed) ANOVA: fixed effects, the correct error terms, filling an ANOVA table, and doing contrasts (Tukey vs Scheffé). Short answers are visible; deeper walkthroughs and SG3’s given R output are in collapsed pills.</p>
+</header>
+
+<div class="container">
+
+  <div class="meta">
+    <div class="kpi">
+      <div class="pill">Design: 3×3 split-plot</div>
+      <div class="pill">Between: brain damage (Left/Right/Control)</div>
+      <div class="pill">Within: string type (Digits/Letters/Mixed)</div>
+      <div class="pill">n = 18 subjects</div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;">This page is built so you never have to scroll between prompt, data, and key. Expand only what you need.</p>
+  </div>
+
+  <div class="panel">
+    <h4>Problem 6 prompt (from SG3)</h4>
+    <p>We are looking at subjects’ ability to recall characters in a string based on (a) the type of string (digits/letters/mixed — within-subject factor) and (b) the type of brain damage the subject suffered (left brain / right brain / control — between-subject factor). The experiment is using a 3×3 design; n = 18. Note: when we tested assumptions we found equality of variances as well as equality of the covariance/variance matrices.</p>
+  </div>
+
+  <section class="card">
+    <h2>6a — Fixed effects (compute α, β, αβ)</h2>
+
+    <div class="grid two">
+      <div>
+        <div class="panel">
+          <h4>Mini-lesson: what counts as an “effect” in a split-plot?</h4>
+          <p>Even though this is a split-plot, the fixed effects are still mean differences:</p>
+          <ul>
+            <li><strong>Between main effect</strong> (damage): <span class="formula">\(\alpha_i = \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
+            <li><strong>Within main effect</strong> (stimuli): <span class="formula">\(\beta_k = \bar Y_{\cdot\cdot k} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
+            <li><strong>Cell interaction effect</strong>: <span class="formula">\((\alpha\beta)_{ik} = \bar Y_{i\cdot k} - \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot k} + \bar Y_{\cdot\cdot\cdot}\)</span></li>
+          </ul>
+          <p><strong>Where split-plot matters:</strong> choosing the correct <em>error term</em> later (6b/6c).</p>
+        </div>
+
+        <div class="step">
+          <strong>Try it first:</strong>
+          <ul>
+            <li>Use the damage marginal mean for “Right.”</li>
+            <li>Use the stimuli marginal mean for “Mixed.”</li>
+            <li>Use the Right×Mixed cell mean for the interaction effect.</li>
+          </ul>
+          <p class="muted">Given: grand mean = 7.48.</p>
+        </div>
+
+        <p><strong>Short answer (6a):</strong></p>
+        <ul>
+          <li>α<sub>right</sub> = 7.61 − 7.48 = +0.13</li>
+          <li>β<sub>mixed</sub> = 7.11 − 7.48 = −0.37</li>
+          <li>(αβ)<sub>right,mixed</sub> = 7.17 − 7.61 − 7.11 + 7.48 = −0.07</li>
+        </ul>
+
+        <details class="pill">
+          <summary>Show solution walkthrough</summary>
+          <div class="answer">
+            <div class="step">
+              <strong>Step 1 (α<sub>right</sub>):</strong> take the <em>Right</em> damage marginal mean and subtract the grand mean.
+              <div class="muted">From SG3: Right marginal mean = 7.61.</div>
+              <div>So α<sub>right</sub> = 7.61 − 7.48 = +0.13.</div>
+            </div>
+            <div class="step">
+              <strong>Step 2 (β<sub>mixed</sub>):</strong> take the <em>Mixed</em> stimuli marginal mean and subtract the grand mean.
+              <div class="muted">From SG3: Mixed marginal mean = 7.11.</div>
+              <div>So β<sub>mixed</sub> = 7.11 − 7.48 = −0.37.</div>
+            </div>
+            <div class="step">
+              <strong>Step 3 (αβ<sub>right,mixed</sub>):</strong>
+              <div>Use the cell mean (Right,Mixed) and apply the standard cell-effect identity:</div>
+              <div class="muted">Cell mean (Right,Mixed) = 7.17; Right marginal = 7.61; Mixed marginal = 7.11; Grand = 7.48.</div>
+              <div>(αβ)<sub>right,mixed</sub> = 7.17 − 7.61 − 7.11 + 7.48 = −0.07.</div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div>
+        <details class="pill">
+          <summary>Show R output (given in SG3)</summary>
+          <div class="answer">
+            <pre class="rout"><code>em6.damage
+##  damagef emmean    SE df lower.CL upper.CL
+##  Left      6.17 0.254 15     5.62     6.71
+##  Right     7.61 0.254 15     7.07     8.15
+##  Control   8.67 0.254 15     8.12     9.21
+## 
+## Results are averaged over the levels of: stimuli
+## Confidence level used: 0.95
+
+em6.stimuli
+##  stimuli emmean    SE df lower.CL upper.CL
+##  digits    8.06 0.218 15     7.59     8.52
+##  letters   7.28 0.259 15     6.72     7.83
+##  mixed     7.11 0.251 15     6.58     7.65
+## 
+## Results are averaged over the levels of: damagef
+## Confidence level used: 0.95
+
+em6.cell
+##  damagef stimuli emmean    SE df lower.CL upper.CL
+##  Left    digits    7.00 0.378 15     6.20     7.80
+##  Right   digits    8.17 0.378 15     7.36     8.97
+##  Control digits    9.00 0.378 15     8.20     9.80
+##  Left    letters   5.67 0.449 15     4.71     6.62
+##  Right   letters   7.50 0.449 15     6.54     8.46
+##  Control letters   8.67 0.449 15     7.71     9.62
+##  Left    mixed     5.83 0.435 15     4.91     6.76
+##  Right   mixed     7.17 0.435 15     6.24     8.09
+##  Control mixed     8.33 0.435 15     7.41     9.26
+## 
+## Confidence level used: 0.95</code></pre>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>6b — Fill in the ANOVA table (split-plot error terms)</h2>
+    <div class="panel">
+      <h4>Prompt (SG3)</h4>
+      <p>Fill in this ANOVA table. Given SS: Damage=57; Stimuli=9; Subject=17.4; Damage×Stimuli=2; Subject×Stimuli=30.6</p>
+    </div>
+    <p class="muted">(Coming next) This will be an interactive walkthrough: df first, then MS, then F with correct denominators. The key lesson: between-subject effects use Subject(Damage) as error; within + interaction use Stimuli×Subject(Damage).</p>
+  </section>
+
+  <section class="card">
+    <h2>6c — Contrasts (type, null, Tukey vs Scheffé, interpret)</h2>
+    <div class="panel">
+      <h4>Prompt (SG3)</h4>
+      <p>For each contrast: (a) identify the type of contrast; (b) write the null hypothesis; (c) calculate the appropriate posthoc-adjusted critical value; and (d) interpret the contrast, including directionality. Use Tukey for pairwise; Scheffé for complex.</p>
+    </div>
+    <p class="muted">(Coming next) This will be structured as: contrast→what comparison it encodes→null statement→choose adjustment→use SG3’s contrast output to decide direction/significance.</p>
+  </section>
+
+  <div class="card">
+    <h3>What I’m doing next (so you can track progress)</h3>
+    <ol class="muted">
+      <li>Build 6b as a guided ANOVA-table completion lesson (df → MS → F), with a verbatim SG3 output pill where it exists.</li>
+      <li>Build 6c as a structured contrast lesson: identify type, write nulls, map to Tukey vs Scheffé, and interpret using the provided SG3 contrast output (verbatim).</li>
+      <li>Polish: add “checkpoint questions” and keep each part readable without feeling like it starts from zero.</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>
