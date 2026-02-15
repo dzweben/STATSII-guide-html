@@ -1088,7 +1088,62 @@ m2$Anova
     <div class="answer">
       <div class="panel"><h4>Prompt</h4><p>Calculate the effects of “right brain”, “mixed”, and “right brain–mixed”. The grand mean across all subjects and observations is 7.48 characters.</p></div>
 
-      <p><strong>Answer:</strong></p>
+      <div class="panel">
+        <h4>Mini-lesson: what counts as an “effect” in a split-plot?</h4>
+        <p>In a split-plot (mixed) design, you can still compute the same three kinds of fixed effects:</p>
+        <ul>
+          <li><strong>Between-subject main effect</strong> (damage): <span class="formula">\(\alpha_i = \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
+          <li><strong>Within-subject main effect</strong> (stimuli): <span class="formula">\(\beta_k = \bar Y_{\cdot\cdot k} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
+          <li><strong>Interaction cell effect</strong> (damage×stimuli): <span class="formula">\((\alpha\beta)_{ik} = \bar Y_{i\cdot k} - \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot k} + \bar Y_{\cdot\cdot\cdot}\)</span></li>
+        </ul>
+        <p><strong>Key idea:</strong> these are just differences among means; the “split-plot” part matters later when you choose <em>error terms</em> for F tests (Problem 6b/6c).</p>
+      </div>
+
+      <details class="pill">
+        <summary>Show R output (given in SG3)</summary>
+        <div class="answer">
+          <pre class="rout"><code>em6.damage
+##  damagef emmean    SE df lower.CL upper.CL
+##  Left      6.17 0.254 15     5.62     6.71
+##  Right     7.61 0.254 15     7.07     8.15
+##  Control   8.67 0.254 15     8.12     9.21
+## 
+## Results are averaged over the levels of: stimuli
+## Confidence level used: 0.95
+
+em6.stimuli
+##  stimuli emmean    SE df lower.CL upper.CL
+##  digits    8.06 0.218 15     7.59     8.52
+##  letters   7.28 0.259 15     6.72     7.83
+##  mixed     7.11 0.251 15     6.58     7.65
+## 
+## Results are averaged over the levels of: damagef
+## Confidence level used: 0.95
+
+em6.cell
+##  damagef stimuli emmean    SE df lower.CL upper.CL
+##  Left    digits    7.00 0.378 15     6.20     7.80
+##  Right   digits    8.17 0.378 15     7.36     8.97
+##  Control digits    9.00 0.378 15     8.20     9.80
+##  Left    letters   5.67 0.449 15     4.71     6.62
+##  Right   letters   7.50 0.449 15     6.54     8.46
+##  Control letters   8.67 0.449 15     7.71     9.62
+##  Left    mixed     5.83 0.435 15     4.91     6.76
+##  Right   mixed     7.17 0.435 15     6.24     8.09
+##  Control mixed     8.33 0.435 15     7.41     9.26
+## 
+## Confidence level used: 0.95</code></pre>
+        </div>
+      </details>
+
+      <p><strong>Try it (before you look):</strong></p>
+      <ul>
+        <li>What mean do you use for <span class="formula">\(\alpha_{right}\)</span>?</li>
+        <li>What mean do you use for <span class="formula">\(\beta_{mixed}\)</span>?</li>
+        <li>What mean is the <span class="formula">\(right\times mixed\)</span> cell?</li>
+      </ul>
+
+      <p><strong>Answer (short):</strong></p>
       <ul>
         <li>α<sub>right</sub> = 7.61 − 7.48 = +0.13</li>
         <li>β<sub>mixed</sub> = 7.11 − 7.48 = −0.37</li>
