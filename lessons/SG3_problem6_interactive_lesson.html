@@ -201,7 +201,104 @@ em6.cell
       <h4>Prompt (SG3)</h4>
       <p>Fill in this ANOVA table. Given SS: Damage=57; Stimuli=9; Subject=17.4; Damage×Stimuli=2; Subject×Stimuli=30.6</p>
     </div>
-    <p class="muted">(Coming next) This will be an interactive walkthrough: df first, then MS, then F with correct denominators. The key lesson: between-subject effects use Subject(Damage) as error; within + interaction use Stimuli×Subject(Damage).</p>
+
+    <div class="panel">
+      <h4>Mini-lesson: the two error terms in a split-plot</h4>
+      <p>Because <strong>damage</strong> is between-subject, its variability is evaluated against <strong>subjects-within-damage</strong>. Because <strong>stimuli</strong> is within-subject (repeated), it is evaluated against the subject-by-stimuli interaction.</p>
+      <ul>
+        <li><strong>Between-subject F tests</strong>: divide by <span class="formula">\(MS_{S(A)}\)</span> (subjects within damage).</li>
+        <li><strong>Within-subject F tests</strong> (stimuli, A×B): divide by <span class="formula">\(MS_{B\times S(A)}\)</span>.</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <strong>Try it first:</strong> before calculating anything, answer these two questions.
+      <ol>
+        <li>What is the df for <em>damage</em>?</li>
+        <li>What is the df for the <em>within-subject error</em> (stimuli×subject within damage)?</li>
+      </ol>
+    </div>
+
+    <details class="pill">
+      <summary>Show df walkthrough (fast, but exact)</summary>
+      <div class="answer">
+        <p><strong>Design constants:</strong> a = 3 damage groups; b = 3 stimuli levels; N = 18 subjects; n per group = 18/3 = 6.</p>
+        <table class="tbl">
+          <thead><tr><th>Source</th><th>df</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Damage (A)</td><td>\(a-1=2\)</td><td>3 groups → 2 df</td></tr>
+            <tr><td>Subjects within Damage (S(A))</td><td>\(N-a=18-3=15\)</td><td>between-subject error term</td></tr>
+            <tr><td>Stimuli (B)</td><td>\(b-1=2\)</td><td>3 levels → 2 df</td></tr>
+            <tr><td>Damage×Stimuli (A×B)</td><td>\((a-1)(b-1)=2\cdot 2=4\)</td><td>interaction df</td></tr>
+            <tr><td>Stimuli×Subjects within Damage (B×S(A))</td><td>\((N-a)(b-1)=15\cdot 2=30\)</td><td>within-subject error term</td></tr>
+            <tr><td>Total</td><td>\(Nb-1=18\cdot 3-1=53\)</td><td>18 subjects × 3 repeats</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details class="pill">
+      <summary>Show ANOVA table (filled)</summary>
+      <div class="answer">
+        <p>Using the provided SS plus the df above:</p>
+        <table class="tbl">
+          <thead>
+            <tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th><th>p (approx.)</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Damage (A)</td><td>57.0</td><td>2</td><td>28.50</td><td>24.57</td><td>&lt;.001</td>
+            </tr>
+            <tr>
+              <td>Subjects within Damage, S(A)</td><td>17.4</td><td>15</td><td>1.16</td><td class="muted">—</td><td class="muted">—</td>
+            </tr>
+            <tr>
+              <td>Stimuli (B)</td><td>9.0</td><td>2</td><td>4.50</td><td>4.41</td><td>.021</td>
+            </tr>
+            <tr>
+              <td>B×S(A) (within error)</td><td>30.6</td><td>30</td><td>1.02</td><td class="muted">—</td><td class="muted">—</td>
+            </tr>
+            <tr>
+              <td>Damage×Stimuli (A×B)</td><td>2.0</td><td>4</td><td>0.50</td><td>0.49</td><td>.743</td>
+            </tr>
+            <tr>
+              <td>B×S(A) (same within error)</td><td>30.6</td><td>30</td><td>1.02</td><td class="muted">—</td><td class="muted">—</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="muted">p-values shown are from the F distribution using the split-plot denominators (A uses df 2,15; B uses 2,30; A×B uses 4,30).</p>
+      </div>
+    </details>
+
+    <details class="pill">
+      <summary>Show step-by-step calculations (MS → F)</summary>
+      <div class="answer">
+        <div class="step">
+          <strong>Damage (between-subject):</strong>
+          <ul>
+            <li><span class="formula">\(MS_A = SS_A/df_A = 57/2 = 28.50\)</span></li>
+            <li><span class="formula">\(MS_{S(A)} = SS_{S(A)}/df_{S(A)} = 17.4/15 = 1.16\)</span></li>
+            <li><span class="formula">\(F_A = MS_A / MS_{S(A)} = 28.50/1.16 = 24.57\)</span></li>
+          </ul>
+        </div>
+        <div class="step">
+          <strong>Stimuli (within-subject):</strong>
+          <ul>
+            <li><span class="formula">\(MS_B = 9/2 = 4.50\)</span></li>
+            <li><span class="formula">\(MS_{B\times S(A)} = 30.6/30 = 1.02\)</span></li>
+            <li><span class="formula">\(F_B = 4.50/1.02 = 4.41\)</span></li>
+          </ul>
+        </div>
+        <div class="step">
+          <strong>Damage×Stimuli (interaction):</strong>
+          <ul>
+            <li><span class="formula">\(MS_{AB} = 2/4 = 0.50\)</span></li>
+            <li><span class="formula">\(F_{AB} = 0.50/1.02 = 0.49\)</span></li>
+          </ul>
+          <p class="muted">Same within-subject error term as Stimuli.</p>
+        </div>
+      </div>
+    </details>
   </section>
 
   <section class="card">
@@ -210,7 +307,108 @@ em6.cell
       <h4>Prompt (SG3)</h4>
       <p>For each contrast: (a) identify the type of contrast; (b) write the null hypothesis; (c) calculate the appropriate posthoc-adjusted critical value; and (d) interpret the contrast, including directionality. Use Tukey for pairwise; Scheffé for complex.</p>
     </div>
-    <p class="muted">(Coming next) This will be structured as: contrast→what comparison it encodes→null statement→choose adjustment→use SG3’s contrast output to decide direction/significance.</p>
+
+    <div class="panel">
+      <h4>Mini-lesson: how to read a contrast vector</h4>
+      <p>A contrast is a weighted combination of means. If the weights sum to 0, it tests whether a particular <em>pattern</em> among means is present.</p>
+      <ul>
+        <li><strong>Pairwise</strong> (two means): looks like <span class="formula">\((1,0,-1)\)</span> or <span class="formula">\((-1,1,0)\)</span> → use <strong>Tukey</strong>.</li>
+        <li><strong>Complex</strong> (involves ≥3 means, or compares an average to a mean, or is an interaction contrast) → use <strong>Scheffé</strong>.</li>
+      </ul>
+    </div>
+
+    <details class="pill">
+      <summary>Show R output (given in SG3)</summary>
+      <div class="answer">
+        <pre class="rout"><code>contrast(em6.damage, damage6.list)
+##  contrast    estimate    SE df t.ratio p.value
+##  c(-2, 1, 1)     3.94 0.623 15   6.335 <0.0001
+##
+## Results are averaged over the levels of: stimuli
+
+contrast(em6.stimuli, stimuli6.list)
+##  contrast    estimate    SE df t.ratio p.value
+##  c(1, 0, -1)    0.944 0.311 15   3.034  0.0084
+##
+## Results are averaged over the levels of: damagef
+
+contrast(em6.cell, cell6.list)
+##  contrast                        estimate    SE df t.ratio p.value
+##  c(-2, 1, 1, 0, 0, 0, 0, 0, 0)      3.167 0.925 15   3.424  0.0038
+##  c(0, 0, 0, 0, 0, 0, -2, 1, 1)      3.833 1.060 15   3.601  0.0026
+##  c(-2, 1, 1, 0, 0, 0, 2, -1, -1)   -0.667 1.320 15  -0.505  0.6211</code></pre>
+      </div>
+    </details>
+
+    <div class="step">
+      <strong>Step 1 (identify what each contrast compares):</strong>
+      <ul>
+        <li><span class="formula">c(-2,1,1)</span> on damage means = compare <strong>Left</strong> to the <strong>average of Right and Control</strong>.</li>
+        <li><span class="formula">c(1,0,-1)</span> on stimuli means = compare <strong>Digits</strong> vs <strong>Mixed</strong> (Letters is not used).</li>
+        <li><span class="formula">c(-2,1,1,0,0,0,0,0,0)</span> = the same Left vs avg(Right,Control) comparison <em>within Digits</em>.</li>
+        <li><span class="formula">c(0,0,0,0,0,0,-2,1,1)</span> = the same comparison <em>within Mixed</em>.</li>
+        <li><span class="formula">c(-2,1,1,0,0,0,2,-1,-1)</span> = a <strong>difference of those two simple-effects</strong> (an interaction-style contrast).</li>
+      </ul>
+    </div>
+
+    <details class="pill">
+      <summary>Show null hypotheses (write them cleanly)</summary>
+      <div class="answer">
+        <ul>
+          <li><strong>Damage contrast</strong> <span class="formula">(-2,1,1)</span>: \(H_0: -2\mu_L + \mu_R + \mu_C = 0\), equivalently \(\mu_L = (\mu_R+\mu_C)/2\).</li>
+          <li><strong>Stimuli contrast</strong> <span class="formula">(1,0,-1)</span>: \(H_0: \mu_{digits} - \mu_{mixed} = 0\).</li>
+          <li><strong>Digits simple-effect contrast</strong>: \(H_0: \mu_{L,digits} = (\mu_{R,digits}+\mu_{C,digits})/2\).</li>
+          <li><strong>Mixed simple-effect contrast</strong>: \(H_0: \mu_{L,mixed} = (\mu_{R,mixed}+\mu_{C,mixed})/2\).</li>
+          <li><strong>Interaction contrast</strong>: \(H_0: [\mu_{L,digits} - (\mu_{R,digits}+\mu_{C,digits})/2] - [\mu_{L,mixed} - (\mu_{R,mixed}+\mu_{C,mixed})/2] = 0\).</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="pill">
+      <summary>Show posthoc critical values (Tukey vs Scheffé)</summary>
+      <div class="answer">
+        <p>Using α = .05 and the df shown in SG3’s contrast output (df = 15):</p>
+        <ul>
+          <li><strong>Tukey (pairwise among 3 stimuli levels):</strong> use the studentized-range critical value \(q\). For k = 3, df = 15: \(q_{.95}\approx 3.67\), so \(t_{crit}\approx q/\sqrt{2} \approx 2.60\).</li>
+          <li><strong>Scheffé (complex):</strong> \(t_{crit} = \sqrt{(m-1)F_{.95, m-1, df}}\).
+            <ul>
+              <li>For 3 damage means (m = 3): \(t_{crit}\approx 2.71\).</li>
+              <li>For a contrast spanning 6 cell means (m = 6): \(t_{crit}\approx 3.81\).</li>
+            </ul>
+          </li>
+        </ul>
+        <p class="muted">You compare the absolute <em>t.ratio</em> to the appropriate adjusted \(t_{crit}\).</p>
+      </div>
+    </details>
+
+    <details class="pill">
+      <summary>Show interpretations (directionality + decision)</summary>
+      <div class="answer">
+        <div class="step">
+          <strong>Damage contrast (complex → Scheffé, m = 3):</strong>
+          <p>Estimate = 3.94, t = 6.335. Since \(|t|=6.335\) &gt; \(t_{crit}\approx 2.71\), reject \(H_0\).</p>
+          <p><strong>Direction:</strong> the contrast is (Right + Control) − 2·Left, so a <em>positive</em> estimate means Right/Control average is higher than Left. Conclusion: Left-damage subjects recall fewer characters than the average of Right-damage and Control.</p>
+        </div>
+        <div class="step">
+          <strong>Stimuli contrast (pairwise digits vs mixed → Tukey):</strong>
+          <p>Estimate = 0.944, t = 3.034. Since \(|t|=3.034\) &gt; \(t_{crit}\approx 2.60\), this difference is significant under Tukey.</p>
+          <p><strong>Direction:</strong> digits − mixed is positive → recall is higher for digits than mixed (averaged over damage groups).</p>
+        </div>
+        <div class="step">
+          <strong>Digits simple-effect (complex among 3 damage groups → Scheffé, m = 3):</strong>
+          <p>t = 3.424 &gt; 2.71 → significant. Direction: (Right+Control) average exceeds Left <em>within digits</em>.</p>
+        </div>
+        <div class="step">
+          <strong>Mixed simple-effect (complex among 3 damage groups → Scheffé, m = 3):</strong>
+          <p>t = 3.601 &gt; 2.71 → significant. Direction: (Right+Control) average exceeds Left <em>within mixed</em>.</p>
+        </div>
+        <div class="step">
+          <strong>Interaction-style contrast (complex across cells → Scheffé, m = 6):</strong>
+          <p>t = −0.505. Since \(|t|=0.505\) &lt; \(t_{crit}\approx 3.81\), fail to reject \(H_0\).</p>
+          <p><strong>Interpretation:</strong> the Left-vs-(Right/Control) gap does not differ meaningfully between digits and mixed.</p>
+        </div>
+      </div>
+    </details>
   </section>
 
   <div class="card">
