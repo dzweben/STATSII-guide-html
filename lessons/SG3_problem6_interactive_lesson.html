@@ -308,9 +308,10 @@ em6.cell
       <h4>Mini-lesson: the two error terms in a split-plot</h4>
       <p>Because <strong>damage</strong> is between-subject, its variability is evaluated against <strong>subjects-within-damage</strong>. Because <strong>stimuli</strong> is within-subject (repeated), it is evaluated against the subject-by-stimuli interaction.</p>
       <ul>
-        <li><strong>Between-subject F tests</strong>: divide by <span class="formula">\(MS_{S(A)}\)</span> (subjects within damage).</li>
-        <li><strong>Within-subject F tests</strong> (stimuli, A×B): divide by <span class="formula">\(MS_{B\times S(A)}\)</span>.</li>
+        <li><strong>Between-subject F tests</strong>: divide by <span class="term" data-hl="ms_SA" data-def="Between-subject error term: mean square for Subjects within Damage, MS_{S(A)}."><span class="formula">\(MS_{S(A)}\)</span></span>.</li>
+        <li><strong>Within-subject F tests</strong> (stimuli, A×B): divide by <span class="term" data-hl="ms_BSA" data-def="Within-subject error term: mean square for Stimuli×Subjects within Damage, MS_{B\times S(A)}."><span class="formula">\(MS_{B\times S(A)}\)</span></span>.</li>
       </ul>
+      <p class="muted">Hover those MS terms to highlight them in the filled ANOVA table below.</p>
     </div>
 
     <div class="step">
@@ -349,19 +350,19 @@ em6.cell
           </thead>
           <tbody>
             <tr>
-              <td>Damage (A)</td><td>57.0</td><td>2</td><td>28.50</td><td>24.57</td><td>&lt;.001</td>
+              <td>Damage (A)</td><td><span class="hl" data-hl-id="ss_A">57.0</span></td><td><span class="hl" data-hl-id="df_A">2</span></td><td><span class="hl" data-hl-id="ms_A">28.50</span></td><td><span class="hl" data-hl-id="f_A">24.57</span></td><td>&lt;.001</td>
             </tr>
             <tr>
-              <td>Subjects within Damage, S(A)</td><td>17.4</td><td>15</td><td>1.16</td><td class="muted">—</td><td class="muted">—</td>
+              <td>Subjects within Damage, S(A)</td><td><span class="hl" data-hl-id="ss_SA">17.4</span></td><td><span class="hl" data-hl-id="df_SA">15</span></td><td><span class="hl" data-hl-id="ms_SA">1.16</span></td><td class="muted">—</td><td class="muted">—</td>
             </tr>
             <tr>
-              <td>Stimuli (B)</td><td>9.0</td><td>2</td><td>4.50</td><td>4.41</td><td>.021</td>
+              <td>Stimuli (B)</td><td><span class="hl" data-hl-id="ss_B">9.0</span></td><td><span class="hl" data-hl-id="df_B">2</span></td><td><span class="hl" data-hl-id="ms_B">4.50</span></td><td><span class="hl" data-hl-id="f_B">4.41</span></td><td>.021</td>
             </tr>
             <tr>
-              <td>B×S(A) (within error)</td><td>30.6</td><td>30</td><td>1.02</td><td class="muted">—</td><td class="muted">—</td>
+              <td>B×S(A) (within error)</td><td><span class="hl" data-hl-id="ss_BSA">30.6</span></td><td><span class="hl" data-hl-id="df_BSA">30</span></td><td><span class="hl" data-hl-id="ms_BSA">1.02</span></td><td class="muted">—</td><td class="muted">—</td>
             </tr>
             <tr>
-              <td>Damage×Stimuli (A×B)</td><td>2.0</td><td>4</td><td>0.50</td><td>0.49</td><td>.743</td>
+              <td>Damage×Stimuli (A×B)</td><td><span class="hl" data-hl-id="ss_AB">2.0</span></td><td><span class="hl" data-hl-id="df_AB">4</span></td><td><span class="hl" data-hl-id="ms_AB">0.50</span></td><td><span class="hl" data-hl-id="f_AB">0.49</span></td><td>.743</td>
             </tr>
             <tr>
               <td>B×S(A) (same within error)</td><td>30.6</td><td>30</td><td>1.02</td><td class="muted">—</td><td class="muted">—</td>
