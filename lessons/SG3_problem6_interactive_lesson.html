@@ -99,13 +99,40 @@
   </div>
 
   <section class="card">
+    <h2>Notation + standard equations (used throughout)</h2>
+
+    <div class="panel">
+      <h4>What the symbols mean</h4>
+      <ul>
+        <li><span class="formula">\(Y_{ijk}\)</span>: recall score for subject <span class="formula">\(k\)</span> in damage group <span class="formula">\(i\)</span> at stimuli level <span class="formula">\(j\)</span>.</li>
+        <li><span class="formula">\(\bar Y_{\cdot\cdot\cdot}\)</span>: grand mean (given: 7.48).</li>
+        <li><span class="formula">\(\bar Y_{i\cdot\cdot}\)</span>: damage marginal mean for group <span class="formula">\(i\)</span> (averaged over stimuli).</li>
+        <li><span class="formula">\(\bar Y_{\cdot j \cdot}\)</span>: stimuli marginal mean for level <span class="formula">\(j\)</span> (averaged over damage).</li>
+        <li><span class="formula">\(\bar Y_{ij\cdot}\)</span>: cell mean for damage <span class="formula">\(i\)</span> at stimuli <span class="formula">\(j\)</span> (averaged over subjects in that group).</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h4>Standard fixed-effect identities (labeled)</h4>
+      <ul>
+        <li><strong>Eq. 1 (Damage effect):</strong> <span class="formula">\(\alpha_i = \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
+        <li><strong>Eq. 2 (Stimuli effect):</strong> <span class="formula">\(\beta_j = \bar Y_{\cdot j \cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
+        <li><strong>Eq. 3 (Interaction cell effect):</strong> <span class="formula">\((\alpha\beta)_{ij} = \bar Y_{ij\cdot} - \bar Y_{i\cdot\cdot} - \bar Y_{\cdot j \cdot} + \bar Y_{\cdot\cdot\cdot}\)</span></li>
+        <li><strong>Eq. 4 (Mean square):</strong> <span class="formula">\(MS = SS/df\)</span></li>
+        <li><strong>Eq. 5 (F ratio):</strong> <span class="formula">\(F = MS_{effect}/MS_{error}\)</span></li>
+      </ul>
+      <p class="muted">Split-plot nuance: Eq. 5 uses different error terms for between- vs within-subject effects (spelled out in 6b).</p>
+    </div>
+  </section>
+
+  <section class="card">
     <h2>6a — Fixed effects (compute α, β, αβ)</h2>
 
     <div class="grid two">
       <div>
         <div class="panel">
           <h4>Mini-lesson: what does the question mean by an “effect”?</h4>
-          <p>In this problem, an “effect” is a <strong>fixed-effect deviation</strong> (a mean difference) defined by the standard ANOVA identities. Even though the design is split-plot, the <em>definitions</em> of the effects are the same:</p>
+          <p>In this problem, an “effect” is a <strong>fixed-effect deviation</strong> (a mean difference) defined by the standard ANOVA identities (see Eq. 1–3 above). Even though the design is split-plot, the <em>definitions</em> of the effects are the same:</p>
           <ul>
             <li><strong>Between main effect</strong> (damage): <span class="formula">\(\alpha_i = \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
             <li><strong>Within main effect</strong> (stimuli): <span class="formula">\(\beta_k = \bar Y_{\cdot\cdot k} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
@@ -206,7 +233,7 @@ em6.cell
 
     <div class="panel">
       <h4>What does “fill in the ANOVA table” mean?</h4>
-      <p>An ANOVA table is just a structured summary of variability. For each <strong>Source</strong>, you compute:</p>
+      <p>An ANOVA table is just a structured summary of variability. For each <strong>Source</strong>, you compute (see Eq. 4–5):</p>
       <ul>
         <li><strong>SS</strong> (sum of squares): how much variability is attributed to that source.</li>
         <li><strong>df</strong> (degrees of freedom): how many independent pieces of information that SS is based on.</li>
