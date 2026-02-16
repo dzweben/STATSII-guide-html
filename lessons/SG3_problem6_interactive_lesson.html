@@ -110,7 +110,7 @@
   #floatROut{ position:fixed; left:16px; bottom:16px; width:520px; max-width: calc(100vw - 32px);
     background:#ffffff; border:1px solid var(--line); border-radius:14px; box-shadow: 0 18px 40px rgba(0,0,0,.18);
     z-index:9998; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto; }
-  #floatROut header{ background:#111827; color:#fff; padding:10px 12px; border-radius:14px 14px 0 0; display:flex; align-items:center; justify-content:space-between; }
+  #floatROut header{ background:#111827; color:#fff; padding:10px 12px; border-radius:14px 14px 0 0; display:flex; align-items:center; justify-content:space-between; cursor:move; user-select:none; }
   #floatROut header .title{ font-weight:900; font-size:13px; }
   #floatROut header button{ padding:6px 8px; border-radius:10px; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.12); color:#fff; }
   #floatROut .body{ padding:10px 12px; }
@@ -118,7 +118,7 @@
   #floatROut .tabs button{ padding:7px 9px; border-radius:999px; border:1px solid #374151; background:#0b1220; color:#e5e7eb; font-weight:900; }
   #floatROut .tabs button[aria-pressed="true"]{ background:#111827; border-color:#93c5fd; color:#fff; }
   #floatROut pre{ max-height: 320px; overflow:auto; margin:0; background:#0b1220; color:#e5e7eb; border:1px solid #374151; border-radius:10px; padding:10px 12px; }
-  #floatCalc header{ background:var(--teal); color:#fff; padding:10px 12px; border-radius:14px 14px 0 0; display:flex; align-items:center; justify-content:space-between; }
+  #floatCalc header{ background:var(--teal); color:#fff; padding:10px 12px; border-radius:14px 14px 0 0; display:flex; align-items:center; justify-content:space-between; cursor:move; user-select:none; }
   #floatCalc header .title{ font-weight:900; font-size:13px; }
   #floatCalc header button{ padding:6px 8px; border-radius:10px; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.12); color:#fff; }
   #floatCalc .body{ padding:10px 12px; }
@@ -836,10 +836,9 @@ contrast(em6.cell, cell6.list)
       // switch floating output to 6a tab so it's in your face
       const btn = document.querySelector('#routBody .rtab[data-tab="rout6a"]');
       btn?.click?.();
-      setMsg(true, `Now click the correct number in the floating R output for ${key}.`);
+      setMsg(true, 'Now click the correct number in the floating R output.');
       document.querySelectorAll('.pick').forEach(p => p.classList.remove('active','wrong'));
-      // highlight all pickables to guide attention
-      document.querySelectorAll('.pick').forEach(p => p.classList.add('active'));
+      // don't highlight everything (doesn't give it away, less noisy)
     }
 
     table.querySelectorAll('button[data-action="select"]').forEach(btn => {
@@ -1051,11 +1050,43 @@ contrast(em6.cell, cell6.list)
     return { ok, msg: ok ? 'ok' : `exp≈${expected}` };
   }
 
+  function makeDraggable(box, handle){
+    let dragging=false, startX=0, startY=0, startLeft=0, startTop=0;
+    const onDown=(e)=>{
+      // ignore clicks on buttons
+      if (e.target && (e.target.tagName==='BUTTON' || e.target.closest('button'))) return;
+      dragging=true;
+      const rect=box.getBoundingClientRect();
+      startX=e.clientX; startY=e.clientY;
+      startLeft=rect.left; startTop=rect.top;
+      box.style.right='auto'; box.style.bottom='auto';
+      box.style.left=startLeft+'px'; box.style.top=startTop+'px';
+      e.preventDefault();
+    };
+    const onMove=(e)=>{
+      if(!dragging) return;
+      const dx=e.clientX-startX, dy=e.clientY-startY;
+      let left=startLeft+dx, top=startTop+dy;
+      // keep on screen
+      left=Math.max(8, Math.min(left, window.innerWidth-box.offsetWidth-8));
+      top=Math.max(8, Math.min(top, window.innerHeight-box.offsetHeight-8));
+      box.style.left=left+'px';
+      box.style.top=top+'px';
+    };
+    const onUp=()=>{ dragging=false; };
+    handle.addEventListener('mousedown', onDown);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }
+
   (function initFloatROut(){
     const box = document.getElementById('floatROut');
     const body = document.getElementById('routBody');
     const min = document.getElementById('routMin');
-    if (!box || !body || !min) return;
+    const handle = box?.querySelector('header');
+    if (!box || !body || !min || !handle) return;
+
+    makeDraggable(box, handle);
 
     function showTab(id){
       body.querySelectorAll('.rpanel').forEach(p => p.style.display = (p.id === id) ? 'block' : 'none');
@@ -1081,7 +1112,10 @@ contrast(em6.cell, cell6.list)
     const go = document.getElementById('calcGo');
     const min = document.getElementById('calcMin');
     const clr = document.getElementById('calcClr');
-    if (!box || !expr || !out) return;
+    const handle = box?.querySelector('header');
+    if (!box || !expr || !out || !handle) return;
+
+    makeDraggable(box, handle);
 
     function showResult(msg, ok=true){
       out.textContent = msg;
