@@ -58,6 +58,15 @@
   table.tbl th{background:#f0f0f0;}
 
   .formula{font-family:'Cambria Math','Times New Roman',serif; background:var(--teal2); padding:2px 6px; border-radius:6px;}
+
+  /* Interactive highlighting */
+  .hl{ background:#fff2a8; border-radius:4px; padding:0 2px; }
+  .hl-strong{ background:#ffd36e; }
+  .term-btn{ display:inline-block; margin:6px 8px 0 0; padding:6px 10px; border-radius:999px; border:1px solid #cfe3ea; background:var(--teal2); color:var(--teal); font-weight:800; cursor:pointer; }
+  .term-btn[aria-pressed="true"]{ background:#e3f1f5; }
+  .term-list{ margin:10px 0 0; padding-left:18px; }
+  .term-list li{ margin:6px 0; }
+  .term{ font-weight:800; color:var(--teal); cursor:help; }
 </style>
 
 <!-- MathJax -->
@@ -105,7 +114,7 @@
       <h4>What the symbols mean</h4>
       <ul>
         <li><span class="formula">\(Y_{ijk}\)</span>: recall score for subject <span class="formula">\(k\)</span> in damage group <span class="formula">\(i\)</span> at stimuli level <span class="formula">\(j\)</span>.</li>
-        <li><span class="formula">\(\bar Y_{\cdot\cdot\cdot}\)</span>: grand mean (given: 7.48).</li>
+        <li><span class="formula">\(\bar Y_{\cdot\cdot\cdot}\)</span>: grand mean (given: <span class="hl hl-strong" data-hl-id="ybar_grand">7.48</span>).</li>
         <li><span class="formula">\(\bar Y_{i\cdot\cdot}\)</span>: damage marginal mean for group <span class="formula">\(i\)</span> (averaged over stimuli).</li>
         <li><span class="formula">\(\bar Y_{\cdot j \cdot}\)</span>: stimuli marginal mean for level <span class="formula">\(j\)</span> (averaged over damage).</li>
         <li><span class="formula">\(\bar Y_{ij\cdot}\)</span>: cell mean for damage <span class="formula">\(i\)</span> at stimuli <span class="formula">\(j\)</span> (averaged over subjects in that group).</li>
@@ -129,10 +138,46 @@
         <li><strong>Eq. 1 (Damage main-effect deviation):</strong> <span class="formula">\(\alpha_i = \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
         <li><strong>Eq. 2 (Stimuli main-effect deviation):</strong> <span class="formula">\(\beta_j = \bar Y_{\cdot j \cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
         <li><strong>Eq. 3 (Interaction cell deviation):</strong> <span class="formula">\((\alpha\beta)_{ij} = \bar Y_{ij\cdot} - \bar Y_{i\cdot\cdot} - \bar Y_{\cdot j \cdot} + \bar Y_{\cdot\cdot\cdot}\)</span></li>
-        <li><strong>Eq. 4 (Mean square):</strong> <span class="formula">\(MS = SS/df\)</span></li>
-        <li><strong>Eq. 5 (F ratio):</strong> <span class="formula">\(F = MS_{effect}/MS_{error}\)</span></li>
+        <li><strong>Eq. 4 (Mean square):</strong> <span class="formula">\(MS = SS/df\)</span> <span class="muted">(turn SS into a per-df variance estimate)</span></li>
+        <li><strong>Eq. 5 (F ratio):</strong> <span class="formula">\(F = MS_{effect}/MS_{error}\)</span> <span class="muted">(signal-to-noise, using the design’s correct error term)</span></li>
       </ul>
       <p class="muted">Split-plot nuance: Eq. 5 uses different error terms for between- vs within-subject effects (spelled out in 6b).</p>
+    </div>
+
+    <div class="panel" id="eq-explorer">
+      <h4>Equation explorer (click → definitions; hover → highlight in SG3 output)</h4>
+      <p class="muted">Click an equation, then hover a term to see the matching mean highlighted in the R output.</p>
+      <div>
+        <button class="term-btn" data-eq="eq1" aria-pressed="true">Eq. 1 (α)</button>
+        <button class="term-btn" data-eq="eq2" aria-pressed="false">Eq. 2 (β)</button>
+        <button class="term-btn" data-eq="eq3" aria-pressed="false">Eq. 3 (αβ)</button>
+      </div>
+
+      <div id="eq1" class="eq-box">
+        <p><strong>Eq. 1:</strong> <span class="formula">\(\alpha_{right} = \bar Y_{right\cdot\cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></p>
+        <ul class="term-list">
+          <li><span class="term" data-hl="ybar_right" data-def="Right damage marginal mean (averaged over stimuli); from em6.damage.">\(\bar Y_{right\cdot\cdot}\)</span> = the <strong>Right</strong> marginal mean (from <code>em6.damage</code>).</li>
+          <li><span class="term" data-hl="ybar_grand" data-def="Grand mean across all subjects and observations (given in the prompt).">\(\bar Y_{\cdot\cdot\cdot}\)</span> = grand mean (given: <span class="hl hl-strong" data-hl-id="ybar_grand">7.48</span>).</li>
+        </ul>
+      </div>
+
+      <div id="eq2" class="eq-box" style="display:none;">
+        <p><strong>Eq. 2:</strong> <span class="formula">\(\beta_{mixed} = \bar Y_{\cdot mixed\cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></p>
+        <ul class="term-list">
+          <li><span class="term" data-hl="ybar_mixed" data-def="Mixed stimuli marginal mean (averaged over damage); from em6.stimuli.">\(\bar Y_{\cdot mixed\cdot}\)</span> = the <strong>Mixed</strong> marginal mean (from <code>em6.stimuli</code>).</li>
+          <li><span class="term" data-hl="ybar_grand" data-def="Grand mean across all subjects and observations (given in the prompt).">\(\bar Y_{\cdot\cdot\cdot}\)</span> = grand mean (given: <span class="hl hl-strong" data-hl-id="ybar_grand">7.48</span>).</li>
+        </ul>
+      </div>
+
+      <div id="eq3" class="eq-box" style="display:none;">
+        <p><strong>Eq. 3:</strong> <span class="formula">\((\alpha\beta)_{right,mixed} = \bar Y_{right,mixed\cdot} - \bar Y_{right\cdot\cdot} - \bar Y_{\cdot mixed\cdot} + \bar Y_{\cdot\cdot\cdot}\)</span></p>
+        <ul class="term-list">
+          <li><span class="term" data-hl="ybar_cell_right_mixed" data-def="Cell mean for damage=Right at stimuli=Mixed; from em6.cell.">\(\bar Y_{right,mixed\cdot}\)</span> = cell mean for Right×Mixed (from <code>em6.cell</code>).</li>
+          <li><span class="term" data-hl="ybar_right" data-def="Right damage marginal mean (averaged over stimuli); from em6.damage.">\(\bar Y_{right\cdot\cdot}\)</span> = Right marginal mean (from <code>em6.damage</code>).</li>
+          <li><span class="term" data-hl="ybar_mixed" data-def="Mixed stimuli marginal mean (averaged over damage); from em6.stimuli.">\(\bar Y_{\cdot mixed\cdot}\)</span> = Mixed marginal mean (from <code>em6.stimuli</code>).</li>
+          <li><span class="term" data-hl="ybar_grand" data-def="Grand mean across all subjects and observations (given in the prompt).">\(\bar Y_{\cdot\cdot\cdot}\)</span> = grand mean (given: <span class="hl hl-strong" data-hl-id="ybar_grand">7.48</span>).</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -165,7 +210,7 @@
             <li>Use the stimuli marginal mean for “Mixed.”</li>
             <li>Use the Right×Mixed cell mean for the interaction effect.</li>
           </ul>
-          <p class="muted">Given: grand mean = 7.48.</p>
+          <p class="muted">Given: grand mean = <span class="hl hl-strong" data-hl-id="ybar_grand">7.48</span>.</p>
         </div>
 
         <p><strong>Short answer (6a):</strong></p>
@@ -180,18 +225,18 @@
           <div class="answer">
             <div class="step">
               <strong>Step 1 (α<sub>right</sub>):</strong> take the <em>Right</em> damage marginal mean and subtract the grand mean.
-              <div class="muted">From SG3: Right marginal mean = 7.61.</div>
+              <div class="muted">From SG3: Right marginal mean = <span class="hl" data-hl-id="ybar_right">7.61</span>.</div>
               <div>So α<sub>right</sub> = 7.61 − 7.48 = +0.13.</div>
             </div>
             <div class="step">
               <strong>Step 2 (β<sub>mixed</sub>):</strong> take the <em>Mixed</em> stimuli marginal mean and subtract the grand mean.
-              <div class="muted">From SG3: Mixed marginal mean = 7.11.</div>
+              <div class="muted">From SG3: Mixed marginal mean = <span class="hl" data-hl-id="ybar_mixed">7.11</span>.</div>
               <div>So β<sub>mixed</sub> = 7.11 − 7.48 = −0.37.</div>
             </div>
             <div class="step">
               <strong>Step 3 (αβ<sub>right,mixed</sub>):</strong>
               <div>Use the cell mean (Right,Mixed) and apply the standard cell-effect identity:</div>
-              <div class="muted">Cell mean (Right,Mixed) = 7.17; Right marginal = 7.61; Mixed marginal = 7.11; Grand = 7.48.</div>
+              <div class="muted">Cell mean (Right,Mixed) = <span class="hl" data-hl-id="ybar_cell_right_mixed">7.17</span>; Right marginal = 7.61; Mixed marginal = 7.11; Grand = 7.48.</div>
               <div>(αβ)<sub>right,mixed</sub> = 7.17 − 7.61 − 7.11 + 7.48 = −0.07.</div>
             </div>
           </div>
@@ -199,13 +244,13 @@
       </div>
 
       <div>
-        <details class="pill">
+        <details class="pill" id="sg3-output">
           <summary>Show R output (given in SG3)</summary>
           <div class="answer">
             <pre class="rout"><code>em6.damage
 ##  damagef emmean    SE df lower.CL upper.CL
 ##  Left      6.17 0.254 15     5.62     6.71
-##  Right     7.61 0.254 15     7.07     8.15
+##  Right     <span class="hl" data-hl-id="ybar_right">7.61</span> 0.254 15     7.07     8.15
 ##  Control   8.67 0.254 15     8.12     9.21
 ## 
 ## Results are averaged over the levels of: stimuli
@@ -215,7 +260,7 @@ em6.stimuli
 ##  stimuli emmean    SE df lower.CL upper.CL
 ##  digits    8.06 0.218 15     7.59     8.52
 ##  letters   7.28 0.259 15     6.72     7.83
-##  mixed     7.11 0.251 15     6.58     7.65
+##  mixed     <span class="hl" data-hl-id="ybar_mixed">7.11</span> 0.251 15     6.58     7.65
 ## 
 ## Results are averaged over the levels of: damagef
 ## Confidence level used: 0.95
@@ -229,7 +274,7 @@ em6.cell
 ##  Right   letters   7.50 0.449 15     6.54     8.46
 ##  Control letters   8.67 0.449 15     7.71     9.62
 ##  Left    mixed     5.83 0.435 15     4.91     6.76
-##  Right   mixed     7.17 0.435 15     6.24     8.09
+##  Right   mixed     <span class="hl" data-hl-id="ybar_cell_right_mixed">7.17</span> 0.435 15     6.24     8.09
 ##  Control mixed     8.33 0.435 15     7.41     9.26
 ## 
 ## Confidence level used: 0.95</code></pre>
@@ -253,6 +298,7 @@ em6.cell
       </ul>
       <p class="muted">In split-plot designs the “correct error term” is the whole point: between-subject and within-subject effects do not share the same denominator.</p>
     </div>
+
     <div class="panel">
       <h4>Prompt (SG3)</h4>
       <p>Fill in this ANOVA table. Given SS: Damage=57; Stimuli=9; Subject=17.4; Damage×Stimuli=2; Subject×Stimuli=30.6</p>
@@ -469,15 +515,107 @@ contrast(em6.cell, cell6.list)
     </details>
   </section>
 
-  <div class="card">
-    <h3>What I’m doing next (so you can track progress)</h3>
-    <ol class="muted">
-      <li>Build 6b as a guided ANOVA-table completion lesson (df → MS → F), with a verbatim SG3 output pill where it exists.</li>
-      <li>Build 6c as a structured contrast lesson: identify type, write nulls, map to Tukey vs Scheffé, and interpret using the provided SG3 contrast output (verbatim).</li>
-      <li>Polish: add “checkpoint questions” and keep each part readable without feeling like it starts from zero.</li>
-    </ol>
-  </div>
-
 </div>
+
+<script>
+  // Equation explorer: switch eq panels
+  document.querySelectorAll('.term-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const eq = btn.getAttribute('data-eq');
+      document.querySelectorAll('.term-btn').forEach(b => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+      document.querySelectorAll('.eq-box').forEach(box => box.style.display = 'none');
+      const target = document.getElementById(eq);
+      if (target) target.style.display = 'block';
+    });
+  });
+
+  // Hover a term -> highlight matching numbers in R output
+  const clearHL = () => {
+    document.querySelectorAll('[data-hl-id]').forEach(el => el.classList.remove('hl-strong'));
+  };
+
+  document.querySelectorAll('.term[data-hl]').forEach(term => {
+    const key = term.getAttribute('data-hl');
+    term.addEventListener('mouseenter', () => {
+      clearHL();
+      document.querySelectorAll(`[data-hl-id="${key}"]`).forEach(el => el.classList.add('hl-strong'));
+      // if output block is collapsed, open it
+      const out = document.getElementById('sg3-output');
+      if (out && !out.open) out.open = true;
+    });
+    term.addEventListener('mouseleave', () => {
+      clearHL();
+    });
+  });
+</script>
+
+
+<script>
+  (function(){
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    // Equation tabs
+    $$('.term-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-eq');
+        $$('.term-btn').forEach(b => b.setAttribute('aria-pressed', String(b===btn)));
+        $$('.eq-box').forEach(box => { box.style.display = (box.id === target) ? '' : 'none'; });
+      });
+    });
+
+    // Tooltip
+    const tip = document.createElement('div');
+    tip.style.position = 'fixed';
+    tip.style.zIndex = '9999';
+    tip.style.maxWidth = '340px';
+    tip.style.padding = '8px 10px';
+    tip.style.borderRadius = '10px';
+    tip.style.border = '1px solid #cfe3ea';
+    tip.style.background = '#fcfeff';
+    tip.style.color = '#1b1b1b';
+    tip.style.boxShadow = '0 6px 24px rgba(0,0,0,.12)';
+    tip.style.fontSize = '12px';
+    tip.style.display = 'none';
+    document.body.appendChild(tip);
+
+    function showTip(text, x, y){
+      tip.textContent = text;
+      tip.style.left = Math.min(x + 14, window.innerWidth - 360) + 'px';
+      tip.style.top = Math.min(y + 14, window.innerHeight - 120) + 'px';
+      tip.style.display = 'block';
+    }
+    function hideTip(){ tip.style.display = 'none'; }
+
+    // Highlight helpers
+    function clearHighlights(){
+      $$('[data-hl-id].hl').forEach(s => s.classList.remove('hl-strong'));
+    }
+    function applyHighlight(key){
+      clearHighlights();
+      $$('[data-hl-id="'+key+'"].hl').forEach(s => s.classList.add('hl-strong'));
+    }
+
+    // Term hover -> tooltip + highlight
+    $$('.term').forEach(t => {
+      t.addEventListener('mouseenter', (e) => {
+        const key = t.getAttribute('data-hl');
+        const def = t.getAttribute('data-def') || '';
+        if (key) applyHighlight(key);
+        if (def) showTip(def, e.clientX, e.clientY);
+      });
+      t.addEventListener('mousemove', (e) => {
+        const def = t.getAttribute('data-def') || '';
+        if (def) showTip(def, e.clientX, e.clientY);
+      });
+      t.addEventListener('mouseleave', () => {
+        clearHighlights();
+        hideTip();
+      });
+    });
+  })();
+</script>
+
 </body>
 </html>
