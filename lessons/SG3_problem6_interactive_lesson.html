@@ -113,11 +113,22 @@
     </div>
 
     <div class="panel">
+      <h4>Key terms: fixed vs main vs simple effects (what the questions are asking)</h4>
+      <ul>
+        <li><strong>Fixed effect</strong>: an effect of a factor whose levels are the specific conditions of interest (not a random sample of levels). In SG3 Problem 6, <em>damage</em> and <em>stimuli</em> are treated as fixed factors, so α, β, and αβ are fixed effects.</li>
+        <li><strong>Main effect</strong>: the effect of a factor <em>averaged over</em> the other factor(s). Example: a stimuli main effect compares digits vs letters vs mixed after averaging across damage groups.</li>
+        <li><strong>Simple effect</strong>: the effect of one factor at a <em>specific level</em> of another factor. Example: the damage effect <em>within Mixed</em> stimuli.</li>
+        <li><strong>Interaction</strong>: whether the effect of one factor changes across levels of the other factor (a “difference of differences”).</li>
+      </ul>
+      <p class="muted">Rule of thumb: if you see a contrast defined on the <em>cell means</em>, it’s often a simple-effect or interaction-style question (6c).</p>
+    </div>
+
+    <div class="panel">
       <h4>Standard fixed-effect identities (labeled)</h4>
       <ul>
-        <li><strong>Eq. 1 (Damage effect):</strong> <span class="formula">\(\alpha_i = \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
-        <li><strong>Eq. 2 (Stimuli effect):</strong> <span class="formula">\(\beta_j = \bar Y_{\cdot j \cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
-        <li><strong>Eq. 3 (Interaction cell effect):</strong> <span class="formula">\((\alpha\beta)_{ij} = \bar Y_{ij\cdot} - \bar Y_{i\cdot\cdot} - \bar Y_{\cdot j \cdot} + \bar Y_{\cdot\cdot\cdot}\)</span></li>
+        <li><strong>Eq. 1 (Damage main-effect deviation):</strong> <span class="formula">\(\alpha_i = \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
+        <li><strong>Eq. 2 (Stimuli main-effect deviation):</strong> <span class="formula">\(\beta_j = \bar Y_{\cdot j \cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
+        <li><strong>Eq. 3 (Interaction cell deviation):</strong> <span class="formula">\((\alpha\beta)_{ij} = \bar Y_{ij\cdot} - \bar Y_{i\cdot\cdot} - \bar Y_{\cdot j \cdot} + \bar Y_{\cdot\cdot\cdot}\)</span></li>
         <li><strong>Eq. 4 (Mean square):</strong> <span class="formula">\(MS = SS/df\)</span></li>
         <li><strong>Eq. 5 (F ratio):</strong> <span class="formula">\(F = MS_{effect}/MS_{error}\)</span></li>
       </ul>
