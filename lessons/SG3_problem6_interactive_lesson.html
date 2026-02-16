@@ -71,6 +71,7 @@
   .calc-box{border:1px solid #cfe3ea; background:var(--teal2); border-radius:12px; padding:10px 12px;}
   .calc-box label{display:block; font-weight:900; color:var(--teal); margin-bottom:6px;}
   .calc-box input{width:100%; padding:10px 10px; border-radius:10px; border:1px solid #cfe3ea; font-size:15px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;}
+  select{width:100%; padding:8px 10px; border-radius:10px; border:1px solid #cbd5e1; background:#fff; font-weight:700;}
   .btns{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
   button{cursor:pointer; border-radius:10px; border:1px solid var(--line); background:#fff; padding:8px 10px; font-weight:800;}
   button.primary{border-color:#cfe3ea; background:#e3f1f5; color:var(--teal);} 
@@ -127,7 +128,115 @@
           </ul>
         </div>
 
-        <div class="chips" id="chips-6a"></div>
+        <div class="panel">
+          <h4>Step 0: map each symbol to the correct mean source</h4>
+          <p class="muted">You unlock each required number only after you correctly identify where it comes from in the SG3 output.</p>
+          <div class="card" style="margin:10px 0 0; border-radius:12px;">
+            <table class="tbl" id="map-6a">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Where is it found?</th>
+                  <th>Which level?</th>
+                  <th>Unlock</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-map="ybar_right">
+                  <td class="center"><code>\(\bar Y_{right\cdot\cdot}\)</code></td>
+                  <td>
+                    <select data-field="src">
+                      <option value="">Select…</option>
+                      <option value="damage">em6.damage (damage marginal means)</option>
+                      <option value="stimuli">em6.stimuli (stimuli marginal means)</option>
+                      <option value="cell">em6.cell (cell means)</option>
+                      <option value="prompt">Given in prompt</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select data-field="lvl">
+                      <option value="">Select…</option>
+                      <option value="Right">Right</option>
+                      <option value="Mixed">Mixed</option>
+                      <option value="Right×Mixed">Right×Mixed</option>
+                      <option value="Grand">Grand mean</option>
+                    </select>
+                  </td>
+                  <td class="center"><button class="primary" data-action="unlock">Unlock</button></td>
+                </tr>
+                <tr data-map="ybar_mixed">
+                  <td class="center"><code>\(\bar Y_{\cdot mixed\cdot}\)</code></td>
+                  <td>
+                    <select data-field="src">
+                      <option value="">Select…</option>
+                      <option value="damage">em6.damage</option>
+                      <option value="stimuli">em6.stimuli</option>
+                      <option value="cell">em6.cell</option>
+                      <option value="prompt">Given in prompt</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select data-field="lvl">
+                      <option value="">Select…</option>
+                      <option value="Right">Right</option>
+                      <option value="Mixed">Mixed</option>
+                      <option value="Right×Mixed">Right×Mixed</option>
+                      <option value="Grand">Grand mean</option>
+                    </select>
+                  </td>
+                  <td class="center"><button class="primary" data-action="unlock">Unlock</button></td>
+                </tr>
+                <tr data-map="ybar_cell_right_mixed">
+                  <td class="center"><code>\(\bar Y_{right,mixed\cdot}\)</code></td>
+                  <td>
+                    <select data-field="src">
+                      <option value="">Select…</option>
+                      <option value="damage">em6.damage</option>
+                      <option value="stimuli">em6.stimuli</option>
+                      <option value="cell">em6.cell</option>
+                      <option value="prompt">Given in prompt</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select data-field="lvl">
+                      <option value="">Select…</option>
+                      <option value="Right">Right</option>
+                      <option value="Mixed">Mixed</option>
+                      <option value="Right×Mixed">Right×Mixed</option>
+                      <option value="Grand">Grand mean</option>
+                    </select>
+                  </td>
+                  <td class="center"><button class="primary" data-action="unlock">Unlock</button></td>
+                </tr>
+                <tr data-map="ybar_grand">
+                  <td class="center"><code>\(\bar Y_{\cdot\cdot\cdot}\)</code></td>
+                  <td>
+                    <select data-field="src">
+                      <option value="">Select…</option>
+                      <option value="damage">em6.damage</option>
+                      <option value="stimuli">em6.stimuli</option>
+                      <option value="cell">em6.cell</option>
+                      <option value="prompt">Given in prompt</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select data-field="lvl">
+                      <option value="">Select…</option>
+                      <option value="Right">Right</option>
+                      <option value="Mixed">Mixed</option>
+                      <option value="Right×Mixed">Right×Mixed</option>
+                      <option value="Grand">Grand mean</option>
+                    </select>
+                  </td>
+                  <td class="center"><button class="primary" data-action="unlock">Unlock</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <div id="mapfb-6a" class="feedback" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="chips" id="chips-6a" style="display:none;"></div>
 
         <div class="calc-row">
           <div>
@@ -435,16 +544,71 @@ contrast(em6.cell, cell6.list)
     }
   };
 
-  (function renderChips(){
+  const unlocked6a = { ybar_right:false, ybar_mixed:false, ybar_cell_right_mixed:false, ybar_grand:false };
+
+  function renderChips6a(){
     const el = document.getElementById('chips-6a');
     if (!el) return;
-    el.innerHTML = `
-      <div class="chip grand"><small>Grand mean</small>${means6a.grand}</div>
-      <div class="chip right"><small>Right mean</small>${means6a.right}</div>
-      <div class="chip mixed"><small>Mixed mean</small>${means6a.mixed}</div>
-      <div class="chip cell"><small>Right×Mixed cell</small>${means6a.cell_right_mixed}</div>
-    `;
+    const chips = [];
+    if (unlocked6a.ybar_grand) chips.push(`<div class="chip grand"><small>\(\\bar Y_{\\cdot\\cdot\\cdot}\\)</small>${means6a.grand}</div>`);
+    if (unlocked6a.ybar_right) chips.push(`<div class="chip right"><small>\(\\bar Y_{right\\cdot\\cdot}\\)</small>${means6a.right}</div>`);
+    if (unlocked6a.ybar_mixed) chips.push(`<div class="chip mixed"><small>\(\\bar Y_{\\cdot mixed\\cdot}\\)</small>${means6a.mixed}</div>`);
+    if (unlocked6a.ybar_cell_right_mixed) chips.push(`<div class="chip cell"><small>\(\\bar Y_{right,mixed\\cdot}\\)</small>${means6a.cell_right_mixed}</div>`);
+
+    if (chips.length === 0){
+      el.style.display = 'none';
+      el.innerHTML = '';
+    } else {
+      el.style.display = 'flex';
+      el.innerHTML = chips.join('');
+      // re-typeset math in chips
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([el]).catch(()=>{});
+      }
+    }
+  }
+
+  (function initMap6a(){
+    const fb = document.getElementById('mapfb-6a');
+    const table = document.getElementById('map-6a');
+    if (!table) return;
+
+    const keySpec = {
+      ybar_right: { src:'damage', lvl:'Right' },
+      ybar_mixed: { src:'stimuli', lvl:'Mixed' },
+      ybar_cell_right_mixed: { src:'cell', lvl:'Right×Mixed' },
+      ybar_grand: { src:'prompt', lvl:'Grand' },
+    };
+
+    function setMsg(ok, msg){
+      fb.textContent = msg;
+      fb.className = 'feedback ' + (ok ? 'ok' : 'no');
+    }
+
+    table.querySelectorAll('button[data-action="unlock"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tr = btn.closest('tr');
+        const key = tr.getAttribute('data-map');
+        const src = tr.querySelector('select[data-field="src"]').value;
+        const lvl = tr.querySelector('select[data-field="lvl"]').value;
+        const spec = keySpec[key];
+        if (!src || !lvl){
+          setMsg(false, 'Pick both “where” and “which level” to unlock.');
+          return;
+        }
+        if (src === spec.src && lvl === spec.lvl){
+          unlocked6a[key] = true;
+          setMsg(true, `Unlocked ${key}.`);
+          renderChips6a();
+        } else {
+          setMsg(false, 'Not quite — check whether this is a damage marginal mean, stimuli marginal mean, a cell mean, or given in the prompt.');
+        }
+      });
+    });
   })();
+
+  // initial render (hidden)
+  renderChips6a();
 
   (function init6a(){
     document.querySelectorAll('.calc-box[data-prob]').forEach(box => {
