@@ -104,12 +104,18 @@
     <div class="grid two">
       <div>
         <div class="panel">
-          <h4>Mini-lesson: what counts as an “effect” in a split-plot?</h4>
-          <p>Even though this is a split-plot, the fixed effects are still mean differences:</p>
+          <h4>Mini-lesson: what does the question mean by an “effect”?</h4>
+          <p>In this problem, an “effect” is a <strong>fixed-effect deviation</strong> (a mean difference) defined by the standard ANOVA identities. Even though the design is split-plot, the <em>definitions</em> of the effects are the same:</p>
           <ul>
             <li><strong>Between main effect</strong> (damage): <span class="formula">\(\alpha_i = \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
             <li><strong>Within main effect</strong> (stimuli): <span class="formula">\(\beta_k = \bar Y_{\cdot\cdot k} - \bar Y_{\cdot\cdot\cdot}\)</span></li>
             <li><strong>Cell interaction effect</strong>: <span class="formula">\((\alpha\beta)_{ik} = \bar Y_{i\cdot k} - \bar Y_{i\cdot\cdot} - \bar Y_{\cdot\cdot k} + \bar Y_{\cdot\cdot\cdot}\)</span></li>
+          </ul>
+          <p><strong>Meaning of each requested quantity:</strong></p>
+          <ul>
+            <li><span class="formula">\(\alpha_{right}\)</span>: how far the <em>Right</em> marginal mean is above/below the grand mean.</li>
+            <li><span class="formula">\(\beta_{mixed}\)</span>: how far the <em>Mixed</em> marginal mean is above/below the grand mean.</li>
+            <li><span class="formula">\((\alpha\beta)_{right,mixed}\)</span>: the (Right,Mixed) cell’s deviation from what you’d expect from adding the two main effects.</li>
           </ul>
           <p><strong>Where split-plot matters:</strong> choosing the correct <em>error term</em> later (6b/6c).</p>
         </div>
@@ -197,6 +203,18 @@ em6.cell
 
   <section class="card">
     <h2>6b — Fill in the ANOVA table (split-plot error terms)</h2>
+
+    <div class="panel">
+      <h4>What does “fill in the ANOVA table” mean?</h4>
+      <p>An ANOVA table is just a structured summary of variability. For each <strong>Source</strong>, you compute:</p>
+      <ul>
+        <li><strong>SS</strong> (sum of squares): how much variability is attributed to that source.</li>
+        <li><strong>df</strong> (degrees of freedom): how many independent pieces of information that SS is based on.</li>
+        <li><strong>MS</strong> (mean square): <span class="formula">\(MS = SS/df\)</span>.</li>
+        <li><strong>F</strong> (test statistic): <span class="formula">\(F = MS_{effect}/MS_{error}\)</span> using the <em>correct</em> error term for the design.</li>
+      </ul>
+      <p class="muted">In split-plot designs the “correct error term” is the whole point: between-subject and within-subject effects do not share the same denominator.</p>
+    </div>
     <div class="panel">
       <h4>Prompt (SG3)</h4>
       <p>Fill in this ANOVA table. Given SS: Damage=57; Stimuli=9; Subject=17.4; Damage×Stimuli=2; Subject×Stimuli=30.6</p>
@@ -309,12 +327,14 @@ em6.cell
     </div>
 
     <div class="panel">
-      <h4>Mini-lesson: how to read a contrast vector</h4>
-      <p>A contrast is a weighted combination of means. If the weights sum to 0, it tests whether a particular <em>pattern</em> among means is present.</p>
+      <h4>Mini-lesson: what does “contrast” mean?</h4>
+      <p>A <strong>contrast</strong> is a weighted combination of means (a linear combination). If the weights sum to 0, it tests a specific comparative statement about means (a “pattern” among means).</p>
+      <p><strong>Generic form:</strong> <span class="formula">\(L = \sum_j c_j\mu_j\)</span>, with <span class="formula">\(\sum_j c_j = 0\)</span>.</p>
       <ul>
-        <li><strong>Pairwise</strong> (two means): looks like <span class="formula">\((1,0,-1)\)</span> or <span class="formula">\((-1,1,0)\)</span> → use <strong>Tukey</strong>.</li>
-        <li><strong>Complex</strong> (involves ≥3 means, or compares an average to a mean, or is an interaction contrast) → use <strong>Scheffé</strong>.</li>
+        <li><strong>Pairwise contrast</strong> (two means): weights like <span class="formula">\((1,0,-1)\)</span> compare two levels directly → use <strong>Tukey</strong>.</li>
+        <li><strong>Complex contrast</strong> (≥3 means, average-vs-mean, or interaction-style difference-of-differences) → use <strong>Scheffé</strong>.</li>
       </ul>
+      <p class="muted">In the SG3 output, the key columns are: <strong>estimate</strong> (the contrast value), <strong>SE</strong>, and <strong>t.ratio</strong> (estimate/SE). You decide significance by comparing \(|t|\) to an adjusted critical value.</p>
     </div>
 
     <details class="pill">
