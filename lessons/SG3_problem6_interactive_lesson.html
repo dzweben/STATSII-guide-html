@@ -88,6 +88,15 @@
   .right{text-align:right;}
   .center{text-align:center;}
 
+  .sym{ font-weight:900; color:#0b1220; }
+  .status{ font-weight:900; }
+  .status.ok{ color: var(--good); }
+  .status.lock{ color: #6b7280; }
+
+  .pick{ cursor:pointer; padding:2px 6px; border-radius:8px; border:1px solid transparent; }
+  .pick.active{ border-color:#93c5fd; background: rgba(147,197,253,.15); }
+  .pick.wrong{ border-color:#fecaca; background: rgba(254,202,202,.10); }
+
   .hidden{display:none;}
 
   /* Floating calculator */
@@ -158,106 +167,43 @@
         </div>
 
         <div class="panel">
-          <h4>Step 0: map each symbol to the correct mean source</h4>
-          <p class="muted">You unlock each required number only after you correctly identify where it comes from in the SG3 output.</p>
+          <h4>Step 0: map the symbols by clicking the number in the SG3 output</h4>
+          <p class="muted">No dropdown guessing. Click <strong>Select in output</strong>, then click the correct number in the floating <strong>SG3 R output</strong> module.</p>
+
           <div class="card" style="margin:10px 0 0; border-radius:12px;">
             <table class="tbl" id="map-6a">
               <thead>
                 <tr>
-                  <th>Symbol</th>
-                  <th>Where is it found?</th>
-                  <th>Which level?</th>
-                  <th>Unlock</th>
+                  <th class="center">Symbol</th>
+                  <th>What you’re selecting</th>
+                  <th class="center">Action</th>
+                  <th class="center">Status</th>
                 </tr>
               </thead>
               <tbody>
                 <tr data-map="ybar_right">
-                  <td class="center"><code>\(\bar Y_{right\cdot\cdot}\)</code></td>
-                  <td>
-                    <select data-field="src">
-                      <option value="">Select…</option>
-                      <option value="damage">em6.damage (damage marginal means)</option>
-                      <option value="stimuli">em6.stimuli (stimuli marginal means)</option>
-                      <option value="cell">em6.cell (cell means)</option>
-                      <option value="prompt">Given in prompt</option>
-                    </select>
-                  </td>
-                  <td>
-                    <select data-field="lvl">
-                      <option value="">Select…</option>
-                      <option value="Right">Right</option>
-                      <option value="Mixed">Mixed</option>
-                      <option value="Right×Mixed">Right×Mixed</option>
-                      <option value="Grand">Grand mean</option>
-                    </select>
-                  </td>
-                  <td class="center"><button class="primary" data-action="unlock">Unlock</button></td>
+                  <td class="center"><span class="sym">\(\bar Y_{right\cdot\cdot}\)</span></td>
+                  <td>Right <em>damage marginal mean</em> (from <code>em6.damage</code>)</td>
+                  <td class="center"><button class="primary" data-action="select" data-target="ybar_right">Select in output</button></td>
+                  <td class="center"><span class="status" data-status="ybar_right">locked</span></td>
                 </tr>
                 <tr data-map="ybar_mixed">
-                  <td class="center"><code>\(\bar Y_{\cdot mixed\cdot}\)</code></td>
-                  <td>
-                    <select data-field="src">
-                      <option value="">Select…</option>
-                      <option value="damage">em6.damage</option>
-                      <option value="stimuli">em6.stimuli</option>
-                      <option value="cell">em6.cell</option>
-                      <option value="prompt">Given in prompt</option>
-                    </select>
-                  </td>
-                  <td>
-                    <select data-field="lvl">
-                      <option value="">Select…</option>
-                      <option value="Right">Right</option>
-                      <option value="Mixed">Mixed</option>
-                      <option value="Right×Mixed">Right×Mixed</option>
-                      <option value="Grand">Grand mean</option>
-                    </select>
-                  </td>
-                  <td class="center"><button class="primary" data-action="unlock">Unlock</button></td>
+                  <td class="center"><span class="sym">\(\bar Y_{\cdot mixed\cdot}\)</span></td>
+                  <td>Mixed <em>stimuli marginal mean</em> (from <code>em6.stimuli</code>)</td>
+                  <td class="center"><button class="primary" data-action="select" data-target="ybar_mixed">Select in output</button></td>
+                  <td class="center"><span class="status" data-status="ybar_mixed">locked</span></td>
                 </tr>
                 <tr data-map="ybar_cell_right_mixed">
-                  <td class="center"><code>\(\bar Y_{right,mixed\cdot}\)</code></td>
-                  <td>
-                    <select data-field="src">
-                      <option value="">Select…</option>
-                      <option value="damage">em6.damage</option>
-                      <option value="stimuli">em6.stimuli</option>
-                      <option value="cell">em6.cell</option>
-                      <option value="prompt">Given in prompt</option>
-                    </select>
-                  </td>
-                  <td>
-                    <select data-field="lvl">
-                      <option value="">Select…</option>
-                      <option value="Right">Right</option>
-                      <option value="Mixed">Mixed</option>
-                      <option value="Right×Mixed">Right×Mixed</option>
-                      <option value="Grand">Grand mean</option>
-                    </select>
-                  </td>
-                  <td class="center"><button class="primary" data-action="unlock">Unlock</button></td>
+                  <td class="center"><span class="sym">\(\bar Y_{right,mixed\cdot}\)</span></td>
+                  <td>Right×Mixed <em>cell mean</em> (from <code>em6.cell</code>)</td>
+                  <td class="center"><button class="primary" data-action="select" data-target="ybar_cell_right_mixed">Select in output</button></td>
+                  <td class="center"><span class="status" data-status="ybar_cell_right_mixed">locked</span></td>
                 </tr>
                 <tr data-map="ybar_grand">
-                  <td class="center"><code>\(\bar Y_{\cdot\cdot\cdot}\)</code></td>
-                  <td>
-                    <select data-field="src">
-                      <option value="">Select…</option>
-                      <option value="damage">em6.damage</option>
-                      <option value="stimuli">em6.stimuli</option>
-                      <option value="cell">em6.cell</option>
-                      <option value="prompt">Given in prompt</option>
-                    </select>
-                  </td>
-                  <td>
-                    <select data-field="lvl">
-                      <option value="">Select…</option>
-                      <option value="Right">Right</option>
-                      <option value="Mixed">Mixed</option>
-                      <option value="Right×Mixed">Right×Mixed</option>
-                      <option value="Grand">Grand mean</option>
-                    </select>
-                  </td>
-                  <td class="center"><button class="primary" data-action="unlock">Unlock</button></td>
+                  <td class="center"><span class="sym">\(\bar Y_{\cdot\cdot\cdot}\)</span></td>
+                  <td>Grand mean (given in prompt)</td>
+                  <td class="center"><button class="primary" data-action="select" data-target="ybar_grand">Select in output</button></td>
+                  <td class="center"><span class="status" data-status="ybar_grand">locked</span></td>
                 </tr>
               </tbody>
             </table>
@@ -717,10 +663,12 @@ contrast(em6.cell, cell6.list)
       <button class="rtab" data-tab="rout6c" aria-pressed="false">6c contrasts</button>
     </div>
     <div id="rout6a" class="rpanel">
-      <pre><code>em6.damage
+      <pre><code>Grand mean (given): <span class="pick" data-pick="ybar_grand">7.48</span>
+
+em6.damage
 ##  damagef emmean    SE df lower.CL upper.CL
 ##  Left      6.17 0.254 15     5.62     6.71
-##  Right     7.61 0.254 15     7.07     8.15
+##  Right     <span class="pick" data-pick="ybar_right">7.61</span> 0.254 15     7.07     8.15
 ##  Control   8.67 0.254 15     8.12     9.21
 ##
 ## Results are averaged over the levels of: stimuli
@@ -730,7 +678,7 @@ em6.stimuli
 ##  stimuli emmean    SE df lower.CL upper.CL
 ##  digits    8.06 0.218 15     7.59     8.52
 ##  letters   7.28 0.259 15     6.72     7.83
-##  mixed     7.11 0.251 15     6.58     7.65
+##  mixed     <span class="pick" data-pick="ybar_mixed">7.11</span> 0.251 15     6.58     7.65
 ##
 ## Results are averaged over the levels of: damagef
 ## Confidence level used: 0.95
@@ -744,7 +692,7 @@ em6.cell
 ##  Right   letters   7.50 0.449 15     6.54     8.46
 ##  Control letters   8.67 0.449 15     7.71     9.62
 ##  Left    mixed     5.83 0.435 15     4.91     6.76
-##  Right   mixed     7.17 0.435 15     6.24     8.09
+##  Right   mixed     <span class="pick" data-pick="ybar_cell_right_mixed">7.17</span> 0.435 15     6.24     8.09
 ##  Control mixed     8.33 0.435 15     7.41     9.26
 ##
 ## Confidence level used: 0.95</code></pre>
@@ -867,38 +815,67 @@ contrast(em6.cell, cell6.list)
     const table = document.getElementById('map-6a');
     if (!table) return;
 
-    const keySpec = {
-      ybar_right: { src:'damage', lvl:'Right' },
-      ybar_mixed: { src:'stimuli', lvl:'Mixed' },
-      ybar_cell_right_mixed: { src:'cell', lvl:'Right×Mixed' },
-      ybar_grand: { src:'prompt', lvl:'Grand' },
-    };
+    let activeTarget = null;
 
     function setMsg(ok, msg){
       fb.textContent = msg;
       fb.className = 'feedback ' + (ok ? 'ok' : 'no');
     }
 
-    table.querySelectorAll('button[data-action="unlock"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tr = btn.closest('tr');
-        const key = tr.getAttribute('data-map');
-        const src = tr.querySelector('select[data-field="src"]').value;
-        const lvl = tr.querySelector('select[data-field="lvl"]').value;
-        const spec = keySpec[key];
-        if (!src || !lvl){
-          setMsg(false, 'Pick both “where” and “which level” to unlock.');
+    function setStatus(key, ok){
+      const s = table.querySelector(`[data-status="${key}"]`);
+      if (!s) return;
+      s.textContent = ok ? 'unlocked' : 'locked';
+      s.className = 'status ' + (ok ? 'ok' : 'lock');
+    }
+
+    function activate(key){
+      activeTarget = key;
+      // switch floating output to 6a tab so it's in your face
+      const btn = document.querySelector('#routBody .rtab[data-tab="rout6a"]');
+      btn?.click?.();
+      setMsg(true, `Now click the correct number in the floating R output for ${key}.`);
+      document.querySelectorAll('.pick').forEach(p => p.classList.remove('active','wrong'));
+      // highlight all pickables to guide attention
+      document.querySelectorAll('.pick').forEach(p => p.classList.add('active'));
+    }
+
+    table.querySelectorAll('button[data-action="select"]').forEach(btn => {
+      btn.addEventListener('click', () => activate(btn.getAttribute('data-target')));
+    });
+
+    // click a number in floating output
+    document.querySelectorAll('.pick[data-pick]').forEach(p => {
+      p.addEventListener('click', () => {
+        const picked = p.getAttribute('data-pick');
+        if (!activeTarget){
+          setMsg(false, 'Click “Select in output” for a symbol first.');
+          p.classList.add('wrong');
           return;
         }
-        if (src === spec.src && lvl === spec.lvl){
-          unlocked6a[key] = true;
-          setMsg(true, `Unlocked ${key}.`);
-          renderChips6a();
-        } else {
-          setMsg(false, 'Not quite — check whether this is a damage marginal mean, stimuli marginal mean, a cell mean, or given in the prompt.');
+        if (picked !== activeTarget){
+          setMsg(false, 'Wrong number for the active symbol. Try again.');
+          p.classList.add('wrong');
+          return;
         }
+
+        // unlock the right chip
+        unlocked6a[picked] = true;
+        setStatus(picked, true);
+        renderChips6a();
+        setMsg(true, 'Unlocked. Now compute the effect below.');
+        activeTarget = null;
+        document.querySelectorAll('.pick').forEach(x => x.classList.remove('active','wrong'));
       });
     });
+
+    // initial statuses
+    Object.keys(unlocked6a).forEach(k => setStatus(k, false));
+
+    // typeset the symbols nicely
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise([table]).catch(()=>{});
+    }
   })();
 
   // initial render (hidden)
