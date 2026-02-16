@@ -88,7 +88,9 @@
   .right{text-align:right;}
   .center{text-align:center;}
 
-  .sym{ font-weight:900; color:#0b1220; }
+  .sym{ font-weight:900; color:#0b1220; font-size:16px; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto; }
+.sym sub{ font-weight:900; font-size: 12px; vertical-align: baseline; position: relative; bottom: -0.2em; }
+.sym .dots{ letter-spacing: .04em; }
   .status{ font-weight:900; }
   .status.ok{ color: var(--good); }
   .status.lock{ color: #6b7280; }
@@ -168,7 +170,7 @@
 
         <div class="panel">
           <h4>Step 0: map the symbols by clicking the number in the SG3 output</h4>
-          <p class="muted">No dropdown guessing. Click <strong>Select in output</strong>, then click the correct number in the floating <strong>SG3 R output</strong> module.</p>
+          <p class="muted">No dropdown guessing. Click <strong>Select in output</strong>, then click the correct number in the floating <strong>SG3 R output</strong> module. Notation: <span class="sym">Y&#772;</span> means “mean,” and the dots in the subscript indicate “averaged over.”</p>
 
           <div class="card" style="margin:10px 0 0; border-radius:12px;">
             <table class="tbl" id="map-6a">
@@ -182,25 +184,25 @@
               </thead>
               <tbody>
                 <tr data-map="ybar_right">
-                  <td class="center"><span class="sym">\(\bar Y_{right\cdot\cdot}\)</span></td>
+                  <td class="center"><span class="sym">Y&#772;<sub>right<span class="dots">··</span></sub></span></td>
                   <td>Right <em>damage marginal mean</em> (from <code>em6.damage</code>)</td>
                   <td class="center"><button class="primary" data-action="select" data-target="ybar_right">Select in output</button></td>
                   <td class="center"><span class="status" data-status="ybar_right">locked</span></td>
                 </tr>
                 <tr data-map="ybar_mixed">
-                  <td class="center"><span class="sym">\(\bar Y_{\cdot mixed\cdot}\)</span></td>
+                  <td class="center"><span class="sym">Y&#772;<sub><span class="dots">·</span>mixed<span class="dots">·</span></sub></span></td>
                   <td>Mixed <em>stimuli marginal mean</em> (from <code>em6.stimuli</code>)</td>
                   <td class="center"><button class="primary" data-action="select" data-target="ybar_mixed">Select in output</button></td>
                   <td class="center"><span class="status" data-status="ybar_mixed">locked</span></td>
                 </tr>
                 <tr data-map="ybar_cell_right_mixed">
-                  <td class="center"><span class="sym">\(\bar Y_{right,mixed\cdot}\)</span></td>
+                  <td class="center"><span class="sym">Y&#772;<sub>right,mixed<span class="dots">·</span></sub></span></td>
                   <td>Right×Mixed <em>cell mean</em> (from <code>em6.cell</code>)</td>
                   <td class="center"><button class="primary" data-action="select" data-target="ybar_cell_right_mixed">Select in output</button></td>
                   <td class="center"><span class="status" data-status="ybar_cell_right_mixed">locked</span></td>
                 </tr>
                 <tr data-map="ybar_grand">
-                  <td class="center"><span class="sym">\(\bar Y_{\cdot\cdot\cdot}\)</span></td>
+                  <td class="center"><span class="sym">Y&#772;<sub><span class="dots">···</span></sub></span></td>
                   <td>Grand mean (given in prompt)</td>
                   <td class="center"><button class="primary" data-action="select" data-target="ybar_grand">Select in output</button></td>
                   <td class="center"><span class="status" data-status="ybar_grand">locked</span></td>
@@ -872,10 +874,6 @@ contrast(em6.cell, cell6.list)
     // initial statuses
     Object.keys(unlocked6a).forEach(k => setStatus(k, false));
 
-    // typeset the symbols nicely
-    if (window.MathJax && window.MathJax.typesetPromise) {
-      window.MathJax.typesetPromise([table]).catch(()=>{});
-    }
   })();
 
   // initial render (hidden)
