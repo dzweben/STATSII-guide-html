@@ -349,6 +349,7 @@ em6.cell
           </tr>
         </thead>
         <tbody>
+          <!-- Between-subject test: A with error S(A) -->
           <tr data-row="A">
             <td>Damage (A)</td>
             <td class="right">57.0</td>
@@ -357,15 +358,16 @@ em6.cell
             <td><input data-field="f" placeholder="?" /></td>
           </tr>
           <tr data-row="SA">
-            <td>Subjects within Damage, S(A)</td>
+            <td><strong>Error:</strong> Subjects within Damage, S(A)</td>
             <td class="right">17.4</td>
             <td><input data-field="df" placeholder="?" /></td>
             <td><input data-field="ms" placeholder="?" /></td>
             <td class="center muted">—</td>
           </tr>
 
+          <!-- Within-subject tests: B and A×B share error B×S(A) -->
           <tr style="background:#fafafa; font-weight:900;">
-            <td class="muted">Within-subject block</td>
+            <td class="muted">Within-subject</td>
             <td class="right muted">—</td>
             <td class="center muted">—</td>
             <td class="center muted">—</td>
@@ -379,6 +381,14 @@ em6.cell
             <td><input data-field="ms" placeholder="?" /></td>
             <td><input data-field="f" placeholder="?" /></td>
           </tr>
+          <tr data-row="BSA">
+            <td><strong>Error:</strong> B×S(A) (within-subject error)</td>
+            <td class="right">30.6</td>
+            <td><input data-field="df" placeholder="?" /></td>
+            <td><input data-field="ms" placeholder="?" /></td>
+            <td class="center muted">—</td>
+          </tr>
+
           <tr data-row="AB">
             <td>Damage×Stimuli (A×B)</td>
             <td class="right">2.0</td>
@@ -386,8 +396,8 @@ em6.cell
             <td><input data-field="ms" placeholder="?" /></td>
             <td><input data-field="f" placeholder="?" /></td>
           </tr>
-          <tr data-row="BSA">
-            <td>B×S(A) (within error)</td>
+          <tr data-row="BSA2">
+            <td><strong>Error:</strong> B×S(A) (same within-subject error)</td>
             <td class="right">30.6</td>
             <td><input data-field="df" placeholder="?" /></td>
             <td><input data-field="ms" placeholder="?" /></td>
@@ -1054,6 +1064,7 @@ contrast(em6.cell, cell6.list)
     B:  { df:2,  ms:4.50,  f:4.41 },
     BSA:{ df:30, ms:1.02 },
     AB: { df:4,  ms:0.50,  f:0.49 },
+    BSA2:{ df:30, ms:1.02 }
   };
 
   function getRow(rowKey){
@@ -1283,7 +1294,7 @@ contrast(em6.cell, cell6.list)
       let okAll = true;
       let missing = 0;
 
-      ['A','SA','B','BSA','AB'].forEach(k => {
+      ['A','SA','B','BSA','AB','BSA2'].forEach(k => {
         const tr = getRow(k);
         if (!tr) return;
         const exp = expected6b[k];
