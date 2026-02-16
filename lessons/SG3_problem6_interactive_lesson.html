@@ -479,46 +479,210 @@ contrast(em6.cell, cell6.list)
     </details>
 
     <div class="card" style="border-radius:12px;">
-      <h3>Production-style worksheet (concise)</h3>
-      <p class="muted" style="margin-top:0;">(Next pass) I’ll turn each contrast into a checked worksheet like 6a/6b (dropdowns + null textbox + check). For now, the full step-by-step interpretations are still available below.</p>
+      <h3>Contrast cards — you decide (type → null → critical value → interpret)</h3>
+      <p class="muted" style="margin-top:0;">For each contrast: pick pairwise vs complex, choose Tukey vs Scheffé, enter the adjusted critical value, then decide significance and direction. Use the floating calculator.</p>
+
+      <div class="calc-box" data-c6="damage">
+        <label>1) Damage contrast: <code>c(-2, 1, 1)</code> (t.ratio = <strong>6.335</strong>, df = 15)</label>
+        <div class="grid" style="grid-template-columns:1fr; gap:10px;">
+          <div>
+            <div class="muted">(a) Type</div>
+            <select data-field="type">
+              <option value="">Select…</option>
+              <option value="pairwise">Pairwise</option>
+              <option value="complex">Complex</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted">(b) Null hypothesis</div>
+            <select data-field="null">
+              <option value="">Select…</option>
+              <option value="L_eq_avgRC">\(H_0: \mu_L = (\mu_R + \mu_C)/2\)</option>
+              <option value="R_eq_C">\(H_0: \mu_R = \mu_C\)</option>
+              <option value="avgRC_eq_0">\(H_0: (\mu_R + \mu_C)/2 = 0\)</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted">(c) Adjustment</div>
+            <select data-field="adj">
+              <option value="">Select…</option>
+              <option value="tukey">Tukey</option>
+              <option value="scheffe">Scheffé</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted">Enter adjusted critical value (t*)</div>
+            <input data-field="crit" inputmode="decimal" placeholder="e.g., 2.71" />
+          </div>
+          <div>
+            <div class="muted">(d) Significant?</div>
+            <select data-field="sig">
+              <option value="">Select…</option>
+              <option value="sig">Significant</option>
+              <option value="ns">Not significant</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted">Direction (based on estimate = +3.94)</div>
+            <select data-field="dir">
+              <option value="">Select…</option>
+              <option value="avgRC_gt_L">Average(Right,Control) &gt; Left</option>
+              <option value="L_gt_avgRC">Left &gt; Average(Right,Control)</option>
+              <option value="no_dir">No direction / cannot tell</option>
+            </select>
+          </div>
+        </div>
+        <div class="btns">
+          <button class="primary" data-action="check">Check</button>
+          <button class="danger" data-action="reveal">Reveal key</button>
+        </div>
+        <div class="feedback" aria-live="polite"></div>
+      </div>
+
+      <div class="calc-box" data-c6="stimuli">
+        <label>2) Stimuli contrast: <code>c(1, 0, -1)</code> (t.ratio = <strong>3.034</strong>, df = 15)</label>
+        <div class="grid" style="grid-template-columns:1fr; gap:10px;">
+          <div>
+            <div class="muted">(a) Type</div>
+            <select data-field="type">
+              <option value="">Select…</option>
+              <option value="pairwise">Pairwise</option>
+              <option value="complex">Complex</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted">(b) Null hypothesis</div>
+            <select data-field="null">
+              <option value="">Select…</option>
+              <option value="dig_eq_mix">\(H_0: \mu_{digits} - \mu_{mixed} = 0\)</option>
+              <option value="dig_eq_let">\(H_0: \mu_{digits} - \mu_{letters} = 0\)</option>
+              <option value="mix_eq_let">\(H_0: \mu_{mixed} - \mu_{letters} = 0\)</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted">(c) Adjustment</div>
+            <select data-field="adj">
+              <option value="">Select…</option>
+              <option value="tukey">Tukey</option>
+              <option value="scheffe">Scheffé</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted">Enter adjusted critical value (t*)</div>
+            <input data-field="crit" inputmode="decimal" placeholder="e.g., 2.60" />
+          </div>
+          <div>
+            <div class="muted">(d) Significant?</div>
+            <select data-field="sig">
+              <option value="">Select…</option>
+              <option value="sig">Significant</option>
+              <option value="ns">Not significant</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted">Direction (based on estimate = +0.944)</div>
+            <select data-field="dir">
+              <option value="">Select…</option>
+              <option value="dig_gt_mix">Digits &gt; Mixed</option>
+              <option value="mix_gt_dig">Mixed &gt; Digits</option>
+              <option value="no_dir">No direction / cannot tell</option>
+            </select>
+          </div>
+        </div>
+        <div class="btns">
+          <button class="primary" data-action="check">Check</button>
+          <button class="danger" data-action="reveal">Reveal key</button>
+        </div>
+        <div class="feedback" aria-live="polite"></div>
+      </div>
+
+      <div class="calc-box" data-c6="cell_digits">
+        <label>3) Cell contrast (Digits simple effect of damage): <code>c(-2,1,1, 0,0,0, 0,0,0)</code> (t.ratio = <strong>3.424</strong>, df = 15)</label>
+        <div class="grid" style="grid-template-columns:1fr; gap:10px;">
+          <div>
+            <div class="muted">(a) Type</div>
+            <select data-field="type"><option value="">Select…</option><option value="pairwise">Pairwise</option><option value="complex">Complex</option></select>
+          </div>
+          <div>
+            <div class="muted">(b) Null hypothesis</div>
+            <select data-field="null">
+              <option value="">Select…</option>
+              <option value="L_eq_avgRC_digits">\(H_0: \mu_{L,digits} = (\mu_{R,digits}+\mu_{C,digits})/2\)</option>
+              <option value="R_eq_C_digits">\(H_0: \mu_{R,digits} = \mu_{C,digits}\)</option>
+              <option value="dig_eq_mix_any">\(H_0: \mu_{digits} = \mu_{mixed}\)</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted">(c) Adjustment</div>
+            <select data-field="adj"><option value="">Select…</option><option value="tukey">Tukey</option><option value="scheffe">Scheffé</option></select>
+          </div>
+          <div>
+            <div class="muted">Enter adjusted critical value (t*)</div>
+            <input data-field="crit" inputmode="decimal" placeholder="e.g., 2.71" />
+          </div>
+          <div>
+            <div class="muted">(d) Significant?</div>
+            <select data-field="sig"><option value="">Select…</option><option value="sig">Significant</option><option value="ns">Not significant</option></select>
+          </div>
+          <div>
+            <div class="muted">Direction (estimate = +3.167)</div>
+            <select data-field="dir"><option value="">Select…</option><option value="avgRC_gt_L">Avg(R,C) &gt; L (within digits)</option><option value="L_gt_avgRC">L &gt; Avg(R,C) (within digits)</option><option value="no_dir">No direction</option></select>
+          </div>
+        </div>
+        <div class="btns"><button class="primary" data-action="check">Check</button><button class="danger" data-action="reveal">Reveal key</button></div>
+        <div class="feedback" aria-live="polite"></div>
+      </div>
+
+      <div class="calc-box" data-c6="cell_mixed">
+        <label>4) Cell contrast (Mixed simple effect of damage): <code>c(0,0,0, 0,0,0, -2,1,1)</code> (t.ratio = <strong>3.601</strong>, df = 15)</label>
+        <div class="grid" style="grid-template-columns:1fr; gap:10px;">
+          <div><div class="muted">(a) Type</div><select data-field="type"><option value="">Select…</option><option value="pairwise">Pairwise</option><option value="complex">Complex</option></select></div>
+          <div><div class="muted">(b) Null hypothesis</div>
+            <select data-field="null">
+              <option value="">Select…</option>
+              <option value="L_eq_avgRC_mixed">\(H_0: \mu_{L,mixed} = (\mu_{R,mixed}+\mu_{C,mixed})/2\)</option>
+              <option value="R_eq_C_mixed">\(H_0: \mu_{R,mixed} = \mu_{C,mixed}\)</option>
+              <option value="dig_eq_mix_any">\(H_0: \mu_{digits} = \mu_{mixed}\)</option>
+            </select>
+          </div>
+          <div><div class="muted">(c) Adjustment</div><select data-field="adj"><option value="">Select…</option><option value="tukey">Tukey</option><option value="scheffe">Scheffé</option></select></div>
+          <div><div class="muted">Enter adjusted critical value (t*)</div><input data-field="crit" inputmode="decimal" placeholder="e.g., 2.71" /></div>
+          <div><div class="muted">(d) Significant?</div><select data-field="sig"><option value="">Select…</option><option value="sig">Significant</option><option value="ns">Not significant</option></select></div>
+          <div><div class="muted">Direction (estimate = +3.833)</div><select data-field="dir"><option value="">Select…</option><option value="avgRC_gt_L">Avg(R,C) &gt; L (within mixed)</option><option value="L_gt_avgRC">L &gt; Avg(R,C) (within mixed)</option><option value="no_dir">No direction</option></select></div>
+        </div>
+        <div class="btns"><button class="primary" data-action="check">Check</button><button class="danger" data-action="reveal">Reveal key</button></div>
+        <div class="feedback" aria-live="polite"></div>
+      </div>
+
+      <div class="calc-box" data-c6="interaction">
+        <label>5) Interaction-style contrast (difference of simple effects): <code>c(-2,1,1, 0,0,0, 2,-1,-1)</code> (t.ratio = <strong>-0.505</strong>, df = 15)</label>
+        <div class="grid" style="grid-template-columns:1fr; gap:10px;">
+          <div><div class="muted">(a) Type</div><select data-field="type"><option value="">Select…</option><option value="pairwise">Pairwise</option><option value="complex">Complex</option></select></div>
+          <div><div class="muted">(b) Null hypothesis</div>
+            <select data-field="null">
+              <option value="">Select…</option>
+              <option value="diffdiff_0">\(H_0: [\mu_{L,digits}-(\mu_{R,digits}+\mu_{C,digits})/2] - [\mu_{L,mixed}-(\mu_{R,mixed}+\mu_{C,mixed})/2] = 0\)</option>
+              <option value="L_eq_avgRC_digits">\(H_0: \mu_{L,digits} = (\mu_{R,digits}+\mu_{C,digits})/2\)</option>
+              <option value="dig_eq_mix_any">\(H_0: \mu_{digits} = \mu_{mixed}\)</option>
+            </select>
+          </div>
+          <div><div class="muted">(c) Adjustment</div><select data-field="adj"><option value="">Select…</option><option value="tukey">Tukey</option><option value="scheffe">Scheffé</option></select></div>
+          <div><div class="muted">Enter adjusted critical value (t*)</div><input data-field="crit" inputmode="decimal" placeholder="e.g., 3.81" /></div>
+          <div><div class="muted">(d) Significant?</div><select data-field="sig"><option value="">Select…</option><option value="sig">Significant</option><option value="ns">Not significant</option></select></div>
+          <div><div class="muted">Direction (estimate = -0.667)</div><select data-field="dir"><option value="">Select…</option><option value="digits_bigger_simple_effect">Simple-effect difference is larger in digits</option><option value="mixed_bigger_simple_effect">Simple-effect difference is larger in mixed</option><option value="no_dir">No reliable direction (ns)</option></select></div>
+        </div>
+        <div class="btns"><button class="primary" data-action="check">Check</button><button class="danger" data-action="reveal">Reveal key</button></div>
+        <div class="feedback" aria-live="polite"></div>
+      </div>
 
       <details class="pill">
-        <summary>Show step-by-step (current)</summary>
+        <summary>Show the “why” (1 screen, not a textbook)</summary>
         <div class="answer">
-          <div class="panel">
-            <h4>Contrast meanings (English)</h4>
-            <ul>
-              <li><code>c(-2,1,1)</code> on damage means: compare <strong>Left</strong> to the <strong>average</strong> of Right and Control.</li>
-              <li><code>c(1,0,-1)</code> on stimuli means: compare <strong>Digits</strong> vs <strong>Mixed</strong>.</li>
-              <li>The first two cell contrasts repeat the Left vs avg(Right,Control) comparison <em>within Digits</em> and <em>within Mixed</em>.</li>
-              <li>The last cell contrast is a difference of those simple effects (interaction-style).</li>
-            </ul>
-          </div>
-
-          <div class="panel">
-            <h4>Nulls (examples)</h4>
-            <ul>
-              <li><strong>Damage contrast:</strong> \(H_0: \mu_L = (\mu_R+\mu_C)/2\).</li>
-              <li><strong>Stimuli contrast:</strong> \(H_0: \mu_{digits} - \mu_{mixed} = 0\).</li>
-            </ul>
-          </div>
-
-          <div class="panel">
-            <h4>Adjustment rule</h4>
-            <ul>
-              <li>Pairwise → Tukey</li>
-              <li>Complex / average-vs-mean / interaction-style → Scheffé</li>
-            </ul>
-          </div>
-
-          <div class="panel">
-            <h4>Decisions (using t.ratio)</h4>
-            <ul>
-              <li>Damage contrast: t = 6.335 (strong evidence; Right/Control average &gt; Left)</li>
-              <li>Stimuli contrast digits vs mixed: t = 3.034 (digits &gt; mixed)</li>
-              <li>Interaction-style cell contrast: t = -0.505 (ns)</li>
-            </ul>
-          </div>
+          <ul>
+            <li><strong>Pairwise</strong> means 2 levels directly (e.g., Digits vs Mixed) → <strong>Tukey</strong>.</li>
+            <li><strong>Complex</strong> means average-vs-mean or diff-of-diffs → <strong>Scheffé</strong>.</li>
+            <li>Decision rule: significant if \(|t| &gt; t^*\). Direction comes from the sign of the <strong>estimate</strong>.</li>
+          </ul>
         </div>
       </details>
     </div>
@@ -695,6 +859,114 @@ contrast(em6.cell, cell6.list)
             input.value = exp.value.toFixed(2);
             setFeedback(true, `Revealed: ${exp.value.toFixed(2)}`);
           }
+        });
+      });
+    });
+  })();
+
+  // ------------------------------
+  // 6c: Contrast cards checks
+  // ------------------------------
+  const expected6c = {
+    damage: {
+      type:'complex', null:'L_eq_avgRC', adj:'scheffe', crit:2.7138,
+      sig:'sig', dir:'avgRC_gt_L'
+    },
+    stimuli: {
+      type:'pairwise', null:'dig_eq_mix', adj:'tukey', crit:2.5975,
+      sig:'sig', dir:'dig_gt_mix'
+    },
+    cell_digits: {
+      type:'complex', null:'L_eq_avgRC_digits', adj:'scheffe', crit:2.7138,
+      sig:'sig', dir:'avgRC_gt_L'
+    },
+    cell_mixed: {
+      type:'complex', null:'L_eq_avgRC_mixed', adj:'scheffe', crit:2.7138,
+      sig:'sig', dir:'avgRC_gt_L'
+    },
+    interaction: {
+      type:'complex', null:'diffdiff_0', adj:'scheffe', crit:3.8087,
+      sig:'ns', dir:'no_dir'
+    }
+  };
+
+  const tRatios6c = {
+    damage: 6.335,
+    stimuli: 3.034,
+    cell_digits: 3.424,
+    cell_mixed: 3.601,
+    interaction: -0.505
+  };
+
+  (function init6c(){
+    document.querySelectorAll('.calc-box[data-c6]').forEach(card => {
+      const key = card.getAttribute('data-c6');
+      const exp = expected6c[key];
+      if (!exp) return;
+      const fb = card.querySelector('.feedback');
+
+      function setMsg(ok, msg){
+        fb.textContent = msg;
+        fb.className = 'feedback ' + (ok ? 'ok' : 'no');
+      }
+
+      function get(field){
+        const el = card.querySelector(`[data-field="${field}"]`);
+        return el ? el.value : '';
+      }
+
+      function set(field, value){
+        const el = card.querySelector(`[data-field="${field}"]`);
+        if (el) el.value = value;
+      }
+
+      function check(){
+        let okAll = true;
+        const problems = [];
+
+        const type = get('type');
+        const nul = get('null');
+        const adj = get('adj');
+        const crit = toNum(get('crit'));
+        const sig = get('sig');
+        const dir = get('dir');
+
+        if (type !== exp.type){ okAll=false; problems.push('type'); }
+        if (nul !== exp.null){ okAll=false; problems.push('null'); }
+        if (adj !== exp.adj){ okAll=false; problems.push('adjustment'); }
+        if (crit === null){ okAll=false; problems.push('critical value (blank)'); }
+        else if (!closeEnough(crit, exp.crit, 0.06)) { okAll=false; problems.push(`critical value (expected ≈ ${exp.crit.toFixed(2)})`); }
+
+        // significance can be inferred from your crit + |t|
+        if (crit !== null){
+          const t = Math.abs(tRatios6c[key]);
+          const inferred = (t > crit) ? 'sig' : 'ns';
+          if (sig && sig !== inferred){ okAll=false; problems.push('significance'); }
+        } else {
+          if (sig !== exp.sig){ okAll=false; problems.push('significance'); }
+        }
+
+        if (dir !== exp.dir){ okAll=false; problems.push('direction'); }
+
+        if (okAll) setMsg(true, 'Correct.');
+        else setMsg(false, 'Fix: ' + problems.join(', '));
+      }
+
+      function reveal(){
+        set('type', exp.type);
+        set('null', exp.null);
+        set('adj', exp.adj);
+        set('crit', exp.crit.toFixed(2));
+        set('sig', exp.sig);
+        set('dir', exp.dir);
+        setMsg(true, 'Key revealed.');
+      }
+
+      card.querySelectorAll('button[data-action]').forEach(b => {
+        b.addEventListener('click', () => {
+          const a = b.getAttribute('data-action');
+          if (a === 'check') check();
+          if (a === 'reveal') reveal();
         });
       });
     });
