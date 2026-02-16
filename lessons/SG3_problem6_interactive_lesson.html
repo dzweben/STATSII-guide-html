@@ -349,40 +349,31 @@ em6.cell
           </tr>
         </thead>
         <tbody>
-          <!-- Between-subject test: A with error S(A) -->
+          <!-- SG3 table uses: Effect then its associated Error row -->
           <tr data-row="A">
-            <td>Damage (A)</td>
+            <td>Damage group</td>
             <td class="right">57.0</td>
             <td><input data-field="df" placeholder="?" /></td>
             <td><input data-field="ms" placeholder="?" /></td>
             <td><input data-field="f" placeholder="?" /></td>
           </tr>
-          <tr data-row="SA">
-            <td><strong>Error:</strong> Subjects within Damage, S(A)</td>
+          <tr data-row="EA">
+            <td>Error <span class="muted">(Subjects within Damage)</span></td>
             <td class="right">17.4</td>
             <td><input data-field="df" placeholder="?" /></td>
             <td><input data-field="ms" placeholder="?" /></td>
             <td class="center muted">—</td>
           </tr>
 
-          <!-- Within-subject tests: B and A×B share error B×S(A) -->
-          <tr style="background:#fafafa; font-weight:900;">
-            <td class="muted">Within-subject</td>
-            <td class="right muted">—</td>
-            <td class="center muted">—</td>
-            <td class="center muted">—</td>
-            <td class="center muted">—</td>
-          </tr>
-
           <tr data-row="B">
-            <td>Stimuli (B)</td>
+            <td>Stimuli</td>
             <td class="right">9.0</td>
             <td><input data-field="df" placeholder="?" /></td>
             <td><input data-field="ms" placeholder="?" /></td>
             <td><input data-field="f" placeholder="?" /></td>
           </tr>
-          <tr data-row="BSA">
-            <td><strong>Error:</strong> B×S(A) (within-subject error)</td>
+          <tr data-row="EB">
+            <td>Error <span class="muted">(Subject×Stimuli within Damage)</span></td>
             <td class="right">30.6</td>
             <td><input data-field="df" placeholder="?" /></td>
             <td><input data-field="ms" placeholder="?" /></td>
@@ -390,14 +381,14 @@ em6.cell
           </tr>
 
           <tr data-row="AB">
-            <td>Damage×Stimuli (A×B)</td>
+            <td>Damage*stimuli</td>
             <td class="right">2.0</td>
             <td><input data-field="df" placeholder="?" /></td>
             <td><input data-field="ms" placeholder="?" /></td>
             <td><input data-field="f" placeholder="?" /></td>
           </tr>
-          <tr data-row="BSA2">
-            <td><strong>Error:</strong> B×S(A) (same within-subject error)</td>
+          <tr data-row="EAB">
+            <td>Error <span class="muted">(same as above)</span></td>
             <td class="right">30.6</td>
             <td><input data-field="df" placeholder="?" /></td>
             <td><input data-field="ms" placeholder="?" /></td>
@@ -1060,11 +1051,11 @@ contrast(em6.cell, cell6.list)
   // ------------------------------
   const expected6b = {
     A:  { df:2,  ms:28.50, f:24.57 },
-    SA: { df:15, ms:1.16 },
+    EA: { df:15, ms:1.16 },
     B:  { df:2,  ms:4.50,  f:4.41 },
-    BSA:{ df:30, ms:1.02 },
+    EB: { df:30, ms:1.02 },
     AB: { df:4,  ms:0.50,  f:0.49 },
-    BSA2:{ df:30, ms:1.02 }
+    EAB:{ df:30, ms:1.02 }
   };
 
   function getRow(rowKey){
@@ -1294,7 +1285,7 @@ contrast(em6.cell, cell6.list)
       let okAll = true;
       let missing = 0;
 
-      ['A','SA','B','BSA','AB','BSA2'].forEach(k => {
+      ['A','EA','B','EB','AB','EAB'].forEach(k => {
         const tr = getRow(k);
         if (!tr) return;
         const exp = expected6b[k];
